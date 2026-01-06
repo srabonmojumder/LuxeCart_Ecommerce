@@ -106,15 +106,15 @@ export default function LiveChat() {
                                 >
                                     <div
                                         className={`max-w-[80%] rounded-2xl px-4 py-2 ${message.isBot
-                                                ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
-                                                : 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white'
+                                            ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                                            : 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white'
                                             }`}
                                     >
                                         <p className="text-sm">{message.text}</p>
                                         <p
                                             className={`text-xs mt-1 ${message.isBot
-                                                    ? 'text-gray-500 dark:text-gray-400'
-                                                    : 'text-white/70'
+                                                ? 'text-gray-500 dark:text-gray-400'
+                                                : 'text-white/70'
                                                 }`}
                                         >
                                             {message.time}

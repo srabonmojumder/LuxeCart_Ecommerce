@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { ArrowRight, ShoppingBag, Shield, Truck, Headphones, Star, Zap, TrendingUp, Clock } from 'lucide-react';
 import ProductCard from '@/components/product/ProductCard';
 import QuickViewModal from '@/components/product/QuickViewModal';
-import CountdownTimer from '@/components/ui/CountdownTimer';
+import FlashSaleSection from '@/components/sections/FlashSaleSection';
 import NewsletterPopup from '@/components/ui/NewsletterPopup';
 import { products, categories, testimonials } from '@/data/products';
 import { Product } from '@/store/useStore';
@@ -213,46 +213,11 @@ export default function Home() {
 
             {/* Flash Sale Section with Countdown */}
             {flashSaleProducts.length > 0 && (
-                <section className="py-16 bg-gradient-to-r from-red-600 via-pink-600 to-purple-600 relative overflow-hidden">
-                    {/* Animated background */}
-                    <div className="absolute inset-0 opacity-20">
-                        <motion.div
-                            animate={{ backgroundPosition: ['0% 0%', '100% 100%'] }}
-                            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                            className="w-full h-full"
-                            style={{
-                                backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px)',
-                            }}
-                        />
-                    </div>
-
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                        <div className="text-center mb-8">
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                className="inline-flex items-center gap-2 text-white mb-4"
-                            >
-                                <Zap className="w-8 h-8 fill-white animate-pulse" />
-                                <h2 className="text-4xl md:text-5xl font-bold">Flash Sale!</h2>
-                            </motion.div>
-                            <div className="flex justify-center">
-                                <CountdownTimer endDate={flashSaleEndDate} />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {flashSaleProducts.map((product) => (
-                                <ProductCard
-                                    key={product.id}
-                                    product={product}
-                                    onQuickView={handleQuickView}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                </section>
+                <FlashSaleSection
+                    products={flashSaleProducts}
+                    endDate={flashSaleEndDate}
+                    onQuickView={handleQuickView}
+                />
             )}
 
             {/* Features Section with Icons Animation */}
