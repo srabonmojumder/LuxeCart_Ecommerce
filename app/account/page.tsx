@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, Package, Heart, Settings, LogOut } from 'lucide-react';
+import LoyaltyBadge from '@/components/loyalty/LoyaltyBadge';
 
 export default function AccountPage() {
     const [activeTab, setActiveTab] = useState('orders');
@@ -51,7 +52,11 @@ export default function AccountPage() {
 
                 <div className="grid lg:grid-cols-4 gap-8">
                     {/* Sidebar */}
-                    <div className="lg:col-span-1">
+                    <div className="lg:col-span-1 space-y-6">
+                        {/* Loyalty Badge */}
+                        <LoyaltyBadge points={3500} />
+
+                        {/* Navigation */}
                         <div className="card space-y-2">
                             {tabs.map((tab) => {
                                 const Icon = tab.icon;
@@ -60,8 +65,8 @@ export default function AccountPage() {
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id)}
                                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeTab === tab.id
-                                                ? 'bg-primary-600 text-white'
-                                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                            ? 'bg-purple-600 text-white'
+                                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                                             }`}
                                     >
                                         <Icon className="w-5 h-5" />
@@ -101,10 +106,10 @@ export default function AccountPage() {
                                             </div>
                                             <span
                                                 className={`px-3 py-1 rounded-full text-sm font-medium ${order.status === 'Delivered'
-                                                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                                                        : order.status === 'Shipped'
-                                                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                                                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                                    : order.status === 'Shipped'
+                                                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                                                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
                                                     }`}
                                             >
                                                 {order.status}

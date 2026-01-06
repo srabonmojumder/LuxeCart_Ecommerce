@@ -3,6 +3,8 @@ import "./globals.css";
 import { Toaster } from 'react-hot-toast';
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import FloatingCart from "@/components/cart/FloatingCart";
+import LiveChat from "@/components/chat/LiveChat";
 
 export const metadata: Metadata = {
     title: "LuxeCart - Premium E-Commerce Store",
@@ -28,6 +30,11 @@ export default function RootLayout({
                     {children}
                 </main>
                 <Footer />
+
+                {/* Floating Components */}
+                <FloatingCart />
+                <LiveChat />
+
                 <Toaster
                     position="top-right"
                     toastOptions={{
