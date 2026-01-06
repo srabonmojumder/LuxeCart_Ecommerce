@@ -59,14 +59,14 @@ export default function ProductCarousel({
                     <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
-                        className="swiper-button-prev-custom pointer-events-auto -ml-4 md:-ml-6 w-12 h-12 rounded-full bg-white dark:bg-gray-800 shadow-xl flex items-center justify-center text-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 border border-gray-200 dark:border-gray-700"
+                        className="swiper-button-prev-custom pointer-events-auto -ml-4 md:-ml-6 w-12 h-12 rounded-full bg-white dark:bg-gray-800 shadow-xl hidden md:flex items-center justify-center text-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 border border-gray-200 dark:border-gray-700"
                     >
                         <ChevronLeft className="w-6 h-6" />
                     </motion.button>
                     <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
-                        className="swiper-button-next-custom pointer-events-auto -mr-4 md:-mr-6 w-12 h-12 rounded-full bg-white dark:bg-gray-800 shadow-xl flex items-center justify-center text-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 border border-gray-200 dark:border-gray-700"
+                        className="swiper-button-next-custom pointer-events-auto -mr-4 md:-mr-6 w-12 h-12 rounded-full bg-white dark:bg-gray-800 shadow-xl hidden md:flex items-center justify-center text-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 border border-gray-200 dark:border-gray-700"
                     >
                         <ChevronRight className="w-6 h-6" />
                     </motion.button>

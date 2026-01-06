@@ -289,7 +289,16 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                             </motion.div>
                         )}
 
-                        {/* Quick Actions - Appear on hover */}
+                        {/* Mobile Wishlist Button */}
+                        <motion.button
+                            whileTap={{ scale: 0.9 }}
+                            onClick={handleToggleWishlist}
+                            className="md:hidden absolute top-3 right-3 z-20 p-2 rounded-full bg-white/90 dark:bg-gray-800/90 text-gray-700 dark:text-gray-200 shadow-lg backdrop-blur-sm border border-gray-100 dark:border-gray-700"
+                        >
+                            <Heart className={`w-4 h-4 ${inWishlist ? 'fill-red-500 text-red-500' : ''}`} />
+                        </motion.button>
+
+                        {/* Quick Actions - Appear on hover (Desktop) */}
                         <AnimatePresence>
                             {isHovered && (
                                 <motion.div
@@ -297,7 +306,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: 20 }}
                                     transition={{ duration: 0.2 }}
-                                    className="absolute top-3 right-3 flex flex-col gap-2 z-20"
+                                    className="hidden md:flex absolute top-3 right-3 flex-col gap-2 z-20"
                                 >
                                     <motion.button
                                         whileHover={{ scale: 1.15, rotate: 5 }}
@@ -355,7 +364,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                                     className={`
                                         absolute bottom-0 left-0 right-0 
                                         py-3.5 font-semibold 
-                                        flex items-center justify-center gap-2 
+                                        hidden md:flex items-center justify-center gap-2 
                                         shadow-lg z-20
                                         transition-all duration-300
                                         ${showAddedAnimation
@@ -431,8 +440,8 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                                     >
                                         <Star
                                             className={`w-3.5 h-3.5 ${i < Math.floor(product.rating)
-                                                    ? 'text-yellow-400 fill-current'
-                                                    : 'text-gray-300 dark:text-gray-600'
+                                                ? 'text-yellow-400 fill-current'
+                                                : 'text-gray-300 dark:text-gray-600'
                                                 }`}
                                         />
                                     </motion.div>
@@ -444,31 +453,60 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                         </div>
 
                         {/* Price with animation */}
-                        <div className="flex items-baseline gap-2 mt-auto">
-                            {product.discount ? (
-                                <>
-                                    <motion.span
-                                        initial={{ scale: 0.8, opacity: 0 }}
-                                        animate={{ scale: 1, opacity: 1 }}
-                                        className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"
-                                    >
-                                        ${discountedPrice.toFixed(2)}
-                                    </motion.span>
-                                    <span className="text-base text-gray-400 line-through decoration-2">
+                        {/* Price with Mobile Action */}
+                        <div className="flex items-center justify-between mt-auto gap-2">
+                            <div className="flex flex-col gap-0.5">
+                                {product.discount ? (
+                                    <>
+                                        <div className="flex items-baseline gap-2">
+                                            <motion.span
+                                                initial={{ scale: 0.8, opacity: 0 }}
+                                                animate={{ scale: 1, opacity: 1 }}
+                                                className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"
+                                            >
+                                                ${discountedPrice.toFixed(2)}
+                                            </motion.span>
+                                            <span className="text-sm text-gray-400 line-through decoration-2">
+                                                ${product.price.toFixed(2)}
+                                            </span>
+                                        </div>
+                                        <motion.span
+                                            initial={{ scale: 0 }}
+                                            animate={{ scale: 1 }}
+                                            className="text-[10px] font-semibold text-green-500 bg-green-50 dark:bg-green-900/30 px-2 py-0.5 rounded-full w-fit"
+                                        >
+                                            Save ${(product.price - discountedPrice).toFixed(2)}
+                                        </motion.span>
+                                    </>
+                                ) : (
+                                    <span className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
                                         ${product.price.toFixed(2)}
                                     </span>
-                                    <motion.span
-                                        initial={{ scale: 0 }}
-                                        animate={{ scale: 1 }}
-                                        className="text-xs font-semibold text-green-500 bg-green-50 dark:bg-green-900/30 px-2 py-0.5 rounded-full"
-                                    >
-                                        Save ${(product.price - discountedPrice).toFixed(2)}
-                                    </motion.span>
-                                </>
-                            ) : (
-                                <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                                    ${product.price.toFixed(2)}
-                                </span>
+                                )}
+                            </div>
+
+                            {/* Mobile Add to Cart Button */}
+                            {product.inStock && (
+                                <motion.button
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={handleAddToCart}
+                                    disabled={isAddingToCart}
+                                    className={`
+                                        md:hidden flex items-center justify-center
+                                        w-10 h-10 rounded-full
+                                        bg-purple-600 text-white
+                                        shadow-lg shadow-purple-500/30
+                                        ${isAddingToCart ? 'opacity-80' : ''}
+                                    `}
+                                >
+                                    {isAddingToCart ? (
+                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                    ) : showAddedAnimation ? (
+                                        <Check className="w-5 h-5" />
+                                    ) : (
+                                        <ShoppingCart className="w-5 h-5" />
+                                    )}
+                                </motion.button>
                             )}
                         </div>
 
@@ -489,10 +527,10 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                                         viewport={{ once: true }}
                                         transition={{ duration: 1, delay: 0.2, ease: 'easeOut' }}
                                         className={`h-full rounded-full ${stockPercentage > 70
-                                                ? 'bg-gradient-to-r from-green-500 to-emerald-500'
-                                                : stockPercentage > 30
-                                                    ? 'bg-gradient-to-r from-yellow-500 to-orange-500'
-                                                    : 'bg-gradient-to-r from-red-500 to-pink-500'
+                                            ? 'bg-gradient-to-r from-green-500 to-emerald-500'
+                                            : stockPercentage > 30
+                                                ? 'bg-gradient-to-r from-yellow-500 to-orange-500'
+                                                : 'bg-gradient-to-r from-red-500 to-pink-500'
                                             }`}
                                     />
                                 </div>

@@ -70,7 +70,7 @@ export default function ProductDetailPage() {
     const images = [product.image, product.image, product.image];
 
     return (
-        <div className="pt-20 min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="pt-20 pb-24 md:pb-0 min-h-screen bg-gray-50 dark:bg-gray-900">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 {/* Breadcrumb */}
                 <nav className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-8">
@@ -88,7 +88,7 @@ export default function ProductDetailPage() {
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="relative h-[500px] bg-white dark:bg-gray-800 rounded-2xl overflow-hidden"
+                            className="relative h-96 md:h-[500px] bg-white dark:bg-gray-800 rounded-2xl overflow-hidden"
                         >
                             <Image
                                 src={images[selectedImage]}
@@ -340,6 +340,24 @@ export default function ProductDetailPage() {
                         </div>
                     </div>
                 )}
+            </div>
+
+            {/* Mobile Sticky Bottom Bar */}
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 md:hidden z-50 flex items-center justify-between gap-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] safe-area-bottom">
+                <div className="flex flex-col">
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">Total Price</span>
+                    <span className="text-lg font-bold text-gray-900 dark:text-white">
+                        ${(discountedPrice * quantity).toFixed(2)}
+                    </span>
+                </div>
+                <button
+                    onClick={handleAddToCart}
+                    disabled={!product.inStock}
+                    className="flex-1 bg-purple-600 text-white py-3 rounded-xl flex items-center justify-center gap-2 font-semibold shadow-lg shadow-purple-500/20 active:scale-95 transition-transform"
+                >
+                    <ShoppingCart className="w-5 h-5" />
+                    Add to Cart
+                </button>
             </div>
         </div>
     );
