@@ -5,10 +5,20 @@ import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Heart, Star, Truck, Shield, RotateCcw, Share2, Minus, Plus } from 'lucide-react';
+import { ShoppingCart, Heart, Star, Truck, Shield, RotateCcw, Share2, Minus, Plus, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Navigation, Thumbs, EffectFade } from 'swiper/modules';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import 'swiper/css/thumbs';
+import 'swiper/css/effect-fade';
 import { products } from '@/data/products';
 import { useStore } from '@/store/useStore';
 import ProductCard from '@/components/product/ProductCard';
+import StickyMobileBar from '@/components/product/StickyMobileBar';
 import toast from 'react-hot-toast';
 
 export default function ProductDetailPage() {
@@ -17,6 +27,7 @@ export default function ProductDetailPage() {
     const product = products.find(p => p.id === productId);
 
     const [selectedImage, setSelectedImage] = useState(0);
+    const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('description');
 
@@ -84,37 +95,111 @@ export default function ProductDetailPage() {
                 {/* Product Detail */}
                 <div className="grid lg:grid-cols-2 gap-12 mb-16">
                     {/* Images */}
-                    <div className="space-y-4">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="relative h-96 md:h-[500px] bg-white dark:bg-gray-800 rounded-2xl overflow-hidden"
-                        >
-                            <Image
-                                src={images[selectedImage]}
-                                alt={product.name}
-                                fill
-                                className="object-cover"
-                            />
-                            {product.discount && (
-                                <div className="absolute top-4 left-4 bg-red-500 text-white px-4 py-2 rounded-full text-lg font-bold">
-                                    -{product.discount}%
-                                </div>
-                            )}
-                        </motion.div>
-                        <div className="grid grid-cols-3 gap-4">
-                            {images.map((img, idx) => (
-                                <button
-                                    key={idx}
-                                    onClick={() => setSelectedImage(idx)}
-                                    className={`relative h-24 rounded-lg overflow-hidden border-2 transition-all ${selectedImage === idx
-                                        ? 'border-primary-600'
-                                        : 'border-gray-200 dark:border-gray-700'
-                                        }`}
+                    {/* Images - Swiper Gallery */}
+                    <div className="w-full space-y-4">
+                        {/* Mobile/Tablet: Swipeable Carousel */}
+                        <div className="lg:hidden relative">
+                            <Swiper
+                                modules={[Pagination, EffectFade]}
+                                pagination={{
+                                    clickable: true,
+                                    dynamicBullets: true,
+                                }}
+                                effect={'fade'}
+                                spaceBetween={0}
+                                slidesPerView={1}
+                                className="aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800"
+                            >
+                                {images.map((img, idx) => (
+                                    <SwiperSlide key={idx} className="relative w-full h-full">
+                                        <Image
+                                            src={img}
+                                            alt={`${product.name} view ${idx + 1}`}
+                                            fill
+                                            className="object-cover"
+                                            priority={idx === 0}
+                                        />
+                                    </SwiperSlide>
+                                ))}
+                                {product.discount && (
+                                    <div className="absolute top-4 left-4 z-10">
+                                        <span className="bg-red-500 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-lg">
+                                            -{product.discount}%
+                                        </span>
+                                    </div>
+                                )}
+                            </Swiper>
+                        </div>
+
+                        {/* Desktop: Interactive Gallery (Thumbnails + Main) */}
+                        <div className="hidden lg:grid gap-4">
+                            <div className="relative aspect-[4/5] bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden group">
+                                <Swiper
+                                    modules={[Thumbs, EffectFade, Navigation]}
+                                    thumbs={{ swiper: thumbsSwiper }}
+                                    effect={'fade'}
+                                    spaceBetween={0}
+                                    slidesPerView={1}
+                                    navigation={{
+                                        nextEl: '.swiper-button-next-custom',
+                                        prevEl: '.swiper-button-prev-custom',
+                                    }}
+                                    className="h-full w-full"
                                 >
-                                    <Image src={img} alt={`${product.name} ${idx + 1}`} fill className="object-cover" />
-                                </button>
-                            ))}
+                                    {images.map((img, idx) => (
+                                        <SwiperSlide key={idx} className="relative w-full h-full">
+                                            <Image
+                                                src={img}
+                                                alt={`${product.name} view ${idx + 1}`}
+                                                fill
+                                                className="object-cover cursor-zoom-in"
+                                                priority={idx === 0}
+                                            />
+                                        </SwiperSlide>
+                                    ))}
+                                </Swiper>
+
+                                {/* Custom Navigation */}
+                                <div className="swiper-button-prev-custom absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-white hover:scale-110 shadow-lg">
+                                    <ChevronLeft className="w-5 h-5" />
+                                </div>
+                                <div className="swiper-button-next-custom absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-white hover:scale-110 shadow-lg">
+                                    <ChevronRight className="w-5 h-5" />
+                                </div>
+
+                                {product.discount && (
+                                    <div className="absolute top-6 left-6 z-10">
+                                        <span className="bg-red-500 text-white px-4 py-2 rounded-full text-lg font-bold shadow-xl">
+                                            -{product.discount}%
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Thumbnails */}
+                            {images.length > 1 && (
+                                <Swiper
+                                    modules={[Thumbs]}
+                                    watchSlidesProgress
+                                    onSwiper={setThumbsSwiper}
+                                    spaceBetween={12}
+                                    slidesPerView={4}
+                                    className="w-full"
+                                >
+                                    {images.map((img, idx) => (
+                                        <SwiperSlide key={idx} className="cursor-pointer">
+                                            <div className="relative aspect-square rounded-xl overflow-hidden border-2 border-transparent ui-selected:border-purple-600 opacity-70 hover:opacity-100 transition-all">
+                                                <Image
+                                                    src={img}
+                                                    alt={`Thumbnail ${idx + 1}`}
+                                                    fill
+                                                    className="object-cover"
+                                                />
+                                            </div>
+                                        </SwiperSlide>
+                                    ))}
+                                </Swiper>
+                            )}
                         </div>
                     </div>
 
@@ -342,23 +427,8 @@ export default function ProductDetailPage() {
                 )}
             </div>
 
-            {/* Mobile Sticky Bottom Bar */}
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 md:hidden z-50 flex items-center justify-between gap-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] safe-area-bottom">
-                <div className="flex flex-col">
-                    <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">Total Price</span>
-                    <span className="text-lg font-bold text-gray-900 dark:text-white">
-                        ${(discountedPrice * quantity).toFixed(2)}
-                    </span>
-                </div>
-                <button
-                    onClick={handleAddToCart}
-                    disabled={!product.inStock}
-                    className="flex-1 bg-purple-600 text-white py-3 rounded-xl flex items-center justify-center gap-2 font-semibold shadow-lg shadow-purple-500/20 active:scale-95 transition-transform"
-                >
-                    <ShoppingCart className="w-5 h-5" />
-                    Add to Cart
-                </button>
-            </div>
+            {/* Enhanced Sticky Mobile Bar */}
+            <StickyMobileBar product={product} />
         </div>
     );
 }

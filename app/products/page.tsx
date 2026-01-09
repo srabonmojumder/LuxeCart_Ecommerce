@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Filter, SlidersHorizontal, X } from 'lucide-react';
 import ProductCard from '@/components/product/ProductCard';
+import QuickFilters from '@/components/ui/QuickFilters';
+import ProductGridSkeleton from '@/components/product/ProductGridSkeleton';
 import { products } from '@/data/products';
 
 export default function ProductsPage() {
@@ -11,13 +13,34 @@ export default function ProductsPage() {
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 2000]);
     const [sortBy, setSortBy] = useState('featured');
     const [showFilters, setShowFilters] = useState(false);
+    const [activeQuickFilter, setActiveQuickFilter] = useState('all');
+    const [isLoading, setIsLoading] = useState(false);
 
     const categories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
 
+    // Quick filter handler
+    const handleQuickFilter = (filterId: string) => {
+        setActiveQuickFilter(filterId);
+        setIsLoading(true);
+
+        // Simulate loading
+        setTimeout(() => setIsLoading(false), 500);
+    };
+
     // Filter products
     let filteredProducts = products.filter(product => {
+        // Quick filters
+        if (activeQuickFilter === 'sale' && !product.discount) return false;
+        if (activeQuickFilter === 'trending' && product.rating < 4.7) return false;
+        if (activeQuickFilter === 'new' && product.id % 3 !== 0) return false; // Deterministic
+        if (activeQuickFilter === 'popular' && product.reviews < 300) return false;
+
+        // Category filter
         if (selectedCategory !== 'All' && product.category !== selectedCategory) return false;
+
+        // Price filter
         if (product.price < priceRange[0] || product.price > priceRange[1]) return false;
+
         return true;
     });
 
@@ -53,6 +76,12 @@ export default function ProductsPage() {
                         Showing {filteredProducts.length} products
                     </p>
                 </div>
+
+                {/* Quick Filters - Mobile Optimized */}
+                <QuickFilters
+                    onFilterChange={handleQuickFilter}
+                    activeFilter={activeQuickFilter}
+                />
 
                 {/* Filter Bar */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
@@ -185,7 +214,9 @@ export default function ProductsPage() {
 
                     {/* Products Grid */}
                     <div className="flex-1">
-                        {filteredProducts.length > 0 ? (
+                        {isLoading ? (
+                            <ProductGridSkeleton count={12} />
+                        ) : filteredProducts.length > 0 ? (
                             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                                 {filteredProducts.map((product) => (
                                     <ProductCard key={product.id} product={product} />

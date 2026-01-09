@@ -6,6 +6,9 @@ import Footer from "@/components/layout/Footer";
 import FloatingCart from "@/components/cart/FloatingCart";
 import LiveChat from "@/components/chat/LiveChat";
 import FloatingActionButton from "@/components/ui/FloatingActionButton";
+import FloatingMobileNav from "@/components/ui/FloatingMobileNav";
+import MobileSearchModal from "@/components/search/MobileSearchModal";
+import MobileComparisonSheet from "@/components/ui/MobileComparisonSheet";
 
 export const metadata: Metadata = {
     title: "LuxeCart - Premium E-Commerce Store",
@@ -24,6 +27,7 @@ export default function RootLayout({
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
                 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" />
             </head>
             <body className="antialiased">
                 <Navbar />
@@ -36,6 +40,11 @@ export default function RootLayout({
                 <FloatingCart />
                 <LiveChat />
                 <FloatingActionButton />
+
+                {/* Mobile-Only Components */}
+                <FloatingMobileNav />
+                <MobileSearchModal />
+                <MobileComparisonSheet />
 
                 <Toaster
                     position="top-right"

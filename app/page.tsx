@@ -31,7 +31,7 @@ export default function Home() {
     };
 
     return (
-        <div className="pt-24 md:pt-26">
+        <div className="pt-24 md:pt-26 pb-20 md:pb-0">{/* Added bottom padding for mobile nav */}
             {/* Hero Section with Parallax Effect */}
             <section className="relative min-h-[600px] md:min-h-[700px] flex items-center overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-pink-900/20">
                 {/* Animated Background Elements */}
