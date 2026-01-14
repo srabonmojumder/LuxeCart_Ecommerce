@@ -100,7 +100,7 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 100, opacity: 0 }}
                     transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                    className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800 shadow-2xl"
+                    className="md:hidden fixed bottom-[70px] left-0 right-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800 shadow-2xl rounded-t-2xl"
                 >
                     {/* Out of stock banner */}
                     {!product.inStock && (
@@ -110,22 +110,22 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
                         </div>
                     )}
 
-                    <div className="px-4 py-3">
-                        <div className="flex items-center gap-3">
+                    <div className="px-3 sm:px-4 py-3">
+                        <div className="flex items-center gap-2 sm:gap-3">
                             {/* Price Section */}
-                            <div className="flex-1">
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-baseline gap-1.5 sm:gap-2">
+                                    <span className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                                         ${discountedPrice.toFixed(2)}
                                     </span>
                                     {product.discount && (
-                                        <span className="text-sm text-gray-400 line-through">
+                                        <span className="text-xs sm:text-sm text-gray-400 line-through">
                                             ${product.price.toFixed(2)}
                                         </span>
                                     )}
                                 </div>
                                 {product.inStock && (
-                                    <p className="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+                                    <p className="text-[10px] sm:text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
                                         <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
                                         In Stock
                                     </p>
@@ -133,26 +133,26 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
                             </div>
 
                             {/* Action Buttons */}
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
                                 {/* Wishlist Button */}
                                 <motion.button
                                     whileTap={{ scale: 0.9 }}
                                     onClick={handleToggleWishlist}
-                                    className={`p-3 rounded-xl transition-all ${inWishlist
+                                    className={`p-2.5 sm:p-3 rounded-xl transition-all ${inWishlist
                                             ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
                                             : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
                                         }`}
                                 >
-                                    <Heart className={`w-5 h-5 ${inWishlist ? 'fill-current' : ''}`} />
+                                    <Heart className={`w-4 h-4 sm:w-5 sm:h-5 ${inWishlist ? 'fill-current' : ''}`} />
                                 </motion.button>
 
-                                {/* Share Button */}
+                                {/* Share Button - Hidden on very small screens */}
                                 <motion.button
                                     whileTap={{ scale: 0.9 }}
                                     onClick={handleShare}
-                                    className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 transition-all"
+                                    className="hidden xs:flex p-2.5 sm:p-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 transition-all"
                                 >
-                                    <Share2 className="w-5 h-5" />
+                                    <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
                                 </motion.button>
 
                                 {/* Add to Cart Button */}
@@ -161,8 +161,8 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
                                     onClick={handleAddToCart}
                                     disabled={!product.inStock || isAdding}
                                     className={`
-                                        flex items-center gap-2 px-6 py-3 rounded-xl font-semibold
-                                        transition-all duration-300 shadow-lg min-w-[140px] justify-center
+                                        flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl font-semibold
+                                        transition-all duration-300 shadow-lg justify-center text-sm sm:text-base
                                         ${!product.inStock
                                             ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
                                             : added
@@ -178,7 +178,7 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
                                                 exit={{ opacity: 0 }}
-                                                className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
+                                                className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
                                             />
                                         ) : added ? (
                                             <motion.div
@@ -186,10 +186,10 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
                                                 initial={{ scale: 0 }}
                                                 animate={{ scale: 1 }}
                                                 exit={{ scale: 0 }}
-                                                className="flex items-center gap-2"
+                                                className="flex items-center gap-1.5"
                                             >
-                                                <Check className="w-5 h-5" />
-                                                Added!
+                                                <Check className="w-4 h-4 sm:w-5 sm:h-5" />
+                                                <span className="hidden xs:inline">Added!</span>
                                             </motion.div>
                                         ) : (
                                             <motion.div
@@ -197,10 +197,11 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
                                                 exit={{ opacity: 0 }}
-                                                className="flex items-center gap-2"
+                                                className="flex items-center gap-1.5"
                                             >
-                                                <ShoppingCart className="w-5 h-5" />
-                                                Add to Cart
+                                                <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
+                                                <span className="hidden xs:inline">Add to Cart</span>
+                                                <span className="xs:hidden">Add</span>
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
@@ -209,8 +210,6 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
                         </div>
                     </div>
 
-                    {/* Safe area for iPhone notch */}
-                    <div className="h-safe-area-inset-bottom" />
                 </motion.div>
             )}
         </AnimatePresence>

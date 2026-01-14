@@ -82,7 +82,7 @@ export default function ProductDetailPage() {
     const images = [product.image, product.image, product.image];
 
     return (
-        <div className="pt-[104px] md:pt-[112px] pb-28 md:pb-8 min-h-screen bg-slate-50 dark:bg-slate-900">
+        <div className="pt-[104px] md:pt-[112px] pb-36 md:pb-8 min-h-screen bg-slate-50 dark:bg-slate-900">
             <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 md:py-8 lg:py-12">
                 {/* Breadcrumb */}
                 <nav className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm text-slate-600 dark:text-slate-400 mb-4 md:mb-8 overflow-x-auto">
@@ -94,11 +94,11 @@ export default function ProductDetailPage() {
                 </nav>
 
                 {/* Product Detail */}
-                <div className="grid lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 mb-12 md:mb-16">
+                <div className="grid lg:grid-cols-2 gap-4 xs:gap-6 md:gap-8 lg:gap-12 mb-8 md:mb-16">
                     {/* Images - Swiper Gallery */}
                     <div className="w-full space-y-3 md:space-y-4">
                         {/* Mobile/Tablet: Swipeable Carousel */}
-                        <div className="lg:hidden relative">
+                        <div className="lg:hidden relative aspect-[5/4] xs:aspect-square sm:aspect-[4/5] rounded-xl md:rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800">
                             <Swiper
                                 modules={[Pagination, Navigation]}
                                 pagination={{
@@ -112,10 +112,10 @@ export default function ProductDetailPage() {
                                 spaceBetween={0}
                                 slidesPerView={1}
                                 onSwiper={(swiper) => { mainSwiperRef.current = swiper; }}
-                                className="aspect-square sm:aspect-[4/5] rounded-xl md:rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800"
+                                className="h-full w-full"
                             >
                                 {images.map((img, idx) => (
-                                    <SwiperSlide key={idx} className="relative w-full h-full">
+                                    <SwiperSlide key={idx} className="relative w-full !h-full">
                                         <Image
                                             src={img}
                                             alt={`${product.name} view ${idx + 1}`}
@@ -146,12 +146,12 @@ export default function ProductDetailPage() {
                             )}
                         </div>
 
-                        {/* Mobile Thumbnails */}
-                        <div className="lg:hidden">
+                        {/* Mobile Thumbnails - Hidden on very small screens */}
+                        <div className="hidden xs:block lg:hidden">
                             <Swiper
                                 modules={[FreeMode]}
-                                spaceBetween={8}
-                                slidesPerView={4.5}
+                                spaceBetween={6}
+                                slidesPerView={5}
                                 freeMode={true}
                                 className="w-full"
                             >
@@ -253,18 +253,18 @@ export default function ProductDetailPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="space-y-4 md:space-y-6"
+                        className="space-y-3 xs:space-y-4 md:space-y-6"
                     >
                         <div>
-                            <p className="text-teal-600 dark:text-teal-400 font-medium text-sm mb-1 md:mb-2">
+                            <p className="text-teal-600 dark:text-teal-400 font-medium text-xs xs:text-sm mb-0.5 xs:mb-1 md:mb-2">
                                 {product.category}
                             </p>
-                            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3 md:mb-4">
+                            <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-2 xs:mb-3 md:mb-4">
                                 {product.name}
                             </h1>
 
                             {/* Rating */}
-                            <div className="flex flex-wrap items-center gap-2 md:gap-4 mb-3 md:mb-4">
+                            <div className="flex flex-wrap items-center gap-1.5 xs:gap-2 md:gap-4 mb-2 xs:mb-3 md:mb-4">
                                 <div className="flex items-center">
                                     {[...Array(5)].map((_, i) => (
                                         <Star
@@ -282,32 +282,32 @@ export default function ProductDetailPage() {
                             </div>
 
                             {/* Price */}
-                            <div className="flex flex-wrap items-baseline gap-2 md:gap-4 mb-4 md:mb-6">
+                            <div className="flex flex-wrap items-baseline gap-1.5 xs:gap-2 md:gap-4 mb-3 xs:mb-4 md:mb-6">
                                 {product.discount ? (
                                     <>
-                                        <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-teal-600">
+                                        <span className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-teal-600">
                                             ${discountedPrice.toFixed(2)}
                                         </span>
-                                        <span className="text-lg md:text-2xl text-slate-400 line-through">
+                                        <span className="text-sm xs:text-lg md:text-2xl text-slate-400 line-through">
                                             ${product.price.toFixed(2)}
                                         </span>
-                                        <span className="text-sm font-medium text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full">
+                                        <span className="text-[10px] xs:text-xs sm:text-sm font-medium text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-1.5 xs:px-2 py-0.5 rounded-full">
                                             Save ${(product.price - discountedPrice).toFixed(2)}
                                         </span>
                                     </>
                                 ) : (
-                                    <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
+                                    <span className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
                                         ${product.price.toFixed(2)}
                                     </span>
                                 )}
                             </div>
 
-                            <p className="text-sm md:text-base text-slate-600 dark:text-slate-400 mb-4 md:mb-6 leading-relaxed">
+                            <p className="hidden xs:block text-sm md:text-base text-slate-600 dark:text-slate-400 mb-3 xs:mb-4 md:mb-6 leading-relaxed line-clamp-2 xs:line-clamp-3 sm:line-clamp-none">
                                 {product.description}
                             </p>
 
                             {/* Stock Status */}
-                            <div className="mb-4 md:mb-6">
+                            <div className="mb-2 xs:mb-4 md:mb-6">
                                 {product.inStock ? (
                                     <span className="inline-flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-medium text-sm md:text-base">
                                         <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
@@ -324,22 +324,22 @@ export default function ProductDetailPage() {
 
                         {/* Quantity Selector */}
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                            <label className="block text-xs xs:text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 xs:mb-2">
                                 Quantity
                             </label>
-                            <div className="flex items-center gap-2 md:gap-3">
+                            <div className="flex items-center gap-1.5 xs:gap-2 md:gap-3">
                                 <button
                                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                    className="p-2 md:p-2.5 border-2 border-slate-200 dark:border-slate-700 rounded-xl hover:border-teal-500 hover:text-teal-600 transition-colors text-slate-600 dark:text-slate-300"
+                                    className="p-1.5 xs:p-2 md:p-2.5 border-2 border-slate-200 dark:border-slate-700 rounded-lg xs:rounded-xl hover:border-teal-500 hover:text-teal-600 transition-colors text-slate-600 dark:text-slate-300"
                                 >
                                     <Minus className="w-4 h-4 md:w-5 md:h-5" />
                                 </button>
-                                <span className="text-lg md:text-xl font-semibold w-10 md:w-12 text-center text-slate-900 dark:text-white">
+                                <span className="text-base xs:text-lg md:text-xl font-semibold w-8 xs:w-10 md:w-12 text-center text-slate-900 dark:text-white">
                                     {quantity}
                                 </span>
                                 <button
                                     onClick={() => setQuantity(quantity + 1)}
-                                    className="p-2 md:p-2.5 border-2 border-slate-200 dark:border-slate-700 rounded-xl hover:border-teal-500 hover:text-teal-600 transition-colors text-slate-600 dark:text-slate-300"
+                                    className="p-1.5 xs:p-2 md:p-2.5 border-2 border-slate-200 dark:border-slate-700 rounded-lg xs:rounded-xl hover:border-teal-500 hover:text-teal-600 transition-colors text-slate-600 dark:text-slate-300"
                                 >
                                     <Plus className="w-4 h-4 md:w-5 md:h-5" />
                                 </button>
@@ -347,52 +347,52 @@ export default function ProductDetailPage() {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex gap-2 md:gap-3">
+                        <div className="flex gap-1.5 xs:gap-2 md:gap-3">
                             <motion.button
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={handleAddToCart}
                                 disabled={!product.inStock}
-                                className="flex-1 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white font-semibold py-3 md:py-4 px-4 md:px-6 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-teal-500/20 transition-all"
+                                className="flex-1 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white font-semibold py-2.5 xs:py-3 md:py-4 px-3 xs:px-4 md:px-6 rounded-xl flex items-center justify-center gap-1.5 xs:gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-teal-500/20 transition-all text-sm xs:text-base"
                             >
-                                <ShoppingCart className="w-5 h-5" />
-                                <span className="hidden sm:inline">Add to Cart</span>
-                                <span className="sm:hidden">Add</span>
+                                <ShoppingCart className="w-4 h-4 xs:w-5 xs:h-5" />
+                                <span className="hidden xs:inline">Add to Cart</span>
+                                <span className="xs:hidden">Add</span>
                             </motion.button>
 
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handleToggleWishlist}
-                                className={`p-3 md:p-4 rounded-xl border-2 transition-all ${inWishlist
+                                className={`p-2.5 xs:p-3 md:p-4 rounded-xl border-2 transition-all flex-shrink-0 ${inWishlist
                                     ? 'bg-rose-500 border-rose-500 text-white'
                                     : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-rose-500 hover:text-rose-500'
                                     }`}
                             >
-                                <Heart className={`w-5 h-5 md:w-6 md:h-6 ${inWishlist ? 'fill-current' : ''}`} />
+                                <Heart className={`w-4 h-4 xs:w-5 xs:h-5 md:w-6 md:h-6 ${inWishlist ? 'fill-current' : ''}`} />
                             </motion.button>
 
-                            <button className="p-3 md:p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-teal-500 hover:text-teal-600 transition-all">
-                                <Share2 className="w-5 h-5 md:w-6 md:h-6" />
+                            <button className="hidden xs:flex p-2.5 xs:p-3 md:p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-teal-500 hover:text-teal-600 transition-all flex-shrink-0">
+                                <Share2 className="w-4 h-4 xs:w-5 xs:h-5 md:w-6 md:h-6" />
                             </button>
                         </div>
 
-                        {/* Features */}
-                        <div className="grid grid-cols-3 gap-2 md:gap-4 pt-4 md:pt-6 border-t border-slate-200 dark:border-slate-700">
-                            <div className="text-center p-2 md:p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                                <Truck className="w-6 h-6 md:w-8 md:h-8 mx-auto mb-1 md:mb-2 text-teal-600" />
-                                <p className="text-xs md:text-sm font-medium text-slate-900 dark:text-white">Free Shipping</p>
-                                <p className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden sm:block">On orders $50+</p>
+                        {/* Features - Hidden on very small screens */}
+                        <div className="hidden xs:grid grid-cols-3 gap-1.5 xs:gap-2 md:gap-4 pt-3 xs:pt-4 md:pt-6 border-t border-slate-200 dark:border-slate-700">
+                            <div className="text-center p-1.5 xs:p-2 md:p-3 rounded-lg xs:rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                                <Truck className="w-5 h-5 xs:w-6 xs:h-6 md:w-8 md:h-8 mx-auto mb-0.5 xs:mb-1 md:mb-2 text-teal-600" />
+                                <p className="text-[10px] xs:text-xs md:text-sm font-medium text-slate-900 dark:text-white leading-tight">Free Ship</p>
+                                <p className="text-[9px] xs:text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden xs:block">On $50+</p>
                             </div>
-                            <div className="text-center p-2 md:p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                                <Shield className="w-6 h-6 md:w-8 md:h-8 mx-auto mb-1 md:mb-2 text-teal-600" />
-                                <p className="text-xs md:text-sm font-medium text-slate-900 dark:text-white">Secure</p>
-                                <p className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden sm:block">100% protected</p>
+                            <div className="text-center p-1.5 xs:p-2 md:p-3 rounded-lg xs:rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                                <Shield className="w-5 h-5 xs:w-6 xs:h-6 md:w-8 md:h-8 mx-auto mb-0.5 xs:mb-1 md:mb-2 text-teal-600" />
+                                <p className="text-[10px] xs:text-xs md:text-sm font-medium text-slate-900 dark:text-white leading-tight">Secure</p>
+                                <p className="text-[9px] xs:text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden xs:block">Protected</p>
                             </div>
-                            <div className="text-center p-2 md:p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                                <RotateCcw className="w-6 h-6 md:w-8 md:h-8 mx-auto mb-1 md:mb-2 text-teal-600" />
-                                <p className="text-xs md:text-sm font-medium text-slate-900 dark:text-white">Returns</p>
-                                <p className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden sm:block">30-day policy</p>
+                            <div className="text-center p-1.5 xs:p-2 md:p-3 rounded-lg xs:rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                                <RotateCcw className="w-5 h-5 xs:w-6 xs:h-6 md:w-8 md:h-8 mx-auto mb-0.5 xs:mb-1 md:mb-2 text-teal-600" />
+                                <p className="text-[10px] xs:text-xs md:text-sm font-medium text-slate-900 dark:text-white leading-tight">Returns</p>
+                                <p className="text-[9px] xs:text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden xs:block">30-day</p>
                             </div>
                         </div>
                     </motion.div>
@@ -433,18 +433,18 @@ export default function ProductDetailPage() {
                                 <h3 className="text-lg md:text-2xl font-bold text-slate-900 dark:text-white mb-3 md:mb-4">
                                     Specifications
                                 </h3>
-                                <ul className="space-y-2 text-sm md:text-base text-slate-600 dark:text-slate-400">
-                                    <li className="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-2">
-                                        <span className="font-medium">Category:</span>
-                                        <span>{product.category}</span>
+                                <ul className="space-y-2 text-xs xs:text-sm md:text-base text-slate-600 dark:text-slate-400">
+                                    <li className="flex justify-between gap-2 border-b border-slate-200 dark:border-slate-700 pb-2">
+                                        <span className="font-medium flex-shrink-0">Category:</span>
+                                        <span className="text-right truncate">{product.category}</span>
                                     </li>
-                                    <li className="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-2">
-                                        <span className="font-medium">SKU:</span>
-                                        <span>LUX{product.id.toString().padStart(6, '0')}</span>
+                                    <li className="flex justify-between gap-2 border-b border-slate-200 dark:border-slate-700 pb-2">
+                                        <span className="font-medium flex-shrink-0">SKU:</span>
+                                        <span className="text-right">LUX{product.id.toString().padStart(6, '0')}</span>
                                     </li>
-                                    <li className="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-2">
-                                        <span className="font-medium">Availability:</span>
-                                        <span>{product.inStock ? 'In Stock' : 'Out of Stock'}</span>
+                                    <li className="flex justify-between gap-2 border-b border-slate-200 dark:border-slate-700 pb-2">
+                                        <span className="font-medium flex-shrink-0">Availability:</span>
+                                        <span className="text-right">{product.inStock ? 'In Stock' : 'Out of Stock'}</span>
                                     </li>
                                 </ul>
                             </div>
