@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -19,7 +19,9 @@ import {
     CreditCard,
     RotateCcw,
     Award,
-    ChevronRight
+    ChevronRight,
+    ChevronLeft,
+    Quote
 } from 'lucide-react';
 import ProductCard from '@/components/product/ProductCard';
 import QuickViewModal from '@/components/product/QuickViewModal';
@@ -33,6 +35,33 @@ export default function Home() {
     const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
     const [showQuickView, setShowQuickView] = useState(false);
     const recentProducts = useRecentlyViewedStore((state) => state.recentProducts);
+
+    // Testimonial slider state
+    const [currentSlide, setCurrentSlide] = useState(0);
+    const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+    // Handle slide navigation
+    const nextSlide = useCallback(() => {
+        setCurrentSlide((prev) => (prev + 1) % testimonials.length);
+    }, []);
+
+    const prevSlide = useCallback(() => {
+        setCurrentSlide((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    }, []);
+
+    const goToSlide = (index: number) => {
+        setCurrentSlide(index);
+        setIsAutoPlaying(false);
+        // Resume auto-play after 5 seconds
+        setTimeout(() => setIsAutoPlaying(true), 5000);
+    };
+
+    // Auto-play functionality
+    useEffect(() => {
+        if (!isAutoPlaying) return;
+        const interval = setInterval(nextSlide, 4000);
+        return () => clearInterval(interval);
+    }, [isAutoPlaying, nextSlide]);
 
     const featuredProducts = products.slice(0, 8);
     const flashSaleProducts = products.filter(p => p.discount && p.discount >= 15).slice(0, 4);
@@ -462,8 +491,8 @@ export default function Home() {
                 </section>
             )}
 
-            {/* Testimonials */}
-            <section className="py-16 md:py-20 bg-gradient-to-br from-slate-50 via-teal-50/30 to-emerald-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800">
+            {/* Testimonials Slider */}
+            <section className="py-16 md:py-24 bg-gradient-to-br from-slate-50 via-teal-50/30 to-emerald-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 overflow-hidden">
                 <div className="section-container">
                     <div className="text-center mb-10 md:mb-14">
                         <motion.div
@@ -471,6 +500,12 @@ export default function Home() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                         >
+                            <div className="inline-flex items-center gap-2 bg-teal-100 dark:bg-teal-900/30 px-4 py-2 rounded-full mb-4">
+                                <Star className="w-4 h-4 text-amber-500 fill-current" />
+                                <span className="text-teal-700 dark:text-teal-300 font-semibold text-sm">
+                                    Customer Reviews
+                                </span>
+                            </div>
                             <h2 className="text-h2 text-slate-900 dark:text-white mb-3">
                                 Loved by Customers
                             </h2>
@@ -480,47 +515,127 @@ export default function Home() {
                         </motion.div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {testimonials.map((testimonial, index) => (
+                    {/* Slider Container */}
+                    <div className="relative">
+                        {/* Navigation Arrows */}
+                        <button
+                            onClick={() => {
+                                prevSlide();
+                                setIsAutoPlaying(false);
+                                setTimeout(() => setIsAutoPlaying(true), 5000);
+                            }}
+                            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-6 z-10 w-10 h-10 md:w-12 md:h-12 bg-white dark:bg-slate-800 rounded-full shadow-lg flex items-center justify-center hover:bg-teal-50 dark:hover:bg-slate-700 transition-colors group"
+                            aria-label="Previous testimonial"
+                        >
+                            <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-slate-600 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors" />
+                        </button>
+                        <button
+                            onClick={() => {
+                                nextSlide();
+                                setIsAutoPlaying(false);
+                                setTimeout(() => setIsAutoPlaying(true), 5000);
+                            }}
+                            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-6 z-10 w-10 h-10 md:w-12 md:h-12 bg-white dark:bg-slate-800 rounded-full shadow-lg flex items-center justify-center hover:bg-teal-50 dark:hover:bg-slate-700 transition-colors group"
+                            aria-label="Next testimonial"
+                        >
+                            <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-slate-600 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors" />
+                        </button>
+
+                        {/* Slider Track */}
+                        <div className="overflow-hidden mx-4 md:mx-8">
                             <motion.div
-                                key={testimonial.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                                viewport={{ once: true }}
+                                className="flex"
+                                animate={{ x: `-${currentSlide * 100}%` }}
+                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
                             >
-                                <div className="card h-full border-teal-100 dark:border-teal-800/50">
-                                    <div className="flex items-center gap-4 mb-4">
-                                        <div className="relative w-14 h-14 rounded-full overflow-hidden ring-2 ring-teal-100 dark:ring-teal-800">
-                                            <Image
-                                                src={testimonial.image}
-                                                alt={testimonial.name}
-                                                fill
-                                                className="object-cover"
-                                            />
-                                        </div>
-                                        <div>
-                                            <h4 className="font-semibold text-slate-900 dark:text-white">
-                                                {testimonial.name}
-                                            </h4>
-                                            <p className="text-sm text-slate-500 dark:text-slate-400">
-                                                {testimonial.role}
+                                {testimonials.map((testimonial) => (
+                                    <div
+                                        key={testimonial.id}
+                                        className="w-full flex-shrink-0 px-2 md:px-4"
+                                    >
+                                        <div className="bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xl border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+                                            {/* Quote decoration */}
+                                            <div className="absolute top-4 right-4 md:top-6 md:right-6">
+                                                <Quote className="w-8 h-8 md:w-12 md:h-12 text-teal-100 dark:text-teal-900/50 fill-current" />
+                                            </div>
+
+                                            {/* Rating */}
+                                            <div className="flex gap-1 mb-4 md:mb-6">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <Star
+                                                        key={i}
+                                                        className={`w-5 h-5 md:w-6 md:h-6 ${
+                                                            i < testimonial.rating
+                                                                ? 'text-amber-400 fill-current'
+                                                                : 'text-slate-200 dark:text-slate-600'
+                                                        }`}
+                                                    />
+                                                ))}
+                                            </div>
+
+                                            {/* Comment */}
+                                            <p className="text-base md:text-lg lg:text-xl text-slate-700 dark:text-slate-200 leading-relaxed mb-6 md:mb-8 relative z-10">
+                                                &ldquo;{testimonial.comment}&rdquo;
                                             </p>
+
+                                            {/* Author */}
+                                            <div className="flex items-center gap-4">
+                                                <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden ring-4 ring-teal-100 dark:ring-teal-800/50">
+                                                    <Image
+                                                        src={testimonial.image}
+                                                        alt={testimonial.name}
+                                                        fill
+                                                        className="object-cover"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-bold text-slate-900 dark:text-white text-base md:text-lg">
+                                                        {testimonial.name}
+                                                    </h4>
+                                                    <p className="text-sm md:text-base text-slate-500 dark:text-slate-400">
+                                                        {testimonial.role}
+                                                    </p>
+                                                </div>
+                                                <div className="ml-auto hidden sm:block">
+                                                    <div className="px-3 py-1 bg-teal-100 dark:bg-teal-900/30 rounded-full">
+                                                        <span className="text-teal-700 dark:text-teal-400 text-sm font-medium">
+                                                            Verified Buyer
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-
-                                    <div className="flex gap-0.5 mb-3">
-                                        {[...Array(testimonial.rating)].map((_, i) => (
-                                            <Star key={i} className="w-4 h-4 text-amber-400 fill-current" />
-                                        ))}
-                                    </div>
-
-                                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                                        "{testimonial.comment}"
-                                    </p>
-                                </div>
+                                ))}
                             </motion.div>
-                        ))}
+                        </div>
+
+                        {/* Dot Indicators */}
+                        <div className="flex justify-center gap-2 mt-6 md:mt-8">
+                            {testimonials.map((_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => goToSlide(index)}
+                                    className={`transition-all duration-300 rounded-full ${
+                                        currentSlide === index
+                                            ? 'w-8 h-3 bg-gradient-to-r from-teal-500 to-emerald-500'
+                                            : 'w-3 h-3 bg-slate-300 dark:bg-slate-600 hover:bg-teal-300 dark:hover:bg-teal-700'
+                                    }`}
+                                    aria-label={`Go to testimonial ${index + 1}`}
+                                />
+                            ))}
+                        </div>
+
+                        {/* Auto-play indicator */}
+                        <div className="flex justify-center mt-4">
+                            <button
+                                onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+                                className="text-sm text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex items-center gap-2"
+                            >
+                                <span className={`w-2 h-2 rounded-full ${isAutoPlaying ? 'bg-teal-500 animate-pulse' : 'bg-slate-400'}`} />
+                                {isAutoPlaying ? 'Auto-playing' : 'Paused'}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
