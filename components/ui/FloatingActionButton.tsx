@@ -26,8 +26,17 @@ export default function FloatingActionButton() {
     const [isOpen, setIsOpen] = useState(false);
     const [showScrollTop, setShowScrollTop] = useState(false);
     const [showPromo, setShowPromo] = useState(false);
-    const cartItems = useStore((state) => state.getTotalItems());
-    const wishlistItems = useStore((state) => state.wishlist.length);
+    const [hasMounted, setHasMounted] = useState(false);
+    const cartItemsFromStore = useStore((state) => state.getTotalItems());
+    const wishlistItemsFromStore = useStore((state) => state.wishlist.length);
+
+    // Prevent hydration mismatch by only showing store values after mount
+    const cartItems = hasMounted ? cartItemsFromStore : 0;
+    const wishlistItems = hasMounted ? wishlistItemsFromStore : 0;
+
+    useEffect(() => {
+        setHasMounted(true);
+    }, []);
 
     useEffect(() => {
         const handleScroll = () => {

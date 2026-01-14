@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingCart, Heart, Star, Eye, Zap, TrendingUp, Sparkles, Check, Package } from 'lucide-react';
@@ -22,6 +22,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
     const [isAddingToCart, setIsAddingToCart] = useState(false);
     const [showAddedAnimation, setShowAddedAnimation] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
+    const [hasMounted, setHasMounted] = useState(false);
 
     const addToCart = useStore((state) => state.addToCart);
     const addToWishlist = useStore((state) => state.addToWishlist);
@@ -30,7 +31,12 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
     const addToCompare = useCompareStore((state) => state.addToCompare);
     const compareProducts = useCompareStore((state) => state.compareProducts);
 
-    const inWishlist = isInWishlist(product.id);
+    // Prevent hydration mismatch by only checking wishlist state after mount
+    useEffect(() => {
+        setHasMounted(true);
+    }, []);
+
+    const inWishlist = hasMounted && isInWishlist(product.id);
     const inCompare = compareProducts.some(p => p.id === product.id);
 
     // Deterministic stock calculation

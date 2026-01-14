@@ -49,7 +49,7 @@ export default function RootLayout({
                 <meta name="theme-color" content="#14b8a6" />
                 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
             </head>
-            <body className="antialiased bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+            <body suppressHydrationWarning className="antialiased bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
                 {/* Main Navigation */}
                 <Navbar />
 
