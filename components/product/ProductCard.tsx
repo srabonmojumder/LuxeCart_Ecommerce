@@ -42,11 +42,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
     // Deterministic stock calculation
     const stockLeft = useMemo(() => ((product.id * 7 + 13) % 50) + 10, [product.id]);
 
-    const triggerConfetti = useCallback((e: React.MouseEvent) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = (rect.left + rect.width / 2) / window.innerWidth;
-        const y = (rect.top + rect.height / 2) / window.innerHeight;
-
+    const triggerConfetti = useCallback((x: number, y: number) => {
         confetti({
             particleCount: 50,
             spread: 60,
@@ -63,11 +59,16 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
         e.preventDefault();
         e.stopPropagation();
 
+        // Capture position before async operation
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = (rect.left + rect.width / 2) / window.innerWidth;
+        const y = (rect.top + rect.height / 2) / window.innerHeight;
+
         setIsAddingToCart(true);
         await new Promise(resolve => setTimeout(resolve, 300));
 
         addToCart(product);
-        triggerConfetti(e);
+        triggerConfetti(x, y);
         setIsAddingToCart(false);
         setShowAddedAnimation(true);
 
