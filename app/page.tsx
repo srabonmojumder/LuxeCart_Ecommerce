@@ -56,7 +56,7 @@ export default function Home() {
         setTimeout(() => setIsAutoPlaying(true), 5000);
     };
 
-    // Auto-play functionality
+    // Auto-play functionality for testimonials
     useEffect(() => {
         if (!isAutoPlaying) return;
         const interval = setInterval(nextSlide, 4000);
@@ -641,46 +641,139 @@ export default function Home() {
             </section>
 
             {/* Newsletter CTA */}
-            <section className="py-16 md:py-20 bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-600 relative overflow-hidden">
-                {/* Pattern Overlay */}
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute inset-0" style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                    }} />
+            <section className="py-16 md:py-24 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+                {/* Background Elements */}
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-teal-500/20 rounded-full blur-[120px]" />
+                    <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-emerald-500/20 rounded-full blur-[100px]" />
+                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]" />
                 </div>
 
                 <div className="section-container relative z-10">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="text-center max-w-2xl mx-auto"
-                    >
-                        <Gift className="w-12 h-12 text-white/80 mx-auto mb-4" />
-                        <h2 className="text-h2 text-white mb-4">
-                            Get 15% Off Your First Order
-                        </h2>
-                        <p className="text-lg text-white/90 mb-8">
-                            Subscribe to our newsletter for exclusive deals, new arrivals, and insider-only discounts.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                            <input
-                                type="email"
-                                placeholder="Enter your email"
-                                className="flex-1 px-5 py-4 rounded-xl focus:outline-none focus:ring-4 focus:ring-white/30 shadow-lg text-slate-900 placeholder:text-slate-400"
-                            />
-                            <motion.button
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className="px-8 py-4 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 transition-colors shadow-lg"
+                    <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+                        {/* Left Content */}
+                        <motion.div
+                            initial={{ opacity: 0, x: -30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5 }}
+                        >
+                            {/* Badge */}
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true }}
+                                className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500/20 to-emerald-500/20 px-4 py-2 rounded-full border border-teal-500/30 mb-6"
                             >
-                                Subscribe
-                            </motion.button>
-                        </div>
-                        <p className="text-sm text-white/70 mt-4">
-                            No spam, unsubscribe anytime. Read our Privacy Policy.
-                        </p>
-                    </motion.div>
+                                <Gift className="w-4 h-4 text-teal-400" />
+                                <span className="text-teal-300 font-semibold text-sm">Exclusive Offer</span>
+                            </motion.div>
+
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
+                                Get{' '}
+                                <span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+                                    15% Off
+                                </span>
+                                <br />
+                                Your First Order
+                            </h2>
+
+                            <p className="text-slate-300 text-base md:text-lg mb-8 leading-relaxed max-w-md">
+                                Join our community and unlock exclusive deals, early access to new arrivals, and insider-only discounts.
+                            </p>
+
+                            {/* Benefits */}
+                            <div className="grid grid-cols-2 gap-4 mb-8">
+                                {[
+                                    { icon: Zap, text: 'Instant discount code' },
+                                    { icon: Sparkles, text: 'Early access deals' },
+                                    { icon: Gift, text: 'Birthday rewards' },
+                                    { icon: Star, text: 'VIP member perks' },
+                                ].map((item, index) => (
+                                    <motion.div
+                                        key={index}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: index * 0.1 }}
+                                        className="flex items-center gap-2"
+                                    >
+                                        <div className="w-8 h-8 bg-teal-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <item.icon className="w-4 h-4 text-teal-400" />
+                                        </div>
+                                        <span className="text-slate-300 text-sm">{item.text}</span>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </motion.div>
+
+                        {/* Right - Subscription Card */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                        >
+                            <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-white/10 shadow-2xl">
+                                {/* Discount Badge */}
+                                <div className="flex justify-center mb-6">
+                                    <motion.div
+                                        animate={{ rotate: [0, 5, -5, 0] }}
+                                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                        className="relative"
+                                    >
+                                        <div className="w-24 h-24 md:w-28 md:h-28 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-500/30 rotate-3">
+                                            <div className="text-center">
+                                                <span className="text-3xl md:text-4xl font-bold text-white">15%</span>
+                                                <span className="block text-white/90 text-xs font-medium">OFF</span>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                </div>
+
+                                <h3 className="text-xl md:text-2xl font-bold text-white text-center mb-2">
+                                    Subscribe & Save
+                                </h3>
+                                <p className="text-slate-400 text-center text-sm mb-6">
+                                    Enter your email to receive your discount code
+                                </p>
+
+                                {/* Email Form */}
+                                <div className="space-y-3">
+                                    <div className="relative">
+                                        <input
+                                            type="email"
+                                            placeholder="Enter your email address"
+                                            className="w-full px-5 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                                        />
+                                    </div>
+                                    <motion.button
+                                        whileHover={{ scale: 1.02, y: -2 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        className="w-full py-4 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-white font-semibold rounded-xl shadow-lg shadow-teal-500/25 transition-all flex items-center justify-center gap-2"
+                                    >
+                                        Get My 15% Off
+                                        <ArrowRight className="w-4 h-4" />
+                                    </motion.button>
+                                </div>
+
+                                {/* Trust Indicators */}
+                                <div className="mt-6 pt-6 border-t border-white/10">
+                                    <div className="flex items-center justify-center gap-4 text-slate-400 text-xs">
+                                        <div className="flex items-center gap-1">
+                                            <Shield className="w-3.5 h-3.5" />
+                                            <span>No spam</span>
+                                        </div>
+                                        <div className="w-1 h-1 bg-slate-600 rounded-full" />
+                                        <div className="flex items-center gap-1">
+                                            <RotateCcw className="w-3.5 h-3.5" />
+                                            <span>Unsubscribe anytime</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
                 </div>
             </section>
 

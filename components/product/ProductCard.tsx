@@ -227,7 +227,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                         )}
 
                         {/* Action Buttons - Side by Side */}
-                        <div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5">
+                        <div className="absolute top-2.5 right-2.5 z-20 flex flex-col items-center gap-1.5">
                             {/* Quick View Button */}
                             <motion.button
                                 whileTap={{ scale: 0.9 }}
