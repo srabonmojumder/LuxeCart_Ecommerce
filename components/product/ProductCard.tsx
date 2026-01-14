@@ -226,40 +226,35 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                             </div>
                         )}
 
-                        {/* Wishlist Button - Always Visible on Mobile */}
-                        <motion.button
-                            whileTap={{ scale: 0.9 }}
-                            onClick={handleToggleWishlist}
-                            className={`
-                                absolute top-2.5 right-2.5 z-20
-                                w-9 h-9 rounded-full
-                                flex items-center justify-center
-                                shadow-md backdrop-blur-sm
-                                transition-all duration-200
-                                ${inWishlist
-                                    ? 'bg-rose-500 text-white'
-                                    : 'bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 hover:bg-rose-500 hover:text-white'
-                                }
-                            `}
-                        >
-                            <Heart className={`w-4 h-4 ${inWishlist ? 'fill-current' : ''}`} />
-                        </motion.button>
+                        {/* Action Buttons - Side by Side */}
+                        <div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5">
+                            {/* Quick View Button */}
+                            <motion.button
+                                whileTap={{ scale: 0.9 }}
+                                onClick={handleQuickView}
+                                className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 hover:bg-teal-500 hover:text-white flex items-center justify-center shadow-md backdrop-blur-sm transition-all duration-200"
+                            >
+                                <Eye className="w-4 h-4" />
+                            </motion.button>
 
-                        {/* Quick View Button - Desktop */}
-                        <AnimatePresence>
-                            {isHovered && (
-                                <motion.button
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: 10 }}
-                                    transition={{ duration: 0.2 }}
-                                    onClick={handleQuickView}
-                                    className="hidden md:flex absolute bottom-12 right-2.5 z-20 w-9 h-9 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 hover:bg-teal-500 hover:text-white items-center justify-center shadow-md backdrop-blur-sm transition-colors"
-                                >
-                                    <Eye className="w-4 h-4" />
-                                </motion.button>
-                            )}
-                        </AnimatePresence>
+                            {/* Wishlist Button */}
+                            <motion.button
+                                whileTap={{ scale: 0.9 }}
+                                onClick={handleToggleWishlist}
+                                className={`
+                                    w-8 h-8 md:w-9 md:h-9 rounded-full
+                                    flex items-center justify-center
+                                    shadow-md backdrop-blur-sm
+                                    transition-all duration-200
+                                    ${inWishlist
+                                        ? 'bg-rose-500 text-white'
+                                        : 'bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 hover:bg-rose-500 hover:text-white'
+                                    }
+                                `}
+                            >
+                                <Heart className={`w-4 h-4 ${inWishlist ? 'fill-current' : ''}`} />
+                            </motion.button>
+                        </div>
 
                         {/* Add to Cart Button - Desktop Hover */}
                         <AnimatePresence>

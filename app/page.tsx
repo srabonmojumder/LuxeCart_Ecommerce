@@ -77,88 +77,89 @@ export default function Home() {
     return (
         <div className="pt-[104px] md:pt-[112px] pb-24 md:pb-0">
             {/* Hero Section */}
-            <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-slate-50 via-teal-50/30 to-emerald-50/50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800">
-                {/* Animated Background Elements */}
+            <section className="relative min-h-[70vh] md:min-h-[85vh] flex items-center overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+                {/* Modern Animated Background */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    {/* Gradient Mesh */}
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-teal-500/20 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-emerald-500/15 via-transparent to-transparent" />
+
+                    {/* Animated Orbs */}
                     <motion.div
                         animate={{
-                            scale: [1, 1.2, 1],
-                            x: [0, 50, 0],
-                            y: [0, -30, 0],
+                            scale: [1, 1.3, 1],
+                            opacity: [0.3, 0.5, 0.3],
                         }}
-                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                        className="absolute top-1/4 -left-32 w-96 h-96 bg-teal-200/30 dark:bg-teal-500/10 rounded-full blur-3xl"
+                        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                        className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-teal-500/20 rounded-full blur-[100px]"
                     />
                     <motion.div
                         animate={{
                             scale: [1.2, 1, 1.2],
-                            x: [0, -50, 0],
-                            y: [0, 30, 0],
+                            opacity: [0.2, 0.4, 0.2],
                         }}
-                        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                        className="absolute bottom-1/4 -right-32 w-[500px] h-[500px] bg-emerald-200/30 dark:bg-emerald-500/10 rounded-full blur-3xl"
+                        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+                        className="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] bg-emerald-500/15 rounded-full blur-[120px]"
                     />
-                    <motion.div
-                        animate={{ y: [0, -40, 0], opacity: [0.2, 0.4, 0.2] }}
-                        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute top-1/2 left-1/2 w-80 h-80 bg-orange-200/20 dark:bg-orange-500/5 rounded-full blur-3xl"
-                    />
+
+                    {/* Grid Pattern */}
+                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
                 </div>
 
-                <div className="relative section-container py-12 md:py-20">
-                    <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+                <div className="relative section-container py-8 md:py-16">
+                    <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                         {/* Text Content */}
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6 }}
-                            className="text-center lg:text-left"
+                            className="text-center lg:text-left order-2 lg:order-1"
                         >
                             {/* Badge */}
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: 0.2 }}
-                                className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-gradient-to-r from-teal-500/10 to-emerald-500/10 backdrop-blur-sm rounded-full border border-teal-200 dark:border-teal-800"
+                                className="inline-flex items-center gap-2 mb-4 md:mb-6 px-3 md:px-4 py-1.5 md:py-2 bg-gradient-to-r from-teal-500/20 to-emerald-500/20 backdrop-blur-sm rounded-full border border-teal-500/30"
                             >
-                                <Sparkles className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                                <span className="text-teal-700 dark:text-teal-300 font-semibold text-sm">
+                                <Sparkles className="w-3.5 h-3.5 md:w-4 md:h-4 text-teal-400" />
+                                <span className="text-teal-300 font-semibold text-xs md:text-sm">
                                     New Season Collection 2024
                                 </span>
                             </motion.div>
 
                             {/* Headline */}
-                            <h1 className="text-display text-slate-900 dark:text-white mb-6">
+                            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 md:mb-6 leading-tight">
                                 Elevate Your
-                                <span className="block text-gradient bg-gradient-to-r from-teal-600 via-emerald-500 to-teal-600 bg-clip-text text-transparent animate-gradient">
+                                <span className="block bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
                                     Shopping Experience
                                 </span>
                             </h1>
 
                             {/* Subheadline */}
-                            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                            <p className="text-sm sm:text-base md:text-lg text-slate-300 mb-6 md:mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
                                 Discover premium products curated for modern living. Enjoy{' '}
-                                <span className="font-semibold text-teal-600 dark:text-teal-400">free shipping</span> on orders over $50 and exclusive member rewards.
+                                <span className="font-semibold text-teal-400">free shipping</span> on orders over $50 and exclusive member rewards.
                             </p>
 
                             {/* CTAs */}
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10">
-                                <Link href="/products">
+                            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start mb-8 md:mb-10">
+                                <Link href="/products" className="w-full sm:w-auto">
                                     <motion.button
                                         whileHover={{ scale: 1.02, y: -2 }}
                                         whileTap={{ scale: 0.98 }}
-                                        className="btn-primary flex items-center justify-center gap-2 shadow-lg shadow-teal-500/20 w-full sm:w-auto"
+                                        className="w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-white font-semibold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-teal-500/25 transition-all"
                                     >
-                                        <ShoppingBag className="w-5 h-5" />
+                                        <ShoppingBag className="w-4 h-4 md:w-5 md:h-5" />
                                         Shop Now
-                                        <ArrowRight className="w-5 h-5" />
+                                        <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
                                     </motion.button>
                                 </Link>
-                                <Link href="/categories">
+                                <Link href="/categories" className="w-full sm:w-auto">
                                     <motion.button
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
-                                        className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto"
+                                        className="w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 border-2 border-slate-600 hover:border-teal-500 text-white font-semibold rounded-xl flex items-center justify-center gap-2 transition-all hover:bg-white/5"
                                     >
                                         Explore Collections
                                     </motion.button>
@@ -166,7 +167,7 @@ export default function Home() {
                             </div>
 
                             {/* Stats */}
-                            <div className="grid grid-cols-3 gap-4 md:gap-8">
+                            <div className="grid grid-cols-3 gap-3 md:gap-6">
                                 {[
                                     { value: '10K+', label: 'Products' },
                                     { value: '50K+', label: 'Customers' },
@@ -177,15 +178,15 @@ export default function Home() {
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.4 + index * 0.1 }}
-                                        className="text-center lg:text-left"
+                                        className="text-center lg:text-left p-2 md:p-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10"
                                     >
                                         <div className="flex items-center gap-1 justify-center lg:justify-start">
-                                            <h3 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
+                                            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
                                                 {stat.value}
                                             </h3>
-                                            {stat.icon && <stat.icon className="w-5 h-5 text-amber-400 fill-current" />}
+                                            {stat.icon && <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-amber-400 fill-current" />}
                                         </div>
-                                        <p className="text-sm text-slate-500 dark:text-slate-400">{stat.label}</p>
+                                        <p className="text-xs md:text-sm text-slate-400">{stat.label}</p>
                                     </motion.div>
                                 ))}
                             </div>
@@ -193,17 +194,14 @@ export default function Home() {
 
                         {/* Hero Visual */}
                         <motion.div
-                            initial={{ opacity: 0, x: 50 }}
-                            animate={{ opacity: 1, x: 0 }}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.6, delay: 0.2 }}
-                            className="relative hidden lg:block"
+                            className="relative order-1 lg:order-2"
                         >
-                            <motion.div
-                                animate={{ y: [0, -15, 0] }}
-                                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                                className="relative z-10"
-                            >
-                                <div className="relative w-full aspect-[4/5] max-w-lg mx-auto rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/20">
+                            {/* Mobile Hero Image */}
+                            <div className="lg:hidden relative w-full aspect-[4/3] max-w-md mx-auto">
+                                <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl shadow-teal-500/20">
                                     <Image
                                         src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800"
                                         alt="Premium Shopping"
@@ -211,38 +209,62 @@ export default function Home() {
                                         className="object-cover"
                                         priority
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
+                                </div>
+
+                                {/* Mobile Floating Badge */}
+                                <motion.div
+                                    animate={{ y: [0, -8, 0] }}
+                                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                                    className="absolute -bottom-4 right-4 bg-gradient-to-r from-orange-500 to-rose-500 text-white px-4 py-2 rounded-xl shadow-lg flex items-center gap-2"
+                                >
+                                    <span className="text-lg">🎁</span>
+                                    <span className="font-bold">50% OFF</span>
+                                </motion.div>
+                            </div>
+
+                            {/* Desktop Hero Image */}
+                            <motion.div
+                                animate={{ y: [0, -10, 0] }}
+                                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                                className="relative z-10 hidden lg:block"
+                            >
+                                <div className="relative w-full aspect-[4/5] max-w-lg mx-auto rounded-3xl overflow-hidden shadow-2xl shadow-teal-500/20 border border-white/10">
+                                    <Image
+                                        src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800"
+                                        alt="Premium Shopping"
+                                        fill
+                                        className="object-cover"
+                                        priority
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent" />
                                 </div>
                             </motion.div>
 
-                            {/* Floating Cards */}
+                            {/* Desktop Floating Cards */}
                             <motion.div
                                 animate={{ y: [0, -10, 0], x: [0, 5, 0] }}
                                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                className="absolute top-8 -left-8 glass-dark p-4 rounded-2xl shadow-xl z-20"
+                                className="hidden lg:flex absolute top-8 -left-8 bg-white/10 backdrop-blur-xl p-4 rounded-2xl shadow-xl z-20 border border-white/20 items-center gap-3"
                             >
-                                <div className="flex items-center gap-3">
-                                    <div className="w-11 h-11 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center">
-                                        <Award className="w-5 h-5 text-white" />
-                                    </div>
-                                    <div>
-                                        <p className="text-white font-semibold text-sm">Premium Quality</p>
-                                        <p className="text-slate-300 text-xs">Certified Products</p>
-                                    </div>
+                                <div className="w-11 h-11 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center">
+                                    <Award className="w-5 h-5 text-white" />
+                                </div>
+                                <div>
+                                    <p className="text-white font-semibold text-sm">Premium Quality</p>
+                                    <p className="text-slate-300 text-xs">Certified Products</p>
                                 </div>
                             </motion.div>
 
                             <motion.div
                                 animate={{ y: [0, -12, 0], x: [0, -5, 0] }}
                                 transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                                className="absolute bottom-16 -right-4 glass-dark p-4 rounded-2xl shadow-xl z-20"
+                                className="hidden lg:flex absolute bottom-16 -right-4 bg-gradient-to-r from-orange-500 to-rose-500 p-4 rounded-2xl shadow-xl z-20 items-center gap-3"
                             >
-                                <div className="flex items-center gap-3">
-                                    <div className="text-3xl">🎁</div>
-                                    <div>
-                                        <p className="text-white font-bold text-lg">50% OFF</p>
-                                        <p className="text-slate-300 text-xs">Limited Time Offer</p>
-                                    </div>
+                                <div className="text-3xl">🎁</div>
+                                <div>
+                                    <p className="text-white font-bold text-lg">50% OFF</p>
+                                    <p className="text-white/80 text-xs">Limited Time Offer</p>
                                 </div>
                             </motion.div>
                         </motion.div>
