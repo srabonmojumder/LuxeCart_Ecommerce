@@ -45,7 +45,7 @@ export default function Navbar() {
                 {/* Top Banner */}
                 <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 text-white py-2">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center gap-2 text-sm">
-                        <Bell className="w-4 h-4 animate-bounce" />
+                        <Bell className="w-4 h-4" />
                         <span className="font-medium">Flash Sale! Get up to 50% OFF - Limited Time Only!</span>
                     </div>
                 </div>
@@ -55,8 +55,8 @@ export default function Navbar() {
                         {/* Logo */}
                         <Link href="/" className="flex items-center space-x-2 group">
                             <motion.div
-                                whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
-                                whileTap={{ scale: 0.95 }}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
                                 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 bg-clip-text text-transparent"
                             >
                                 LuxeCart
@@ -64,50 +64,50 @@ export default function Navbar() {
                         </Link>
 
                         {/* Desktop Navigation */}
-                        <div className="hidden lg:flex items-center space-x-6">
+                        <div className="hidden lg:flex items-center space-x-8">
                             <Link
                                 href="/"
-                                className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium relative group"
+                                className="text-[15px] text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-semibold py-3 relative group"
                             >
                                 Home
-                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300" />
+                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-200" />
                             </Link>
                             <Link
                                 href="/products"
-                                className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium relative group"
+                                className="text-[15px] text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-semibold py-3 relative group"
                             >
                                 Products
-                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300" />
+                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-200" />
                             </Link>
                             <Link
                                 href="/categories"
-                                className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium relative group"
+                                className="text-[15px] text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-semibold py-3 relative group"
                             >
                                 Categories
-                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300" />
+                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-200" />
                             </Link>
                             <Link
                                 href="/compare"
-                                className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium relative group"
+                                className="text-[15px] text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-semibold py-3 relative group"
                             >
                                 Compare
-                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300" />
+                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-200" />
                             </Link>
                             <Link
                                 href="/about"
-                                className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium relative group"
+                                className="text-[15px] text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-semibold py-3 relative group"
                             >
                                 About
-                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-300" />
+                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-600 group-hover:w-full transition-all duration-200" />
                             </Link>
                         </div>
 
                         {/* Icons */}
-                        <div className="flex items-center space-x-3">
+                        <div className="flex items-center space-x-4">
                             {/* Search */}
                             <motion.button
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={() => setShowSearch(true)}
                                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
                             >
@@ -116,13 +116,13 @@ export default function Navbar() {
 
                             {/* Compare */}
                             <Link href="/compare" className="relative group hidden md:block">
-                                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                                    <GitCompare className="w-6 h-6 text-gray-700 dark:text-gray-300 group-hover:text-blue-500 transition-colors" />
+                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                    <GitCompare className="w-5 h-5 text-gray-700 dark:text-gray-300 group-hover:text-blue-500 transition-colors" />
                                     {mounted && compareProducts.length > 0 && (
                                         <motion.span
                                             initial={{ scale: 0 }}
                                             animate={{ scale: 1 }}
-                                            className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold"
+                                            className="absolute -top-1.5 -right-1.5 bg-blue-500 text-white text-[11px] rounded-full w-[18px] h-[18px] flex items-center justify-center font-semibold"
                                         >
                                             {compareProducts.length}
                                         </motion.span>
@@ -132,13 +132,13 @@ export default function Navbar() {
 
                             {/* Wishlist */}
                             <Link href="/wishlist" className="relative group">
-                                <motion.div whileHover={{ scale: 1.1, rotate: [0, -10, 10, 0] }} whileTap={{ scale: 0.9 }}>
-                                    <Heart className="w-6 h-6 text-gray-700 dark:text-gray-300 group-hover:text-red-500 group-hover:fill-red-500 transition-all" />
+                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                    <Heart className="w-5 h-5 text-gray-700 dark:text-gray-300 group-hover:text-red-500 group-hover:fill-red-500 transition-all" />
                                     {mounted && wishlist.length > 0 && (
                                         <motion.span
                                             initial={{ scale: 0 }}
                                             animate={{ scale: 1 }}
-                                            className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold"
+                                            className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[11px] rounded-full w-[18px] h-[18px] flex items-center justify-center font-semibold"
                                         >
                                             {wishlist.length}
                                         </motion.span>
@@ -149,17 +149,15 @@ export default function Navbar() {
                             {/* Cart */}
                             <Link href="/cart" className="relative group">
                                 <motion.div
-                                    whileHover={{ scale: 1.1 }}
-                                    whileTap={{ scale: 0.9 }}
-                                    animate={mounted && totalItems > 0 ? { y: [0, -5, 0] } : {}}
-                                    transition={{ duration: 0.5 }}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
                                 >
-                                    <ShoppingCart className="w-6 h-6 text-gray-700 dark:text-gray-300 group-hover:text-purple-600 transition-colors" />
+                                    <ShoppingCart className="w-5 h-5 text-gray-700 dark:text-gray-300 group-hover:text-purple-600 transition-colors" />
                                     {mounted && totalItems > 0 && (
                                         <motion.span
                                             initial={{ scale: 0 }}
                                             animate={{ scale: 1 }}
-                                            className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg"
+                                            className="absolute -top-1.5 -right-1.5 bg-purple-600 text-white text-[11px] rounded-full w-[18px] h-[18px] flex items-center justify-center font-semibold"
                                         >
                                             {totalItems}
                                         </motion.span>
@@ -169,8 +167,8 @@ export default function Navbar() {
 
                             {/* Account */}
                             <Link href="/account" className="hidden md:block">
-                                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                                    <User className="w-6 h-6 text-gray-700 dark:text-gray-300 hover:text-purple-600 transition-colors" />
+                                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                    <User className="w-5 h-5 text-gray-700 dark:text-gray-300 hover:text-purple-600 transition-colors" />
                                 </motion.div>
                             </Link>
 

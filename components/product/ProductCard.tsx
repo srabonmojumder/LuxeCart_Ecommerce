@@ -162,7 +162,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                 rotateX: variant === 'featured' ? springRotateX : 0,
                 rotateY: variant === 'featured' ? springRotateY : 0,
             }}
-            whileHover={{ y: -8, scale: 1.02 }}
+            whileHover={{ y: -4, scale: 1.01 }}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={handleMouseLeave}
             onMouseMove={handleMouseMove}
@@ -171,15 +171,14 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
             <Link href={`/products/${product.id}`} className="group block">
                 <div className={`
                     relative overflow-hidden h-full flex flex-col
-                    bg-white dark:bg-gray-800/50 
+                    bg-white dark:bg-gray-800/50
                     rounded-2xl
                     border border-gray-100 dark:border-gray-700/50
                     hover:border-purple-400/50 dark:hover:border-purple-500/50
                     shadow-lg hover:shadow-2xl hover:shadow-purple-500/10
                     backdrop-blur-sm
-                    backdrop-blur-sm
-                    transition-all duration-500
-                    ${variant === 'featured' ? 'p-2' : 'p-2 md:p-3'}
+                    transition-all duration-300
+                    ${variant === 'featured' ? 'p-3 md:p-5' : 'p-3 md:p-5'}
                 `}>
                     {/* Gradient overlay on hover */}
                     <motion.div
@@ -232,52 +231,39 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                             style={{ width: '50%' }}
                         />
 
-                        {/* Badges Container - Simplified for Mobile */}
-                        <div className="absolute top-3 left-3 z-20 flex flex-col gap-2">
-                            {product.discount && (
+                        {/* Single Primary Badge - Priority: Discount > New > Hot */}
+                        <div className="absolute top-3 left-3 z-20">
+                            {product.discount ? (
                                 <motion.div
                                     initial={{ scale: 0, rotate: -180 }}
                                     animate={{ scale: 1, rotate: 0 }}
                                     transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-                                    className="bg-red-500/90 text-white px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg md:rounded-full text-xs md:text-sm font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-md"
+                                    className="bg-red-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-md flex items-center gap-1.5"
                                 >
-                                    <Zap className="w-3.5 h-3.5 fill-white" />
+                                    <Zap className="w-3 h-3 fill-white" />
                                     -{product.discount}%
                                 </motion.div>
-                            )}
-                            {isNew && (
+                            ) : isNew ? (
                                 <motion.div
-                                    initial={{ scale: 0, x: -20 }}
-                                    animate={{ scale: 1, x: 0 }}
-                                    transition={{ delay: 0.1, type: 'spring' }}
-                                    className="hidden md:flex bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg items-center gap-1"
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+                                    className="bg-blue-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-md flex items-center gap-1.5"
                                 >
                                     <Sparkles className="w-3 h-3" />
                                     NEW
                                 </motion.div>
-                            )}
-                            {isHot && (
+                            ) : isHot ? (
                                 <motion.div
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
-                                    transition={{ delay: 0.15, type: 'spring' }}
-                                    className="hidden md:flex bg-gradient-to-r from-orange-500 to-yellow-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg items-center gap-1"
+                                    transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+                                    className="bg-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-md flex items-center gap-1.5"
                                 >
                                     <TrendingUp className="w-3 h-3" />
                                     HOT
                                 </motion.div>
-                            )}
-                            {isBestSeller && (
-                                <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ delay: 0.2, type: 'spring' }}
-                                    className="hidden md:flex bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg items-center gap-1"
-                                >
-                                    <Package className="w-3 h-3" />
-                                    BESTSELLER
-                                </motion.div>
-                            )}
+                            ) : null}
                         </div>
 
                         {/* Stock Badge */}
@@ -311,43 +297,27 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                                     className="hidden md:flex absolute top-3 right-3 flex-col gap-2 z-20"
                                 >
                                     <motion.button
-                                        whileHover={{ scale: 1.15, rotate: 5 }}
-                                        whileTap={{ scale: 0.9 }}
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.95 }}
                                         onClick={handleToggleWishlist}
                                         className={`
-                                            p-2.5 rounded-full backdrop-blur-md transition-all shadow-lg 
+                                            p-2.5 rounded-full backdrop-blur-md transition-all shadow-md
                                             ${inWishlist
                                                 ? 'bg-red-500 text-white'
                                                 : 'bg-white/95 dark:bg-gray-800/95 text-gray-700 dark:text-gray-200 hover:bg-red-500 hover:text-white'
                                             }
                                         `}
                                     >
-                                        <Heart className={`w-4 h-4 transition-transform ${inWishlist ? 'fill-current scale-110' : ''}`} />
+                                        <Heart className={`w-4 h-4 transition-transform ${inWishlist ? 'fill-current' : ''}`} />
                                     </motion.button>
 
                                     <motion.button
-                                        whileHover={{ scale: 1.15, rotate: -5 }}
-                                        whileTap={{ scale: 0.9 }}
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.95 }}
                                         onClick={handleQuickView}
-                                        className="p-2.5 rounded-full bg-white/95 dark:bg-gray-800/95 text-gray-700 dark:text-gray-200 hover:bg-purple-600 hover:text-white backdrop-blur-md transition-all shadow-lg"
+                                        className="p-2.5 rounded-full bg-white/95 dark:bg-gray-800/95 text-gray-700 dark:text-gray-200 hover:bg-purple-600 hover:text-white backdrop-blur-md transition-all shadow-md"
                                     >
                                         <Eye className="w-4 h-4" />
-                                    </motion.button>
-
-                                    <motion.button
-                                        whileHover={{ scale: 1.15, rotate: 5 }}
-                                        whileTap={{ scale: 0.9 }}
-                                        onClick={handleAddToCompare}
-                                        disabled={inCompare}
-                                        className={`
-                                            p-2.5 rounded-full backdrop-blur-md transition-all shadow-lg 
-                                            ${inCompare
-                                                ? 'bg-blue-500 text-white'
-                                                : 'bg-white/95 dark:bg-gray-800/95 text-gray-700 dark:text-gray-200 hover:bg-blue-600 hover:text-white'
-                                            }
-                                        `}
-                                    >
-                                        <GitCompare className="w-4 h-4" />
                                     </motion.button>
                                 </motion.div>
                             )}
@@ -412,27 +382,28 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                                 </motion.button>
                             )}
                         </AnimatePresence>
-                        {/* Mobile Floating Add to Cart (On Image) - Larger & Cleaner */}
+                        {/* Mobile Floating Add to Cart (On Image) */}
                         {product.inStock && (
                             <motion.button
-                                whileTap={{ scale: 0.9 }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={handleAddToCart}
                                 disabled={isAddingToCart}
                                 className={`
                                     md:hidden absolute bottom-3 right-3 z-30
-                                    w-11 h-11 rounded-full
-                                    bg-white dark:bg-gray-800 
+                                    w-12 h-12 rounded-full
+                                    bg-white dark:bg-gray-800
                                     flex items-center justify-center
-                                    shadow-[0_4px_12px_rgba(0,0,0,0.15)] 
+                                    shadow-md
                                     border border-gray-100 dark:border-gray-700
                                     text-purple-600 dark:text-purple-400
+                                    transition-all duration-200
                                     ${isAddingToCart ? 'opacity-80' : ''}
                                 `}
                             >
                                 {isAddingToCart ? (
                                     <div className="w-5 h-5 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
                                 ) : showAddedAnimation ? (
-                                    <Check className="w-6 h-6 text-green-500" />
+                                    <Check className="w-5 h-5 text-green-500" />
                                 ) : (
                                     <ShoppingCart className="w-5 h-5 fill-current" />
                                 )}
@@ -441,103 +412,70 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                     </div>
 
                     {/* Product Info */}
-                    <div className="flex-1 flex flex-col mt-3 px-1 relative z-10">
+                    <div className="flex-1 flex flex-col mt-4 px-1 relative z-10">
                         {/* Category */}
                         <motion.p
-                            className="text-sm text-purple-600 dark:text-purple-400 mb-1 font-medium tracking-wide uppercase"
+                            className="text-[11px] text-purple-600 dark:text-purple-400 mb-2 font-semibold tracking-[0.09375rem] uppercase"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                         >
                             {product.category}
                         </motion.p>
 
-                        {/* Product Name - Larger on Mobile */}
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-1.5 md:mb-2 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300 leading-tight text-sm md:text-base">
+                        {/* Product Name */}
+                        <h3 className="font-semibold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-200 leading-[1.3] text-base md:text-lg">
                             {product.name}
                         </h3>
 
-                        {/* Rating with micro-animation */}
-                        <div className="flex items-center gap-2 mb-3">
-                            <div className="flex items-center">
+                        {/* Rating */}
+                        <div className="flex items-center gap-2 mb-4">
+                            <div className="flex items-center gap-1">
                                 {[...Array(5)].map((_, i) => (
-                                    <motion.div
+                                    <Star
                                         key={i}
-                                        initial={{ scale: 0, rotate: -180 }}
-                                        animate={{ scale: 1, rotate: 0 }}
-                                        transition={{ delay: i * 0.05 }}
-                                    >
-                                        <Star
-                                            className={`w-3.5 h-3.5 ${i < Math.floor(product.rating)
-                                                ? 'text-yellow-400 fill-current'
-                                                : 'text-gray-300 dark:text-gray-600'
-                                                }`}
-                                        />
-                                    </motion.div>
+                                        className={`w-3 h-3 ${i < Math.floor(product.rating)
+                                            ? 'text-yellow-400 fill-current'
+                                            : 'text-gray-300 dark:text-gray-600'
+                                            }`}
+                                    />
                                 ))}
                             </div>
-                            <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">
+                            <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                                 ({product.reviews})
                             </span>
                         </div>
 
-                        {/* Price with animation */}
+                        {/* Price */}
                         <div className="flex items-center justify-between mt-auto gap-2">
-                            <div className="flex flex-col gap-0.5">
+                            <div className="flex flex-col gap-1">
                                 {product.discount ? (
                                     <>
                                         <div className="flex items-baseline gap-2">
-                                            <motion.span
-                                                initial={{ scale: 0.8, opacity: 0 }}
-                                                animate={{ scale: 1, opacity: 1 }}
-                                                className="text-lg md:text-2xl font-bold text-purple-600 dark:text-purple-400"
-                                            >
+                                            <span className="text-2xl font-bold text-purple-600 dark:text-purple-400">
                                                 ${discountedPrice.toFixed(2)}
-                                            </motion.span>
-                                            <span className="text-xs text-gray-400 line-through decoration-2">
+                                            </span>
+                                            <span className="text-sm text-gray-400 dark:text-gray-500 line-through">
                                                 ${product.price.toFixed(2)}
                                             </span>
                                         </div>
-                                        {/* Mobile Save Badge - Compact */}
-                                        <motion.span
-                                            initial={{ scale: 0 }}
-                                            animate={{ scale: 1 }}
-                                            className="hidden md:inline-flex text-[10px] font-bold text-green-600 bg-green-100 dark:bg-green-900/40 px-1.5 py-0.5 rounded md:rounded-full w-fit"
-                                        >
+                                        <span className="text-xs font-semibold text-green-600 dark:text-green-500">
                                             Save ${(product.price - discountedPrice).toFixed(2)}
-                                        </motion.span>
+                                        </span>
                                     </>
                                 ) : (
-                                    <span className="text-lg md:text-2xl font-bold text-gray-900 dark:text-white">
+                                    <span className="text-2xl font-bold text-gray-900 dark:text-white">
                                         ${product.price.toFixed(2)}
                                     </span>
                                 )}
                             </div>
                         </div>
 
-                        {/* Stock Progress Bar - Desktop Only */}
-                        {product.inStock && (
-                            <div className="hidden md:block mt-2 md:mt-4">
-                                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1.5">
-                                    <span className="flex items-center gap-1">
-                                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                                        In Stock
-                                    </span>
-                                    <span className="font-medium">{stockLeft} left</span>
-                                </div>
-                                <div className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        whileInView={{ width: `${stockPercentage}%` }}
-                                        viewport={{ once: true }}
-                                        transition={{ duration: 1, delay: 0.2, ease: 'easeOut' }}
-                                        className={`h-full rounded-full ${stockPercentage > 70
-                                            ? 'bg-gradient-to-r from-green-500 to-emerald-500'
-                                            : stockPercentage > 30
-                                                ? 'bg-gradient-to-r from-yellow-500 to-orange-500'
-                                                : 'bg-gradient-to-r from-red-500 to-pink-500'
-                                            }`}
-                                    />
-                                </div>
+                        {/* Simple Stock Indicator */}
+                        {product.inStock && stockLeft < 20 && (
+                            <div className="mt-3">
+                                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                    Only {stockLeft} left in stock
+                                </span>
                             </div>
                         )}
                     </div>

@@ -37,24 +37,47 @@ body {
 }
 
 @layer components {
+  /* Enhanced Button Hierarchy */
   .btn-primary {
-    @apply bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl;
+    @apply bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-102 shadow-lg hover:shadow-xl;
   }
 
   .btn-secondary {
-    @apply bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl;
+    @apply border-2 border-purple-600 text-purple-600 dark:text-purple-400 dark:border-purple-500 hover:bg-purple-600 hover:text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200;
   }
 
-  .btn-outline {
-    @apply border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300;
+  .btn-tertiary {
+    @apply text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-semibold py-3 px-6 rounded-lg transition-colors duration-200 hover:underline;
   }
 
+  .btn-ghost {
+    @apply text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium py-3 px-6 rounded-lg transition-all duration-200;
+  }
+
+  /* Enhanced Card Variants */
   .card {
     @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6;
   }
 
+  .card-minimal {
+    @apply bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 transition-all duration-200;
+  }
+
+  .card-elevated {
+    @apply bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-xl p-6 transition-all duration-200;
+  }
+
+  .card-interactive {
+    @apply bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-purple-400 dark:hover:border-purple-500 shadow-md hover:shadow-xl transition-all duration-200 p-6;
+  }
+
+  /* Enhanced Input Field */
   .input-field {
-    @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-white;
+    @apply w-full px-4 py-3 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-white;
+  }
+
+  .input-field-lg {
+    @apply w-full h-12 px-4 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-white;
   }
 
   /* Mobile Optimizations */
@@ -86,6 +109,84 @@ body {
 
   .no-tap-highlight {
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Premium Typography Scale */
+  .text-display {
+    @apply text-[3.5rem] leading-[4rem] font-extrabold;
+  }
+
+  .text-h1 {
+    @apply text-5xl md:text-[3rem] leading-[3.5rem] font-bold;
+  }
+
+  .text-h2 {
+    @apply text-4xl md:text-[2.25rem] leading-[2.75rem] font-bold;
+  }
+
+  .text-h3 {
+    @apply text-2xl md:text-[1.75rem] leading-[2.25rem] font-semibold;
+  }
+
+  .text-h4 {
+    @apply text-xl md:text-[1.25rem] leading-[1.75rem] font-semibold;
+  }
+
+  .text-body-lg {
+    @apply text-lg leading-7 font-normal;
+  }
+
+  .text-body {
+    @apply text-base leading-6 font-normal;
+  }
+
+  .text-body-sm {
+    @apply text-sm leading-5 font-normal;
+  }
+
+  .text-caption {
+    @apply text-xs leading-4 font-normal;
+  }
+
+  /* Spacing Utilities (8px base) */
+  .space-3xs {
+    @apply gap-0.5;
+  }
+
+  .space-2xs {
+    @apply gap-1;
+  }
+
+  .space-xs {
+    @apply gap-2;
+  }
+
+  .space-sm {
+    @apply gap-3;
+  }
+
+  .space-md {
+    @apply gap-4;
+  }
+
+  .space-lg {
+    @apply gap-6;
+  }
+
+  .space-xl {
+    @apply gap-8;
+  }
+
+  .space-2xl {
+    @apply gap-12;
+  }
+
+  .space-3xl {
+    @apply gap-16;
+  }
+
+  .space-4xl {
+    @apply gap-24;
   }
 }
 
