@@ -2,7 +2,8 @@
 
 import { motion } from 'framer-motion';
 import Countdown from 'react-countdown';
-import { Zap, Flame, TrendingUp, Sparkles } from 'lucide-react';
+import { Zap, Clock, ArrowRight, Flame } from 'lucide-react';
+import Link from 'next/link';
 import ProductCard from '@/components/product/ProductCard';
 import { Product } from '@/store/useStore';
 
@@ -13,192 +14,137 @@ interface FlashSaleSectionProps {
 }
 
 // Custom renderer for the countdown
-const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
+const renderer = ({ days, hours, minutes, seconds, completed }: {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+    completed: boolean;
+}) => {
     if (completed) {
         return (
-            <div className="text-white text-2xl font-bold">
-                Flash Sale Has Ended!
+            <div className="text-slate-600 dark:text-slate-400 text-lg font-semibold">
+                Sale has ended. Check back for new deals!
             </div>
         );
     }
 
     const TimeBlock = ({ value, label }: { value: number; label: string }) => (
-        <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="relative group"
-        >
-            {/* Glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity" />
-
-            {/* Time box */}
-            <div className="relative bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg rounded-2xl p-4 md:p-6 min-w-[80px] md:min-w-[100px] shadow-2xl border-2 border-white/20">
-                <motion.div
-                    key={value}
-                    initial={{ y: -20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                    className="text-4xl md:text-5xl font-black bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 bg-clip-text text-transparent"
-                >
+        <div className="flex flex-col items-center">
+            <motion.div
+                key={value}
+                initial={{ y: -5, opacity: 0.5 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.2 }}
+                className="bg-white dark:bg-slate-800 rounded-xl px-3 py-2 md:px-5 md:py-3 shadow-md border border-slate-100 dark:border-slate-700 min-w-[52px] md:min-w-[72px]"
+            >
+                <span className="text-2xl md:text-4xl font-bold text-slate-900 dark:text-white tabular-nums">
                     {value.toString().padStart(2, '0')}
-                </motion.div>
-                <div className="text-xs md:text-sm font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mt-1">
-                    {label}
-                </div>
-            </div>
-        </motion.div>
+                </span>
+            </motion.div>
+            <span className="text-[10px] md:text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1.5 uppercase tracking-wider">
+                {label}
+            </span>
+        </div>
     );
 
     return (
-        <div className="flex items-center justify-center gap-3 md:gap-4 flex-wrap">
-            <TimeBlock value={days} label="Days" />
-            <span className="text-white text-3xl font-bold animate-pulse">:</span>
+        <div className="flex items-start justify-center gap-2 md:gap-3">
+            {days > 0 && (
+                <>
+                    <TimeBlock value={days} label="Days" />
+                    <span className="text-2xl md:text-3xl font-bold text-orange-500 mt-2 md:mt-3">:</span>
+                </>
+            )}
             <TimeBlock value={hours} label="Hours" />
-            <span className="text-white text-3xl font-bold animate-pulse">:</span>
-            <TimeBlock value={minutes} label="Minutes" />
-            <span className="text-white text-3xl font-bold animate-pulse">:</span>
-            <TimeBlock value={seconds} label="Seconds" />
+            <span className="text-2xl md:text-3xl font-bold text-orange-500 mt-2 md:mt-3">:</span>
+            <TimeBlock value={minutes} label="Mins" />
+            <span className="text-2xl md:text-3xl font-bold text-orange-500 mt-2 md:mt-3">:</span>
+            <TimeBlock value={seconds} label="Secs" />
         </div>
     );
 };
 
 export default function FlashSaleSection({ products, endDate, onQuickView }: FlashSaleSectionProps) {
     return (
-        <section className="relative py-20 overflow-hidden">
-            {/* Dynamic gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-600 via-red-600 to-pink-600">
-                {/* Animated gradient overlay */}
-                <motion.div
-                    className="absolute inset-0"
-                    animate={{
-                        background: [
-                            'linear-gradient(45deg, rgba(251, 146, 60, 0.3) 0%, rgba(239, 68, 68, 0.3) 50%, rgba(236, 72, 153, 0.3) 100%)',
-                            'linear-gradient(135deg, rgba(236, 72, 153, 0.3) 0%, rgba(239, 68, 68, 0.3) 50%, rgba(251, 146, 60, 0.3) 100%)',
-                            'linear-gradient(225deg, rgba(239, 68, 68, 0.3) 0%, rgba(251, 146, 60, 0.3) 50%, rgba(236, 72, 153, 0.3) 100%)',
-                            'linear-gradient(315deg, rgba(251, 146, 60, 0.3) 0%, rgba(236, 72, 153, 0.3) 50%, rgba(239, 68, 68, 0.3) 100%)',
-                        ],
-                    }}
-                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                />
+        <section className="py-12 md:py-20 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 dark:from-slate-900 dark:via-slate-900 dark:to-orange-950/30 relative overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-50 dark:opacity-20">
+                <div className="absolute inset-0" style={{
+                    backgroundImage: `radial-gradient(circle at 1px 1px, rgba(251, 146, 60, 0.15) 1px, transparent 0)`,
+                    backgroundSize: '32px 32px',
+                }} />
             </div>
 
-            {/* Animated geometric patterns */}
-            <div className="absolute inset-0 opacity-10">
-                <motion.div
-                    animate={{
-                        backgroundPosition: ['0% 0%', '100% 100%'],
-                    }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="w-full h-full"
-                    style={{
-                        backgroundImage: `
-                            repeating-linear-gradient(45deg, transparent, transparent 50px, rgba(255,255,255,.2) 50px, rgba(255,255,255,.2) 100px),
-                            repeating-linear-gradient(-45deg, transparent, transparent 50px, rgba(255,255,255,.1) 50px, rgba(255,255,255,.1) 100px)
-                        `,
-                        backgroundSize: '200% 200%',
-                    }}
-                />
-            </div>
+            {/* Animated Blobs */}
+            <motion.div
+                animate={{
+                    x: [0, 50, 0],
+                    y: [0, -30, 0],
+                }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute top-0 right-0 w-96 h-96 bg-orange-200/30 dark:bg-orange-500/10 rounded-full blur-3xl -translate-y-1/2"
+            />
+            <motion.div
+                animate={{
+                    x: [0, -30, 0],
+                    y: [0, 40, 0],
+                }}
+                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                className="absolute bottom-0 left-0 w-80 h-80 bg-amber-200/30 dark:bg-amber-500/10 rounded-full blur-3xl translate-y-1/2"
+            />
 
-            {/* Floating particles effect */}
-            {[...Array(15)].map((_, i) => (
-                <motion.div
-                    key={i}
-                    className="absolute w-2 h-2 bg-white rounded-full"
-                    initial={{
-                        x: Math.random() * 100 + '%',
-                        y: Math.random() * 100 + '%',
-                        opacity: Math.random() * 0.5 + 0.2,
-                    }}
-                    animate={{
-                        y: ['-10%', '110%'],
-                        opacity: [0, 1, 0],
-                    }}
-                    transition={{
-                        duration: Math.random() * 3 + 3,
-                        repeat: Infinity,
-                        delay: Math.random() * 2,
-                        ease: "linear",
-                    }}
-                />
-            ))}
-
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="section-container relative z-10">
                 {/* Header */}
-                <div className="text-center mb-12">
+                <div className="text-center mb-10 md:mb-14">
                     <motion.div
-                        initial={{ opacity: 0, y: -20 }}
+                        initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="inline-flex items-center gap-3 mb-6"
+                        className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-2 rounded-full text-sm font-bold mb-4 shadow-lg shadow-orange-500/25"
                     >
-                        {/* Animated icons */}
-                        <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                        >
-                            <Sparkles className="w-10 h-10 text-yellow-300 fill-yellow-300" />
-                        </motion.div>
-
-                        <h2 className="text-5xl md:text-7xl font-black text-white drop-shadow-2xl tracking-tight">
-                            <span className="inline-flex items-center gap-3">
-                                <Flame className="w-12 h-12 md:w-16 md:h-16 text-orange-300 fill-orange-300 animate-pulse" />
-                                FLASH SALE
-                                <Zap className="w-12 h-12 md:w-16 md:h-16 text-yellow-300 fill-yellow-300 animate-bounce" />
-                            </span>
-                        </h2>
-
-                        <motion.div
-                            animate={{ rotate: -360 }}
-                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                        >
-                            <TrendingUp className="w-10 h-10 text-green-300" />
-                        </motion.div>
+                        <Flame className="w-4 h-4" />
+                        Limited Time Offer
+                        <Zap className="w-4 h-4 fill-current" />
                     </motion.div>
+
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                        className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4"
+                    >
+                        Flash Sale
+                    </motion.h2>
 
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: 0.2 }}
-                        className="text-white/90 text-xl md:text-2xl font-bold mb-8 drop-shadow-lg"
+                        transition={{ delay: 0.15 }}
+                        className="text-slate-600 dark:text-slate-300 text-lg mb-8 max-w-xl mx-auto"
                     >
-                        🔥 Unbeatable Deals! Limited Time Only! 🔥
+                        Grab these incredible deals before they're gone. Up to{' '}
+                        <span className="font-bold text-orange-600 dark:text-orange-400">50% OFF</span>{' '}
+                        on selected items!
                     </motion.p>
 
                     {/* Countdown Timer */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        transition={{ delay: 0.3 }}
-                        className="mb-12"
+                        transition={{ delay: 0.2 }}
+                        className="mb-10"
                     >
-                        <div className="inline-block">
-                            <div className="text-white text-sm md:text-lg font-bold mb-4 uppercase tracking-wider">
-                                ⏰ Sale Ends In ⏰
-                            </div>
-                            <Countdown date={endDate} renderer={renderer} />
+                        <div className="flex items-center justify-center gap-2 mb-4">
+                            <Clock className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                                Sale Ends In
+                            </span>
                         </div>
-                    </motion.div>
-
-                    {/* Sale badge */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
-                        className="inline-flex items-center gap-3 bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 px-8 py-4 rounded-full shadow-2xl"
-                    >
-                        <span className="text-2xl md:text-3xl font-black text-white drop-shadow-lg">
-                            UP TO 50% OFF
-                        </span>
-                        <motion.div
-                            animate={{ scale: [1, 1.2, 1] }}
-                            transition={{ duration: 1, repeat: Infinity }}
-                        >
-                            <Zap className="w-6 h-6 md:w-8 md:h-8 text-white fill-white" />
-                        </motion.div>
+                        <Countdown date={endDate} renderer={renderer} />
                     </motion.div>
                 </div>
 
@@ -207,8 +153,8 @@ export default function FlashSaleSection({ products, endDate, onQuickView }: Fla
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: 0.5 }}
-                    className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6"
+                    transition={{ delay: 0.3 }}
+                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
                 >
                     {products.map((product, index) => (
                         <motion.div
@@ -216,33 +162,34 @@ export default function FlashSaleSection({ products, endDate, onQuickView }: Fla
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ delay: 0.6 + index * 0.1 }}
-                            whileHover={{ y: -10 }}
+                            transition={{ delay: 0.4 + index * 0.1 }}
                         >
-                            <div className="relative">
-                                {/* Product spotlight effect */}
-                                <div className="absolute -inset-2 bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 rounded-3xl opacity-0 group-hover:opacity-50 blur-xl transition-opacity" />
-
-                                <ProductCard
-                                    product={product}
-                                    onQuickView={onQuickView}
-                                />
-                            </div>
+                            <ProductCard
+                                product={product}
+                                onQuickView={onQuickView}
+                            />
                         </motion.div>
                     ))}
                 </motion.div>
 
-                {/* Bottom CTA */}
+                {/* View All CTA */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: 0.8 }}
-                    className="text-center mt-12"
+                    transition={{ delay: 0.6 }}
+                    className="text-center mt-10 md:mt-14"
                 >
-                    <p className="text-white text-lg md:text-xl font-semibold">
-                        ⚡ Hurry! Stocks are limited! ⚡
-                    </p>
+                    <Link href="/products?filter=sale">
+                        <motion.button
+                            whileHover={{ scale: 1.02, y: -2 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold py-3.5 px-8 rounded-xl shadow-lg shadow-orange-500/25 transition-all"
+                        >
+                            View All Sale Items
+                            <ArrowRight className="w-5 h-5" />
+                        </motion.button>
+                    </Link>
                 </motion.div>
             </div>
         </section>

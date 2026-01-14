@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Home, ShoppingBag, Heart, User, Search, TrendingUp } from 'lucide-react';
+import { Home, Grid3X3, Heart, ShoppingBag, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useStore } from '@/store/useStore';
@@ -22,113 +22,130 @@ export default function FloatingMobileNav() {
             badge: null,
         },
         {
-            label: 'Trending',
-            icon: TrendingUp,
+            label: 'Shop',
+            icon: Grid3X3,
             href: '/products',
             badge: null,
-        },
-        {
-            label: 'Search',
-            icon: Search,
-            href: '/products',
-            badge: null,
-            isSpecial: true,
         },
         {
             label: 'Wishlist',
             icon: Heart,
             href: '/wishlist',
             badge: wishlistCount || null,
+            badgeColor: 'bg-rose-500',
         },
         {
             label: 'Cart',
             icon: ShoppingBag,
             href: '/cart',
             badge: cartCount || null,
+            badgeColor: 'bg-gradient-to-r from-teal-500 to-emerald-500',
+        },
+        {
+            label: 'Account',
+            icon: User,
+            href: '/account',
+            badge: null,
         },
     ];
 
     return (
         <motion.nav
-            initial={{ y: 100 }}
-            animate={{ y: 0 }}
-            className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800 shadow-2xl"
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.3 }}
+            className="md:hidden fixed bottom-0 left-0 right-0 z-50"
         >
-            <div className="flex items-center justify-around px-2 py-3 pb-safe">
-                {navItems.map((item, index) => {
-                    const Icon = item.icon;
-                    const isActive = pathname === item.href;
-                    const isSpecial = item.isSpecial;
+            {/* Gradient fade effect above nav */}
+            <div className="h-6 bg-gradient-to-t from-white dark:from-slate-900 to-transparent pointer-events-none" />
 
-                    return (
-                        <Link key={item.label} href={item.href} className="relative flex flex-col items-center">
-                            {/* Special Center Button */}
-                            {isSpecial ? (
+            {/* Main Navigation Bar */}
+            <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-700/50 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+                <div className="flex items-center justify-around px-2 pt-2 pb-safe">
+                    {navItems.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = pathname === item.href ||
+                            (item.href === '/products' && pathname.startsWith('/products'));
+
+                        return (
+                            <Link
+                                key={item.label}
+                                href={item.href}
+                                className="relative flex flex-col items-center min-w-[60px] no-tap-highlight touch-manipulation"
+                            >
                                 <motion.div
                                     whileTap={{ scale: 0.9 }}
-                                    className="absolute -top-8 bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-2xl shadow-2xl"
+                                    className={`
+                                        relative flex flex-col items-center gap-1 py-2 px-3 rounded-xl
+                                        transition-colors duration-200
+                                        ${isActive
+                                            ? 'text-teal-600 dark:text-teal-400'
+                                            : 'text-slate-500 dark:text-slate-400'
+                                        }
+                                    `}
                                 >
-                                    <Icon className="w-6 h-6" />
-                                    <motion.div
-                                        animate={{
-                                            scale: [1, 1.2, 1],
-                                            opacity: [0.5, 0, 0.5],
-                                        }}
-                                        transition={{
-                                            duration: 2,
-                                            repeat: Infinity,
-                                            ease: 'easeInOut',
-                                        }}
-                                        className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl -z-10"
-                                    />
-                                </motion.div>
-                            ) : (
-                                <motion.button
-                                    whileTap={{ scale: 0.9 }}
-                                    className={`relative flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${isActive
-                                            ? 'text-purple-600 dark:text-purple-400'
-                                            : 'text-gray-600 dark:text-gray-400'
-                                        }`}
-                                >
+                                    {/* Icon Container */}
                                     <div className="relative">
-                                        <Icon className={`w-5 h-5 ${isActive ? 'scale-110' : ''}`} />
+                                        <Icon
+                                            className={`w-6 h-6 transition-transform duration-200 ${
+                                                isActive ? 'scale-110' : ''
+                                            }`}
+                                            strokeWidth={isActive ? 2.5 : 2}
+                                        />
 
                                         {/* Badge */}
-                                        {item.badge && (
+                                        {item.badge && item.badge > 0 && (
                                             <motion.span
                                                 initial={{ scale: 0 }}
                                                 animate={{ scale: 1 }}
-                                                className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center border border-white dark:border-gray-900"
+                                                className={`
+                                                    absolute -top-1.5 -right-1.5
+                                                    ${item.badgeColor || 'bg-teal-500'}
+                                                    text-white text-[10px] font-bold
+                                                    rounded-full min-w-[18px] h-[18px]
+                                                    flex items-center justify-center px-1
+                                                    border-2 border-white dark:border-slate-900
+                                                    shadow-sm
+                                                `}
                                             >
-                                                {item.badge > 9 ? '9+' : item.badge}
+                                                {item.badge > 99 ? '99+' : item.badge}
                                             </motion.span>
-                                        )}
-
-                                        {/* Active Indicator */}
-                                        {isActive && (
-                                            <motion.div
-                                                layoutId="activeTab"
-                                                className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-purple-600 dark:bg-purple-400 rounded-full"
-                                                transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                                            />
                                         )}
                                     </div>
 
-                                    <span
-                                        className={`text-[10px] font-medium ${isActive ? 'text-purple-600 dark:text-purple-400' : ''
-                                            }`}
-                                    >
+                                    {/* Label */}
+                                    <span className={`
+                                        text-[10px] font-medium
+                                        transition-colors duration-200
+                                        ${isActive
+                                            ? 'text-teal-600 dark:text-teal-400'
+                                            : 'text-slate-500 dark:text-slate-400'
+                                        }
+                                    `}>
                                         {item.label}
                                     </span>
-                                </motion.button>
-                            )}
-                        </Link>
-                    );
-                })}
-            </div>
 
-            {/* Safe area for iPhone */}
-            <div className="h-safe-area-inset-bottom bg-white dark:bg-gray-900" />
+                                    {/* Active Indicator */}
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="mobileNavIndicator"
+                                            className="absolute -bottom-1 w-8 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full"
+                                            transition={{
+                                                type: 'spring',
+                                                stiffness: 500,
+                                                damping: 35,
+                                            }}
+                                        />
+                                    )}
+                                </motion.div>
+                            </Link>
+                        );
+                    })}
+                </div>
+
+                {/* Safe area spacer for iPhone */}
+                <div className="h-safe-area-inset-bottom bg-white dark:bg-slate-900" />
+            </div>
         </motion.nav>
     );
 }
