@@ -132,7 +132,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                         relative overflow-hidden
                         bg-slate-100 dark:bg-slate-700/50
                         rounded-xl
-                        aspect-[3/4] md:aspect-[4/5]
+                        aspect-square md:aspect-[4/5]
                     `}>
                         {/* Skeleton Loader */}
                         <AnimatePresence>
