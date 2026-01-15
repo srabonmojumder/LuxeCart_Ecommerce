@@ -10,7 +10,7 @@ import { products } from '@/data/products';
 import { useStore } from '@/store/useStore';
 import ProductCard from '@/components/product/ProductCard';
 import StickyMobileBar from '@/components/product/StickyMobileBar';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 export default function ProductDetailPage() {
     const params = useParams();

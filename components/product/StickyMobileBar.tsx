@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Heart, Share2, AlertCircle, Check } from 'lucide-react';
 import { Product, useStore } from '@/store/useStore';
 import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
 
 interface StickyMobileBarProps {
@@ -52,10 +52,7 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
         setIsAdding(false);
         setAdded(true);
 
-        toast.success('Added to cart!', {
-            icon: '🛒',
-            position: 'top-center',
-        });
+        toast.success('Added to cart!');
 
         setTimeout(() => setAdded(false), 2000);
     };
@@ -66,7 +63,7 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
             toast.success('Removed from wishlist');
         } else {
             addToWishlist(product);
-            toast.success('Added to wishlist!', { icon: '❤️' });
+            toast.success('Added to wishlist!');
         }
     };
 

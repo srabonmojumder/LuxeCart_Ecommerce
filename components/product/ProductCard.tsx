@@ -8,7 +8,7 @@ import { Product } from '@/store/useStore';
 import { useStore } from '@/store/useStore';
 import { useCompareStore } from '@/store/useCompareStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
 
 interface ProductCardProps {
@@ -72,20 +72,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
         setIsAddingToCart(false);
         setShowAddedAnimation(true);
 
-        toast.success(
-            <div className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-emerald-500" />
-                <span>Added to cart!</span>
-            </div>,
-            {
-                icon: '🛒',
-                style: {
-                    borderRadius: '12px',
-                    background: '#fff',
-                    boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-                },
-            }
-        );
+        toast.success('Added to cart!');
 
         setTimeout(() => setShowAddedAnimation(false), 2000);
     };
@@ -98,7 +85,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
             toast.success('Removed from wishlist');
         } else {
             addToWishlist(product);
-            toast.success('Added to wishlist!', { icon: '❤️' });
+            toast.success('Added to wishlist!');
         }
     };
 

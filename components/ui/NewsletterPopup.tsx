@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { X, Mail, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 export default function NewsletterPopup() {
     const [isOpen, setIsOpen] = useState(false);

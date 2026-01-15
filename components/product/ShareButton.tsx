@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Share2, Facebook, Twitter, Linkedin, Link as LinkIcon, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 interface ShareButtonProps {
     productName: string;

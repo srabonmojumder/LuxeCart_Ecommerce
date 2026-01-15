@@ -5,7 +5,7 @@ import { Heart, ShoppingCart, X } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import ProductCard from '@/components/product/ProductCard';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 export default function WishlistPage() {
     const wishlist = useStore((state) => state.wishlist);

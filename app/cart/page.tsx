@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, ArrowLeft, Truck, Shield, Tag, ChevronRight, Package } from 'lucide-react';
 import { useStore } from '@/store/useStore';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 export default function CartPage() {
     const cart = useStore((state) => state.cart);

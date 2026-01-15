@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from 'sonner';
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FloatingCart from "@/components/cart/FloatingCart";
@@ -77,11 +77,11 @@ export default function RootLayout({
 
                 {/* Toast Notifications */}
                 <Toaster
-                    position="top-center"
-                    gutter={12}
-                    containerStyle={{ top: 120 }}
+                    position="top-right"
+                    offset={120}
+                    duration={3000}
+                    richColors
                     toastOptions={{
-                        duration: 3000,
                         style: {
                             background: '#ffffff',
                             color: '#0f172a',
@@ -89,26 +89,6 @@ export default function RootLayout({
                             borderRadius: '12px',
                             boxShadow: '0 10px 40px rgba(0, 0, 0, 0.12)',
                             fontWeight: 500,
-                        },
-                        success: {
-                            duration: 3000,
-                            iconTheme: {
-                                primary: '#14b8a6',
-                                secondary: '#fff',
-                            },
-                            style: {
-                                border: '1px solid #ccfbf1',
-                            },
-                        },
-                        error: {
-                            duration: 4000,
-                            iconTheme: {
-                                primary: '#ef4444',
-                                secondary: '#fff',
-                            },
-                            style: {
-                                border: '1px solid #fecaca',
-                            },
                         },
                     }}
                 />

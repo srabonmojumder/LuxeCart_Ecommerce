@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { Product } from '@/store/useStore';
 import { useStore } from '@/store/useStore';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 interface QuickViewModalProps {
     product: Product | null;

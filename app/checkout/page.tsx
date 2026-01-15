@@ -6,7 +6,7 @@ import { CreditCard, Lock, ArrowLeft, Check, Mail, Truck, Calendar } from 'lucid
 import { useStore } from '@/store/useStore';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 export default function CheckoutPage() {
     const router = useRouter();
