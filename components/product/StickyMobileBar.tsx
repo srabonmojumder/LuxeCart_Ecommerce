@@ -100,7 +100,7 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 100, opacity: 0 }}
                     transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                    className="md:hidden fixed bottom-[70px] left-0 right-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800 shadow-2xl rounded-t-2xl"
+                    className="md:hidden fixed bottom-[85px] left-0 right-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800 shadow-2xl rounded-t-2xl"
                 >
                     {/* Out of stock banner */}
                     {!product.inStock && (

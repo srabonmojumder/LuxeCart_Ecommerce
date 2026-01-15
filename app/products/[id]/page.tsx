@@ -1,21 +1,11 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Heart, Star, Truck, Shield, RotateCcw, Share2, Minus, Plus, ChevronRight, ChevronLeft } from 'lucide-react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation, Thumbs, FreeMode } from 'swiper/modules';
-import type { Swiper as SwiperType } from 'swiper';
-
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
-import 'swiper/css/thumbs';
-import 'swiper/css/free-mode';
+import { ShoppingCart, Heart, Star, Truck, Shield, RotateCcw, Share2, Minus, Plus } from 'lucide-react';
 import { products } from '@/data/products';
 import { useStore } from '@/store/useStore';
 import ProductCard from '@/components/product/ProductCard';
@@ -27,10 +17,9 @@ export default function ProductDetailPage() {
     const productId = parseInt(params.id as string);
     const product = products.find(p => p.id === productId);
 
-    const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
+    const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('description');
-    const mainSwiperRef = useRef<SwiperType | null>(null);
 
     const addToCart = useStore((state) => state.addToCart);
     const addToWishlist = useStore((state) => state.addToWishlist);
@@ -95,155 +84,175 @@ export default function ProductDetailPage() {
 
                 {/* Product Detail */}
                 <div className="grid lg:grid-cols-2 gap-4 xs:gap-6 md:gap-8 lg:gap-12 mb-8 md:mb-16">
-                    {/* Images - Swiper Gallery */}
-                    <div className="w-full space-y-3 md:space-y-4">
-                        {/* Mobile/Tablet: Swipeable Carousel */}
-                        <div className="lg:hidden relative aspect-[5/4] xs:aspect-square sm:aspect-[4/5] rounded-xl md:rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800">
-                            <Swiper
-                                modules={[Pagination, Navigation]}
-                                pagination={{
-                                    clickable: true,
-                                    dynamicBullets: true,
-                                }}
-                                navigation={{
-                                    nextEl: '.mobile-next',
-                                    prevEl: '.mobile-prev',
-                                }}
-                                spaceBetween={0}
-                                slidesPerView={1}
-                                onSwiper={(swiper) => { mainSwiperRef.current = swiper; }}
-                                className="h-full w-full"
-                            >
-                                {images.map((img, idx) => (
-                                    <SwiperSlide key={idx} className="relative w-full !h-full">
-                                        <Image
-                                            src={img}
-                                            alt={`${product.name} view ${idx + 1}`}
-                                            fill
-                                            className="object-cover"
-                                            priority={idx === 0}
-                                            sizes="(max-width: 768px) 100vw, 50vw"
-                                        />
-                                    </SwiperSlide>
-                                ))}
-                            </Swiper>
-
-                            {/* Mobile Navigation Arrows */}
-                            <button className="mobile-prev absolute left-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg text-slate-700 dark:text-slate-200 active:scale-95 transition-transform">
-                                <ChevronLeft className="w-5 h-5" />
-                            </button>
-                            <button className="mobile-next absolute right-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg text-slate-700 dark:text-slate-200 active:scale-95 transition-transform">
-                                <ChevronRight className="w-5 h-5" />
-                            </button>
-
-                            {/* Discount Badge */}
-                            {product.discount && (
-                                <div className="absolute top-3 left-3 z-10">
-                                    <span className="bg-gradient-to-r from-rose-500 to-orange-500 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-lg">
-                                        -{product.discount}%
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Mobile Thumbnails - Hidden on very small screens */}
-                        <div className="hidden xs:block lg:hidden">
-                            <Swiper
-                                modules={[FreeMode]}
-                                spaceBetween={6}
-                                slidesPerView={5}
-                                freeMode={true}
-                                className="w-full"
-                            >
-                                {images.map((img, idx) => (
-                                    <SwiperSlide key={idx}>
-                                        <button
-                                            onClick={() => mainSwiperRef.current?.slideTo(idx)}
-                                            className="relative aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-teal-500 focus:border-teal-500 transition-all w-full"
+                    {/* Product Images - Unique Gallery Design */}
+                    <div className="w-full">
+                        {/* Desktop Layout: Vertical Thumbnails + Main Image */}
+                        <div className="hidden md:flex gap-4">
+                            {/* Vertical Thumbnails */}
+                            {images.length > 1 && (
+                                <div className="flex flex-col gap-3 w-20 lg:w-24">
+                                    {images.map((img, idx) => (
+                                        <motion.button
+                                            key={idx}
+                                            onClick={() => setSelectedImage(idx)}
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            className={`relative aspect-square rounded-xl overflow-hidden transition-all duration-300 ${
+                                                selectedImage === idx
+                                                    ? 'ring-2 ring-teal-500 shadow-lg shadow-teal-500/30'
+                                                    : 'opacity-60 hover:opacity-100 grayscale hover:grayscale-0'
+                                            }`}
                                         >
                                             <Image
                                                 src={img}
-                                                alt={`Thumbnail ${idx + 1}`}
+                                                alt={`View ${idx + 1}`}
                                                 fill
                                                 className="object-cover"
-                                                sizes="80px"
+                                                sizes="96px"
                                             />
-                                        </button>
-                                    </SwiperSlide>
-                                ))}
-                            </Swiper>
-                        </div>
-
-                        {/* Desktop: Interactive Gallery (Thumbnails + Main) */}
-                        <div className="hidden lg:grid gap-4">
-                            <div className="relative aspect-[4/5] bg-slate-100 dark:bg-slate-800 rounded-2xl overflow-hidden group">
-                                <Swiper
-                                    modules={[Thumbs, Navigation]}
-                                    thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
-                                    spaceBetween={0}
-                                    slidesPerView={1}
-                                    navigation={{
-                                        nextEl: '.desktop-next',
-                                        prevEl: '.desktop-prev',
-                                    }}
-                                    className="h-full w-full"
-                                >
-                                    {images.map((img, idx) => (
-                                        <SwiperSlide key={idx} className="relative w-full h-full">
-                                            <Image
-                                                src={img}
-                                                alt={`${product.name} view ${idx + 1}`}
-                                                fill
-                                                className="object-cover"
-                                                priority={idx === 0}
-                                                sizes="50vw"
-                                            />
-                                        </SwiperSlide>
+                                            {selectedImage === idx && (
+                                                <div className="absolute inset-0 border-2 border-teal-500 rounded-xl" />
+                                            )}
+                                        </motion.button>
                                     ))}
-                                </Swiper>
+                                </div>
+                            )}
 
-                                {/* Desktop Navigation */}
-                                <button className="desktop-prev absolute left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer text-slate-700 dark:text-slate-200 hover:bg-white hover:scale-110 shadow-lg">
-                                    <ChevronLeft className="w-5 h-5" />
-                                </button>
-                                <button className="desktop-next absolute right-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer text-slate-700 dark:text-slate-200 hover:bg-white hover:scale-110 shadow-lg">
-                                    <ChevronRight className="w-5 h-5" />
-                                </button>
+                            {/* Main Image - Desktop */}
+                            <div className="flex-1 relative">
+                                <motion.div
+                                    key={selectedImage}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 group cursor-zoom-in"
+                                >
+                                    <Image
+                                        src={images[selectedImage]}
+                                        alt={`${product.name}`}
+                                        fill
+                                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                        priority
+                                        sizes="50vw"
+                                    />
 
+                                    {/* Overlay gradient */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                                    {/* Image counter */}
+                                    <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm text-white text-sm px-3 py-1.5 rounded-full">
+                                        {selectedImage + 1} / {images.length}
+                                    </div>
+                                </motion.div>
+
+                                {/* Discount Badge - Desktop */}
                                 {product.discount && (
-                                    <div className="absolute top-6 left-6 z-10">
-                                        <span className="bg-gradient-to-r from-rose-500 to-orange-500 text-white px-4 py-2 rounded-full text-lg font-bold shadow-xl">
-                                            -{product.discount}%
-                                        </span>
+                                    <div className="absolute top-4 left-4 z-10">
+                                        <motion.span
+                                            initial={{ rotate: -12 }}
+                                            animate={{ rotate: [-12, -8, -12] }}
+                                            transition={{ repeat: Infinity, duration: 2 }}
+                                            className="inline-block bg-gradient-to-r from-rose-500 via-pink-500 to-orange-500 text-white px-4 py-2 rounded-xl text-lg font-black shadow-xl shadow-rose-500/30"
+                                        >
+                                            -{product.discount}% OFF
+                                        </motion.span>
                                     </div>
                                 )}
                             </div>
+                        </div>
 
-                            {/* Desktop Thumbnails */}
-                            {images.length > 1 && (
-                                <Swiper
-                                    modules={[FreeMode, Thumbs]}
-                                    watchSlidesProgress
-                                    onSwiper={setThumbsSwiper}
-                                    spaceBetween={12}
-                                    slidesPerView={4}
-                                    freeMode={true}
-                                    className="w-full"
+                        {/* Mobile/Tablet Layout */}
+                        <div className="md:hidden">
+                            {/* Main Image Container - Mobile */}
+                            <div className="relative mb-3">
+                                <motion.div
+                                    key={selectedImage}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ duration: 0.25 }}
+                                    className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 shadow-lg"
                                 >
+                                    <Image
+                                        src={images[selectedImage]}
+                                        alt={`${product.name}`}
+                                        fill
+                                        className="object-cover"
+                                        priority
+                                        sizes="100vw"
+                                    />
+
+                                    {/* Top gradient for better badge visibility */}
+                                    <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/30 to-transparent" />
+
+                                    {/* Discount Badge - Mobile */}
+                                    {product.discount && (
+                                        <div className="absolute top-3 left-3 z-10">
+                                            <span className="inline-flex items-center gap-1 bg-rose-500 text-white px-2.5 py-1 rounded-lg text-xs font-bold shadow-lg">
+                                                <span className="text-rose-200">SALE</span>
+                                                <span className="bg-white/20 px-1.5 py-0.5 rounded">-{product.discount}%</span>
+                                            </span>
+                                        </div>
+                                    )}
+
+                                    {/* Image counter pill - Mobile */}
+                                    <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white text-xs font-medium px-2.5 py-1 rounded-full">
+                                        {selectedImage + 1} / {images.length}
+                                    </div>
+
+                                    {/* Bottom gradient */}
+                                    <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/40 to-transparent" />
+
+                                    {/* Product name overlay on image */}
+                                    <div className="absolute bottom-3 left-3 right-3">
+                                        <p className="text-white/80 text-xs font-medium truncate">{product.category}</p>
+                                    </div>
+                                </motion.div>
+                            </div>
+
+                            {/* Horizontal Thumbnails - Mobile */}
+                            {images.length > 1 && (
+                                <div className="flex gap-2 px-1 overflow-x-auto pb-1 scrollbar-hide">
                                     {images.map((img, idx) => (
-                                        <SwiperSlide key={idx} className="cursor-pointer">
-                                            <div className="relative aspect-square rounded-xl overflow-hidden border-2 border-transparent hover:border-teal-500 opacity-70 hover:opacity-100 transition-all">
-                                                <Image
-                                                    src={img}
-                                                    alt={`Thumbnail ${idx + 1}`}
-                                                    fill
-                                                    className="object-cover"
-                                                    sizes="120px"
-                                                />
-                                            </div>
-                                        </SwiperSlide>
+                                        <motion.button
+                                            key={idx}
+                                            onClick={() => setSelectedImage(idx)}
+                                            whileTap={{ scale: 0.95 }}
+                                            className={`relative mt-3 flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden transition-all duration-200 ${
+                                                selectedImage === idx
+                                                    ? 'ring-2 ring-teal-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-900 shadow-md'
+                                                    : 'opacity-50 hover:opacity-80'
+                                            }`}
+                                        >
+                                            <Image
+                                                src={img}
+                                                alt={`View ${idx + 1}`}
+                                                fill
+                                                className="object-cover"
+                                                sizes="64px"
+                                            />
+                                            {selectedImage === idx && (
+                                                <div className="absolute inset-0 bg-teal-500/10" />
+                                            )}
+                                        </motion.button>
                                     ))}
-                                </Swiper>
+                                </div>
+                            )}
+
+                            {/* Progress dots indicator */}
+                            {images.length > 1 && (
+                                <div className="flex justify-center gap-1.5 mt-3">
+                                    {images.map((_, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => setSelectedImage(idx)}
+                                            className={`h-1.5 rounded-full transition-all duration-300 ${
+                                                selectedImage === idx
+                                                    ? 'w-6 bg-teal-500'
+                                                    : 'w-1.5 bg-slate-300 dark:bg-slate-600'
+                                            }`}
+                                        />
+                                    ))}
+                                </div>
                             )}
                         </div>
                     </div>
