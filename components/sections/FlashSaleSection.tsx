@@ -13,6 +13,41 @@ interface FlashSaleSectionProps {
     onQuickView: (product: Product) => void;
 }
 
+// Circular progress ring component
+const CircleProgress = ({ value, max, color }: { value: number; max: number; color: string }) => {
+    const radius = 38;
+    const circumference = 2 * Math.PI * radius;
+    const progress = ((max - value) / max) * circumference;
+
+    return (
+        <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 88 88">
+            {/* Background circle */}
+            <circle
+                cx="44"
+                cy="44"
+                r={radius}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="4"
+                className="text-slate-200 dark:text-slate-700"
+            />
+            {/* Progress circle */}
+            <circle
+                cx="44"
+                cy="44"
+                r={radius}
+                fill="none"
+                stroke={color}
+                strokeWidth="4"
+                strokeLinecap="round"
+                strokeDasharray={circumference}
+                strokeDashoffset={progress}
+                className="transition-all duration-1000 ease-linear"
+            />
+        </svg>
+    );
+};
+
 // Custom renderer for the countdown
 const renderer = ({ days, hours, minutes, seconds, completed }: {
     days: number;
@@ -23,44 +58,36 @@ const renderer = ({ days, hours, minutes, seconds, completed }: {
 }) => {
     if (completed) {
         return (
-            <div className="text-slate-600 dark:text-slate-400 text-lg font-semibold">
+            <div className="text-slate-600 dark:text-slate-400 text-lg font-semibold bg-orange-100 dark:bg-orange-900/30 px-6 py-4 rounded-xl">
                 Sale has ended. Check back for new deals!
             </div>
         );
     }
 
-    const TimeBlock = ({ value, label }: { value: number; label: string }) => (
+    const TimeUnit = ({ value, label, max, color }: { value: number; label: string; max: number; color: string }) => (
         <div className="flex flex-col items-center">
-            <motion.div
-                key={value}
-                initial={{ y: -5, opacity: 0.5 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.2 }}
-                className="bg-white dark:bg-slate-800 rounded-xl px-3 py-2 md:px-5 md:py-3 shadow-md border border-slate-100 dark:border-slate-700 min-w-[52px] md:min-w-[72px]"
-            >
-                <span className="text-2xl md:text-4xl font-bold text-slate-900 dark:text-white tabular-nums">
-                    {value.toString().padStart(2, '0')}
-                </span>
-            </motion.div>
-            <span className="text-[10px] md:text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1.5 uppercase tracking-wider">
+            <div className="relative w-[72px] h-[72px] md:w-[88px] md:h-[88px]">
+                <CircleProgress value={value} max={max} color={color} />
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-white tabular-nums">
+                        {value.toString().padStart(2, '0')}
+                    </span>
+                </div>
+            </div>
+            <span className="text-[10px] md:text-xs font-semibold text-slate-500 dark:text-slate-400 mt-2 uppercase tracking-wider">
                 {label}
             </span>
         </div>
     );
 
     return (
-        <div className="flex items-start justify-center gap-2 md:gap-3">
+        <div className="inline-flex items-center justify-center gap-3 md:gap-5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl px-6 py-5 md:px-8 md:py-6 shadow-xl border border-slate-100 dark:border-slate-700">
             {days > 0 && (
-                <>
-                    <TimeBlock value={days} label="Days" />
-                    <span className="text-2xl md:text-3xl font-bold text-orange-500 mt-2 md:mt-3">:</span>
-                </>
+                <TimeUnit value={days} label="Days" max={30} color="#f97316" />
             )}
-            <TimeBlock value={hours} label="Hours" />
-            <span className="text-2xl md:text-3xl font-bold text-orange-500 mt-2 md:mt-3">:</span>
-            <TimeBlock value={minutes} label="Mins" />
-            <span className="text-2xl md:text-3xl font-bold text-orange-500 mt-2 md:mt-3">:</span>
-            <TimeBlock value={seconds} label="Secs" />
+            <TimeUnit value={hours} label="Hours" max={24} color="#f97316" />
+            <TimeUnit value={minutes} label="Mins" max={60} color="#fb923c" />
+            <TimeUnit value={seconds} label="Secs" max={60} color="#ef4444" />
         </div>
     );
 };
