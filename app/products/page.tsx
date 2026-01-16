@@ -67,31 +67,31 @@ export default function ProductsPage() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-950">
             {/* Hero Header */}
-            <div className="relative pt-24 pb-8 overflow-hidden">
+            <div className="relative pt-20 sm:pt-24 pb-4 sm:pb-8 overflow-hidden">
                 {/* Background Decoration */}
                 <div className="absolute inset-0 overflow-hidden">
-                    <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
-                    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
+                    <div className="absolute -top-40 -right-40 w-60 sm:w-80 h-60 sm:h-80 bg-purple-500/10 rounded-full blur-3xl" />
+                    <div className="absolute -bottom-40 -left-40 w-60 sm:w-80 h-60 sm:h-80 bg-blue-500/10 rounded-full blur-3xl" />
                 </div>
 
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="relative max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
-                        className="text-center mb-8"
+                        className="text-center mb-4 sm:mb-8"
                     >
-                        <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 dark:from-white dark:via-purple-200 dark:to-white bg-clip-text text-transparent mb-4">
+                        <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 dark:from-white dark:via-purple-200 dark:to-white bg-clip-text text-transparent mb-2 sm:mb-4">
                             All Products
                         </h1>
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 0.2 }}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-lg border border-gray-200/50 dark:border-gray-700/50"
+                            className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-lg border border-gray-200/50 dark:border-gray-700/50"
                         >
-                            <Package className="w-4 h-4 text-purple-500" />
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <Package className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-500" />
+                            <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">
                                 {filteredProducts.length} products found
                             </span>
                         </motion.div>
@@ -100,7 +100,7 @@ export default function ProductsPage() {
             </div>
 
             {/* Main Content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+            <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 pb-16 sm:pb-20">
                 {/* Quick Filters */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -118,7 +118,7 @@ export default function ProductsPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="flex flex-wrap items-center justify-between gap-4 mb-8"
+                    className="flex flex-wrap items-center justify-between gap-2 sm:gap-4 mb-4 sm:mb-8"
                 >
                     {/* Filter Toggle Button */}
                     <motion.button
@@ -126,7 +126,7 @@ export default function ProductsPage() {
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setShowFilters(!showFilters)}
                         className={`
-                            flex items-center gap-3 px-5 py-3 rounded-2xl font-semibold
+                            flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl font-semibold text-sm sm:text-base
                             transition-all duration-300 shadow-lg
                             ${showFilters
                                 ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
@@ -135,18 +135,18 @@ export default function ProductsPage() {
                         `}
                     >
                         <div className={`
-                            w-9 h-9 rounded-xl flex items-center justify-center
+                            w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center
                             ${showFilters
                                 ? 'bg-white/20'
                                 : 'bg-gradient-to-br from-purple-500 to-pink-500'
                             }
                         `}>
-                            <Filter className={`w-4 h-4 ${showFilters ? 'text-white' : 'text-white'}`} />
+                            <Filter className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${showFilters ? 'text-white' : 'text-white'}`} />
                         </div>
-                        <span>Filters</span>
+                        <span className="hidden xs:inline">Filters</span>
                         {activeFiltersCount > 0 && (
                             <span className={`
-                                w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center
+                                w-5 h-5 sm:w-6 sm:h-6 rounded-full text-[10px] sm:text-xs font-bold flex items-center justify-center
                                 ${showFilters
                                     ? 'bg-white text-purple-600'
                                     : 'bg-purple-500 text-white'
@@ -162,7 +162,7 @@ export default function ProductsPage() {
                 </motion.div>
 
                 {/* Main Layout */}
-                <div className="flex flex-col lg:flex-row gap-8">
+                <div className="flex flex-col lg:flex-row gap-4 sm:gap-8">
                     {/* Sidebar Filters */}
                     <AnimatePresence>
                         {showFilters && (
@@ -378,7 +378,7 @@ export default function ProductsPage() {
                         ) : filteredProducts.length > 0 ? (
                             <motion.div
                                 layout
-                                className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 mb-4"
+                                className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4 lg:gap-6 mb-4"
                             >
                                 <AnimatePresence mode="popLayout">
                                     {filteredProducts.map((product, index) => (
@@ -399,22 +399,22 @@ export default function ProductsPage() {
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="flex flex-col items-center justify-center py-20 text-center"
+                                className="flex flex-col items-center justify-center py-12 sm:py-20 text-center px-4"
                             >
-                                <div className="w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-6">
-                                    <Package className="w-12 h-12 text-gray-400" />
+                                <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4 sm:mb-6">
+                                    <Package className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400" />
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
                                     No products found
                                 </h3>
-                                <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md">
+                                <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-4 sm:mb-6 max-w-md">
                                     Try adjusting your filters or search criteria to find what you're looking for.
                                 </p>
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={resetFilters}
-                                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl shadow-lg"
+                                    className="px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl shadow-lg text-sm sm:text-base"
                                 >
                                     Clear All Filters
                                 </motion.button>

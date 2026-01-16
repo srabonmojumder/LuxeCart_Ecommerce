@@ -120,19 +120,19 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                 <div className={`
                     relative overflow-hidden h-full flex flex-col
                     bg-white dark:bg-slate-800
-                    rounded-2xl
+                    rounded-xl sm:rounded-2xl
                     border border-slate-100 dark:border-slate-700
                     hover:border-teal-300 dark:hover:border-teal-600
                     shadow-sm hover:shadow-xl hover:shadow-teal-500/10
                     transition-all duration-300
-                    ${variant === 'featured' ? 'p-4' : 'p-3 md:p-4'}
+                    ${variant === 'featured' ? 'p-3 sm:p-4' : 'p-2 sm:p-3 md:p-4'}
                 `}>
                     {/* Image Container */}
                     <div className={`
                         relative overflow-hidden
                         bg-slate-100 dark:bg-slate-700/50
-                        rounded-xl
-                        aspect-square md:aspect-[4/5]
+                        rounded-lg sm:rounded-xl
+                        aspect-[4/5] sm:aspect-square md:aspect-[4/5]
                     `}>
                         {/* Skeleton Loader */}
                         <AnimatePresence>
@@ -172,33 +172,33 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                         />
 
                         {/* Primary Badge */}
-                        <div className="absolute top-2.5 left-2.5 z-20">
+                        <div className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 z-20">
                             {product.discount ? (
                                 <motion.div
                                     initial={{ scale: 0, rotate: -180 }}
                                     animate={{ scale: 1, rotate: 0 }}
                                     transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-                                    className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-2.5 py-1 rounded-lg text-xs font-bold shadow-md flex items-center gap-1"
+                                    className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-bold shadow-md flex items-center gap-0.5 sm:gap-1"
                                 >
-                                    <Zap className="w-3 h-3 fill-white" />
+                                    <Zap className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-white" />
                                     -{product.discount}%
                                 </motion.div>
                             ) : isNew ? (
                                 <motion.div
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
-                                    className="bg-gradient-to-r from-teal-500 to-emerald-500 text-white px-2.5 py-1 rounded-lg text-xs font-bold shadow-md flex items-center gap-1"
+                                    className="bg-gradient-to-r from-teal-500 to-emerald-500 text-white px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-bold shadow-md flex items-center gap-0.5 sm:gap-1"
                                 >
-                                    <Sparkles className="w-3 h-3" />
+                                    <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                     NEW
                                 </motion.div>
                             ) : isHot ? (
                                 <motion.div
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
-                                    className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-2.5 py-1 rounded-lg text-xs font-bold shadow-md flex items-center gap-1"
+                                    className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-bold shadow-md flex items-center gap-0.5 sm:gap-1"
                                 >
-                                    <TrendingUp className="w-3 h-3" />
+                                    <TrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                     HOT
                                 </motion.div>
                             ) : null}
@@ -214,14 +214,14 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                         )}
 
                         {/* Action Buttons - Side by Side */}
-                        <div className="absolute top-2.5 right-2.5 z-20 flex flex-col items-center gap-1.5">
+                        <div className="absolute top-1.5 right-1.5 sm:top-2.5 sm:right-2.5 z-20 flex flex-col items-center gap-1 sm:gap-1.5">
                             {/* Quick View Button */}
                             <motion.button
                                 whileTap={{ scale: 0.9 }}
                                 onClick={handleQuickView}
-                                className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 hover:bg-teal-500 hover:text-white flex items-center justify-center shadow-md backdrop-blur-sm transition-all duration-200"
+                                className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 hover:bg-teal-500 hover:text-white flex items-center justify-center shadow-md backdrop-blur-sm transition-all duration-200"
                             >
-                                <Eye className="w-4 h-4" />
+                                <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             </motion.button>
 
                             {/* Wishlist Button */}
@@ -229,7 +229,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                                 whileTap={{ scale: 0.9 }}
                                 onClick={handleToggleWishlist}
                                 className={`
-                                    w-8 h-8 md:w-9 md:h-9 rounded-full
+                                    w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full
                                     flex items-center justify-center
                                     shadow-md backdrop-blur-sm
                                     transition-all duration-200
@@ -239,7 +239,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                                     }
                                 `}
                             >
-                                <Heart className={`w-4 h-4 ${inWishlist ? 'fill-current' : ''}`} />
+                                <Heart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${inWishlist ? 'fill-current' : ''}`} />
                             </motion.button>
                         </div>
 
@@ -308,8 +308,8 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                                 onClick={handleAddToCart}
                                 disabled={isAddingToCart}
                                 className={`
-                                    md:hidden absolute bottom-2.5 right-2.5 z-20
-                                    w-10 h-10 rounded-full
+                                    md:hidden absolute bottom-1.5 right-1.5 sm:bottom-2.5 sm:right-2.5 z-20
+                                    w-8 h-8 sm:w-10 sm:h-10 rounded-full
                                     flex items-center justify-center
                                     shadow-lg backdrop-blur-sm
                                     transition-all duration-200
@@ -321,35 +321,35 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                                 `}
                             >
                                 {isAddingToCart ? (
-                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                    <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                 ) : showAddedAnimation ? (
-                                    <Check className="w-5 h-5" />
+                                    <Check className="w-4 h-4 sm:w-5 sm:h-5" />
                                 ) : (
-                                    <ShoppingCart className="w-5 h-5" />
+                                    <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
                                 )}
                             </motion.button>
                         )}
                     </div>
 
                     {/* Product Info */}
-                    <div className="flex-1 flex flex-col mt-3 px-0.5">
+                    <div className="flex-1 flex flex-col mt-2 sm:mt-3 px-0.5">
                         {/* Category */}
-                        <p className="text-[11px] text-teal-600 dark:text-teal-400 mb-1 font-semibold tracking-wide uppercase">
+                        <p className="text-[9px] sm:text-[11px] text-teal-600 dark:text-teal-400 mb-0.5 sm:mb-1 font-semibold tracking-wide uppercase">
                             {product.category}
                         </p>
 
                         {/* Product Name */}
-                        <h3 className="font-semibold text-slate-800 dark:text-white mb-2 line-clamp-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors duration-200 leading-snug text-sm md:text-base">
+                        <h3 className="font-semibold text-slate-800 dark:text-white mb-1.5 sm:mb-2 line-clamp-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors duration-200 leading-snug text-xs sm:text-sm md:text-base">
                             {product.name}
                         </h3>
 
                         {/* Rating */}
-                        <div className="flex items-center gap-1.5 mb-3">
+                        <div className="flex items-center gap-1 sm:gap-1.5 mb-2 sm:mb-3">
                             <div className="flex items-center gap-0.5">
                                 {[...Array(5)].map((_, i) => (
                                     <Star
                                         key={i}
-                                        className={`w-3.5 h-3.5 ${
+                                        className={`w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 ${
                                             i < Math.floor(product.rating)
                                                 ? 'text-amber-400 fill-current'
                                                 : 'text-slate-200 dark:text-slate-600'
@@ -357,7 +357,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                                     />
                                 ))}
                             </div>
-                            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                            <span className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
                                 ({product.reviews})
                             </span>
                         </div>
@@ -366,20 +366,20 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                         <div className="mt-auto">
                             {product.discount ? (
                                 <div className="flex flex-col gap-0.5">
-                                    <div className="flex items-baseline gap-2">
-                                        <span className="text-xl font-bold text-teal-600 dark:text-teal-400">
+                                    <div className="flex items-baseline gap-1 sm:gap-2 flex-wrap">
+                                        <span className="text-base sm:text-lg md:text-xl font-bold text-teal-600 dark:text-teal-400">
                                             ${discountedPrice.toFixed(2)}
                                         </span>
-                                        <span className="text-sm text-slate-400 line-through">
+                                        <span className="text-[10px] sm:text-sm text-slate-400 line-through">
                                             ${product.price.toFixed(2)}
                                         </span>
                                     </div>
-                                    <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                                    <span className="text-[10px] sm:text-xs font-medium text-emerald-600 dark:text-emerald-400">
                                         Save ${(product.price - discountedPrice).toFixed(2)}
                                     </span>
                                 </div>
                             ) : (
-                                <span className="text-xl font-bold text-slate-800 dark:text-white">
+                                <span className="text-base sm:text-lg md:text-xl font-bold text-slate-800 dark:text-white">
                                     ${product.price.toFixed(2)}
                                 </span>
                             )}
@@ -387,9 +387,9 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
 
                         {/* Low Stock Indicator */}
                         {product.inStock && stockLeft < 15 && (
-                            <div className="flex items-center gap-1.5 mt-2">
-                                <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
-                                <span className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+                            <div className="flex items-center gap-1 sm:gap-1.5 mt-1.5 sm:mt-2">
+                                <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-amber-500 rounded-full animate-pulse" />
+                                <span className="text-[10px] sm:text-xs text-amber-600 dark:text-amber-400 font-medium">
                                     Only {stockLeft} left
                                 </span>
                             </div>
