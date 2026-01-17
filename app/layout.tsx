@@ -3,35 +3,12 @@ import "./globals.css";
 import { Toaster } from 'sonner';
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import FloatingCart from "@/components/cart/FloatingCart";
-import LiveChat from "@/components/chat/LiveChat";
-import FloatingActionButton from "@/components/ui/FloatingActionButton";
-import FloatingMobileNav from "@/components/ui/FloatingMobileNav";
-import MobileSearchModal from "@/components/search/MobileSearchModal";
-import MobileComparisonSheet from "@/components/ui/MobileComparisonSheet";
 
 export const metadata: Metadata = {
-    title: "LuxeCart - Premium E-Commerce Experience",
-    description: "Discover amazing products with the best shopping experience. Modern, fast, and secure e-commerce platform with premium products curated for you.",
-    keywords: ["e-commerce", "shopping", "online store", "products", "fashion", "electronics", "premium"],
+    title: "LuxeCart - Modern Home Accessories",
+    description: "Premium e-commerce experience for modern home accessories. Minimalist design for a better living.",
+    keywords: ["e-commerce", "home decor", "minimalist", "modern", "premium"],
     authors: [{ name: "LuxeCart" }],
-    creator: "LuxeCart",
-    openGraph: {
-        type: "website",
-        locale: "en_US",
-        title: "LuxeCart - Premium E-Commerce Experience",
-        description: "Discover amazing products with the best shopping experience.",
-        siteName: "LuxeCart",
-    },
-    twitter: {
-        card: "summary_large_image",
-        title: "LuxeCart - Premium E-Commerce Experience",
-        description: "Discover amazing products with the best shopping experience.",
-    },
-    robots: {
-        index: true,
-        follow: true,
-    },
 };
 
 export default function RootLayout({
@@ -40,58 +17,39 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className="scroll-smooth">
+        <html lang="en" className="scroll-smooth" suppressHydrationWarning>
             <head>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+                <link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
                 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" />
-                <meta name="theme-color" content="#14b8a6" />
+                <meta name="theme-color" content="#000000" />
                 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            (function() {
+                                function updateTheme() {
+                                    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                                        document.documentElement.classList.add('dark');
+                                    } else {
+                                        document.documentElement.classList.remove('dark');
+                                    }
+                                }
+                                updateTheme();
+                                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme);
+                            })();
+                        `,
+                    }}
+                />
             </head>
-            <body suppressHydrationWarning className="antialiased bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
-                {/* Main Navigation */}
+            <body suppressHydrationWarning className="antialiased bg-white text-secondary">
                 <Navbar />
-
-                {/* Main Content */}
                 <main className="min-h-screen">
                     {children}
                 </main>
-
-                {/* Footer - Hidden on mobile for bottom nav space */}
-                <div className="hidden md:block">
-                    <Footer />
-                </div>
-
-                {/* Floating Components - Desktop */}
-                <div className="hidden md:block">
-                    <FloatingCart />
-                    <LiveChat />
-                    <FloatingActionButton />
-                </div>
-
-                {/* Mobile-Only Components */}
-                <FloatingMobileNav />
-                <MobileSearchModal />
-                <MobileComparisonSheet />
-
-                {/* Toast Notifications */}
-                <Toaster
-                    position="top-right"
-                    offset={120}
-                    duration={3000}
-                    richColors
-                    toastOptions={{
-                        style: {
-                            background: '#ffffff',
-                            color: '#0f172a',
-                            padding: '12px 16px',
-                            borderRadius: '12px',
-                            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.12)',
-                            fontWeight: 500,
-                        },
-                    }}
-                />
+                <Footer />
+                <Toaster position="top-right" richColors />
             </body>
         </html>
     );

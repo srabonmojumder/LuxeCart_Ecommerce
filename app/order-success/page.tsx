@@ -1,98 +1,97 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { CheckCircle, Package, Mail } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle, Package, Mail, ArrowRight, ShoppingBag, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 export default function OrderSuccessPage() {
     const [orderNumber, setOrderNumber] = useState<string | null>(null);
 
     useEffect(() => {
-        // Generate order number only on client side to avoid hydration mismatch
-        setOrderNumber(`LUX-${Math.random().toString(36).substr(2, 9).toUpperCase()}`);
+        setOrderNumber(`LC-${Math.random().toString(36).substr(2, 6).toUpperCase()}-${Math.floor(Math.random() * 1000)}`);
     }, []);
 
     return (
-        <div className="pt-20 min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-            <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 200 }}
-                >
-                    <CheckCircle className="w-24 h-24 mx-auto text-green-500 mb-6" />
-                </motion.div>
+        <div className="pt-32 min-h-screen bg-white flex items-center justify-center px-4">
+            <div className="max-w-4xl mx-auto text-center space-y-16">
 
-                <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4"
-                >
-                    Order Placed Successfully!
-                </motion.h1>
+                {/* Status Hero */}
+                <div className="space-y-10">
+                    <motion.div
+                        initial={{ scale: 0.5, opacity: 0, rotate: -45 }}
+                        animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                        className="w-32 h-32 mx-auto bg-accent rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-accent/40"
+                    >
+                        <CheckCircle className="w-16 h-16 text-white" />
+                    </motion.div>
 
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-lg text-gray-600 dark:text-gray-400 mb-8"
-                >
-                    Thank you for your purchase. Your order has been confirmed.
-                </motion.p>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="card inline-block mb-8"
-                >
-                    <div className="flex items-center gap-3 mb-4">
-                        <Package className="w-6 h-6 text-primary-600" />
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                            Order Number
-                        </h3>
+                    <div className="space-y-6">
+                        <motion.h1
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-6xl md:text-8xl font-black text-primary leading-[0.9] tracking-tighter"
+                        >
+                            Sequence <br />Complete.
+                        </motion.h1>
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.4 }}
+                            className="text-xl text-secondary max-w-xl mx-auto font-medium"
+                        >
+                            Your selection has been authorized and is now entering our logistics pipeline.
+                            Thank you for your refined choice.
+                        </motion.p>
                     </div>
-                    <p className="text-2xl font-bold text-primary-600">
-                        {orderNumber || (
-                            <span className="inline-block w-40 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
-                        )}
-                    </p>
-                </motion.div>
+                </div>
 
+                {/* Infographics */}
+                <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.6 }}
+                        className="p-10 bg-primary rounded-[3rem] text-white space-y-4 text-left shadow-2xl"
+                    >
+                        <Package className="w-10 h-10 text-accent mb-4" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white/40 block">Reference ID</span>
+                        <p className="text-2xl font-black tracking-tighter">
+                            {orderNumber || "PROCESS..."}
+                        </p>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, x: 30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.7 }}
+                        className="p-10 bg-primary/2 rounded-[3rem] border-2 border-primary/5 text-primary space-y-4 text-left shadow-sm"
+                    >
+                        <Mail className="w-10 h-10 text-accent mb-4" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 block">Notification</span>
+                        <p className="text-lg font-black leading-tight">
+                            Digital receipt and tracking index sent to your mail.
+                        </p>
+                    </motion.div>
+                </div>
+
+                {/* Actions */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
-                    className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-900 rounded-xl p-6 mb-8"
+                    transition={{ delay: 0.9 }}
+                    className="flex flex-col sm:flex-row gap-8 justify-center items-center pt-8"
                 >
-                    <Mail className="w-8 h-8 mx-auto text-blue-600 dark:text-blue-400 mb-3" />
-                    <p className="text-gray-700 dark:text-gray-300">
-                        We've sent a confirmation email with order details and tracking information.
-                    </p>
+                    <Link href="/products" className="btn-primary flex items-center gap-4">
+                        Explore Collection <ArrowRight className="w-5 h-5 text-accent" />
+                    </Link>
+                    <Link href="/account" className="flex items-center gap-4 text-xs font-black uppercase tracking-widest text-primary hover:gap-6 transition-all group">
+                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                        Account Dashboard.
+                    </Link>
                 </motion.div>
-
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Link href="/products">
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="btn-primary"
-                        >
-                            Continue Shopping
-                        </motion.button>
-                    </Link>
-                    <Link href="/account">
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="btn-outline"
-                        >
-                            View Orders
-                        </motion.button>
-                    </Link>
-                </div>
             </div>
         </div>
     );

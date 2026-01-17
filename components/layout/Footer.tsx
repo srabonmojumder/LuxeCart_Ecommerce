@@ -1,199 +1,78 @@
-'use client';
-
 import Link from 'next/link';
-import { Facebook, Twitter, Instagram, Youtube, Mail, MapPin, Phone, Send } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Facebook, Instagram, Twitter, Youtube, Mail } from 'lucide-react';
 
 export default function Footer() {
-    const currentYear = new Date().getFullYear();
-
-    const socialLinks = [
-        { icon: Facebook, href: '#', label: 'Facebook' },
-        { icon: Twitter, href: '#', label: 'Twitter' },
-        { icon: Instagram, href: '#', label: 'Instagram' },
-        { icon: Youtube, href: '#', label: 'YouTube' },
-    ];
-
-    const quickLinks = [
-        { label: 'All Products', href: '/products' },
-        { label: 'Categories', href: '/categories' },
-        { label: 'Special Deals', href: '/products?filter=sale' },
-        { label: 'New Arrivals', href: '/products?filter=new' },
-        { label: 'About Us', href: '/about' },
-    ];
-
-    const customerService = [
-        { label: 'Contact Us', href: '/contact' },
-        { label: 'Shipping Policy', href: '/shipping' },
-        { label: 'Returns & Exchanges', href: '/returns' },
-        { label: 'FAQ', href: '/faq' },
-        { label: 'Track Order', href: '/track-order' },
-    ];
-
     return (
-        <footer className="bg-slate-900 text-white">
-            {/* Main Footer */}
-            <div className="section-container py-12 lg:py-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-                    {/* Brand Section */}
-                    <div className="lg:col-span-1">
-                        <Link href="/" className="flex items-center gap-2 mb-4">
-                            <div className="w-9 h-9 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md">
-                                <span className="text-white font-bold text-lg">L</span>
-                            </div>
-                            <span className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-                                LuxeCart
-                            </span>
-                        </Link>
-                        <p className="text-slate-400 mb-6 leading-relaxed">
-                            Your premium destination for quality products. Shop with confidence and enjoy the best online shopping experience.
+        <footer className="bg-primary text-white pt-20 pb-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-20">
+                    {/* Brand Info */}
+                    <div className="col-span-2 md:col-span-1">
+                        <h4 className="text-3xl font-black tracking-tighter mb-8">LuxeCart</h4>
+                        <p className="text-gray-400 text-sm leading-relaxed mb-8 max-w-xs">
+                            Premium home accessories for the modern minimalist. Elevate your living space with our curated collection of decor, lighting, and essentials.
                         </p>
-                        <div className="flex gap-3">
-                            {socialLinks.map(({ icon: Icon, href, label }) => (
-                                <motion.a
-                                    key={label}
-                                    whileHover={{ scale: 1.1, y: -2 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    href={href}
-                                    aria-label={label}
-                                    className="w-10 h-10 bg-slate-800 hover:bg-teal-600 rounded-lg flex items-center justify-center transition-colors"
-                                >
-                                    <Icon className="w-5 h-5" />
-                                </motion.a>
-                            ))}
+                        <div className="flex gap-4">
+                            <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/20 transition-all border border-white/10">
+                                <Instagram className="w-5 h-5" />
+                            </a>
+                            <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/20 transition-all border border-white/10">
+                                <Facebook className="w-5 h-5" />
+                            </a>
+                            <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/20 transition-all border border-white/10">
+                                <Twitter className="w-5 h-5" />
+                            </a>
                         </div>
                     </div>
 
                     {/* Quick Links */}
                     <div>
-                        <h4 className="text-lg font-semibold mb-5 text-white">Quick Links</h4>
-                        <ul className="space-y-3">
-                            {quickLinks.map(({ label, href }) => (
-                                <li key={label}>
-                                    <Link
-                                        href={href}
-                                        className="text-slate-400 hover:text-teal-400 transition-colors inline-flex items-center group"
-                                    >
-                                        <span className="group-hover:translate-x-1 transition-transform">
-                                            {label}
-                                        </span>
-                                    </Link>
-                                </li>
-                            ))}
+                        <h5 className="font-bold mb-8 text-xs tracking-[0.2em] uppercase">Collections</h5>
+                        <ul className="space-y-4 text-gray-400 text-sm">
+                            <li><Link href="/products?category=decor" className="hover:text-accent transition-colors">Home Decor</Link></li>
+                            <li><Link href="/products?category=furniture" className="hover:text-accent transition-colors">Modern Furniture</Link></li>
+                            <li><Link href="/products?category=lighting" className="hover:text-accent transition-colors">Lighting</Link></li>
+                            <li><Link href="/products?category=kitchen" className="hover:text-accent transition-colors">Kitchenware</Link></li>
                         </ul>
                     </div>
 
-                    {/* Customer Service */}
+                    {/* Support */}
                     <div>
-                        <h4 className="text-lg font-semibold mb-5 text-white">Customer Service</h4>
-                        <ul className="space-y-3">
-                            {customerService.map(({ label, href }) => (
-                                <li key={label}>
-                                    <Link
-                                        href={href}
-                                        className="text-slate-400 hover:text-teal-400 transition-colors inline-flex items-center group"
-                                    >
-                                        <span className="group-hover:translate-x-1 transition-transform">
-                                            {label}
-                                        </span>
-                                    </Link>
-                                </li>
-                            ))}
+                        <h5 className="font-bold mb-8 text-xs tracking-[0.2em] uppercase">Support</h5>
+                        <ul className="space-y-4 text-gray-400 text-sm">
+                            <li><Link href="/contact" className="hover:text-accent transition-colors">Contact Us</Link></li>
+                            <li><Link href="#" className="hover:text-accent transition-colors">Shipping & Returns</Link></li>
+                            <li><Link href="#" className="hover:text-accent transition-colors">Privacy Policy</Link></li>
+                            <li><Link href="#" className="hover:text-accent transition-colors">FAQ</Link></li>
                         </ul>
                     </div>
 
-                    {/* Contact Info */}
-                    <div>
-                        <h4 className="text-lg font-semibold mb-5 text-white">Contact Info</h4>
-                        <ul className="space-y-4">
-                            <li className="flex items-start gap-3">
-                                <MapPin className="w-5 h-5 text-teal-400 mt-0.5 flex-shrink-0" />
-                                <span className="text-slate-400">
-                                    123 Shopping Street,<br />
-                                    New York, NY 10001
-                                </span>
-                            </li>
-                            <li className="flex items-center gap-3">
-                                <Phone className="w-5 h-5 text-teal-400 flex-shrink-0" />
-                                <a
-                                    href="tel:+1234567890"
-                                    className="text-slate-400 hover:text-teal-400 transition-colors"
-                                >
-                                    +1 (234) 567-890
-                                </a>
-                            </li>
-                            <li className="flex items-center gap-3">
-                                <Mail className="w-5 h-5 text-teal-400 flex-shrink-0" />
-                                <a
-                                    href="mailto:support@luxecart.com"
-                                    className="text-slate-400 hover:text-teal-400 transition-colors"
-                                >
-                                    support@luxecart.com
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            {/* Newsletter Section */}
-            <div className="border-t border-slate-800">
-                <div className="section-container py-8">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div className="text-center md:text-left">
-                            <h4 className="text-lg font-semibold mb-1">
-                                Subscribe to Our Newsletter
-                            </h4>
-                            <p className="text-slate-400 text-sm">
-                                Get updates on new products and exclusive offers
-                            </p>
-                        </div>
-                        <div className="flex gap-2 w-full md:w-auto max-w-md">
+                    {/* Newsletter */}
+                    <div className="col-span-2 md:col-span-1">
+                        <h5 className="font-bold mb-8 text-xs tracking-[0.2em] uppercase">Newsletter</h5>
+                        <p className="text-gray-400 text-sm mb-6">Stay updated with our latest collections and exclusive offers.</p>
+                        <div className="relative group">
                             <input
                                 type="email"
-                                placeholder="Enter your email"
-                                className="flex-1 px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-white placeholder:text-slate-500"
+                                placeholder="Email address"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-sm focus:outline-none focus:border-accent transition-colors"
                             />
-                            <motion.button
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className="px-5 py-3 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-xl font-semibold hover:from-teal-600 hover:to-emerald-600 transition-all flex items-center gap-2"
-                            >
-                                <Send className="w-4 h-4" />
-                                <span className="hidden sm:inline">Subscribe</span>
-                            </motion.button>
+                            <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-accent text-white px-5 py-2 rounded-lg text-xs font-bold hover:bg-white hover:text-primary transition-all">
+                                SUBSCRIBE
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Bottom Bar */}
-            <div className="border-t border-slate-800">
-                <div className="section-container py-6">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                        <p className="text-slate-500 text-sm">
-                            © {currentYear} LuxeCart. All rights reserved.
-                        </p>
-                        <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
-                            <Link
-                                href="/privacy"
-                                className="text-slate-500 hover:text-teal-400 transition-colors"
-                            >
-                                Privacy Policy
-                            </Link>
-                            <Link
-                                href="/terms"
-                                className="text-slate-500 hover:text-teal-400 transition-colors"
-                            >
-                                Terms of Service
-                            </Link>
-                            <Link
-                                href="/cookies"
-                                className="text-slate-500 hover:text-teal-400 transition-colors"
-                            >
-                                Cookie Policy
-                            </Link>
-                        </div>
+                {/* Bottom Bar */}
+                <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <p className="text-xs text-gray-500 font-medium">
+                        © 2026 LuxeCart. All Rights Reserved.
+                    </p>
+                    <div className="flex gap-8 text-[10px] text-gray-500 font-bold tracking-widest uppercase">
+                        <Link href="#" className="hover:text-white transition-colors">Terms</Link>
+                        <Link href="#" className="hover:text-white transition-colors">Privacy</Link>
+                        <Link href="#" className="hover:text-white transition-colors">Cookies</Link>
                     </div>
                 </div>
             </div>

@@ -17,39 +17,58 @@ const config: Config = {
             '2xl': '1536px',
         },
         extend: {
-            // Custom Colors - Teal Primary + Orange Accent
+            // Custom Colors - Ochaka Inspired
             colors: {
                 primary: {
-                    50: '#f0fdfa',
-                    100: '#ccfbf1',
-                    200: '#99f6e4',
-                    300: '#5eead4',
-                    400: '#2dd4bf',
-                    500: '#14b8a6',
-                    600: '#0d9488',
-                    700: '#0f766e',
-                    800: '#115e59',
-                    900: '#134e4a',
-                    950: '#042f2e',
+                    DEFAULT: '#000000',
+                    50: '#f6f6f6',
+                    100: '#e7e7e7',
+                    200: '#d1d1d1',
+                    300: '#b0b0b0',
+                    400: '#888888',
+                    500: '#6d6d6d',
+                    600: '#5d5d5d',
+                    700: '#4f4f4f',
+                    800: '#454545',
+                    900: '#3d3d3d',
+                    950: '#000000',
                 },
                 accent: {
-                    50: '#fff7ed',
-                    100: '#ffedd5',
-                    200: '#fed7aa',
-                    300: '#fdba74',
-                    400: '#fb923c',
-                    500: '#f97316',
-                    600: '#ea580c',
-                    700: '#c2410c',
-                    800: '#9a3412',
-                    900: '#7c2d12',
-                    950: '#431407',
+                    DEFAULT: '#685BC7',
+                    50: '#f4f3fd',
+                    100: '#eae8fb',
+                    200: '#d6d3f8',
+                    300: '#b9b2f2',
+                    400: '#9389e8',
+                    500: '#685bc7',
+                    600: '#5d4daf',
+                    700: '#4d4091',
+                    800: '#423878',
+                    900: '#393164',
+                    950: '#211c3a',
                 },
+                secondary: {
+                    DEFAULT: '#5F615E',
+                    50: '#f7f7f7',
+                    100: '#efefef',
+                    200: '#dfdfdf',
+                    300: '#c7c7c7',
+                    400: '#a7a7a7',
+                    500: '#5F615E',
+                    600: '#4a4b49',
+                    700: '#3b3c3b',
+                    800: '#2d2e2d',
+                    900: '#1f1f1f',
+                },
+                // Status Colors
+                hot: '#FF3B30',
+                new: '#34C759',
+                limited: '#FF9500',
             },
             // Font Family
             fontFamily: {
-                sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-                display: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                sans: ['Afacad', 'Inter', 'sans-serif'],
+                display: ['Afacad', 'Inter', 'sans-serif'],
             },
             // Custom spacing scale (8px base unit)
             spacing: {
@@ -74,32 +93,20 @@ const config: Config = {
                 '102': '1.02',
                 '103': '1.03',
             },
-            // Enhanced shadows for premium feel
+            // Ochaka-inspired shadows
             boxShadow: {
-                'xs': '0 1px 2px rgba(15, 23, 42, 0.04)',
-                'soft': '0 2px 8px rgba(15, 23, 42, 0.06)',
-                'medium': '0 4px 16px rgba(15, 23, 42, 0.08)',
-                'strong': '0 8px 32px rgba(15, 23, 42, 0.12)',
-                'xl': '0 16px 48px rgba(15, 23, 42, 0.16)',
-                '2xl': '0 24px 64px rgba(15, 23, 42, 0.20)',
-                'inner-soft': 'inset 0 2px 4px rgba(15, 23, 42, 0.06)',
-                'glow': '0 0 40px rgba(20, 184, 166, 0.15)',
-                'glow-lg': '0 0 60px rgba(20, 184, 166, 0.2)',
-                'glow-accent': '0 0 40px rgba(249, 115, 22, 0.15)',
-                'primary': '0 8px 32px rgba(20, 184, 166, 0.25)',
-                'accent': '0 8px 32px rgba(249, 115, 22, 0.25)',
+                'xs': '0 1px 2px rgba(0, 0, 0, 0.05)',
+                'soft': '0 2px 8px rgba(0, 0, 0, 0.05)',
+                'medium': '0 4px 16px rgba(0, 0, 0, 0.08)',
+                'strong': '0 8px 32px rgba(0, 0, 0, 0.12)',
+                'xl': '0 16px 48px rgba(0, 0, 0, 0.16)',
+                '2xl': '0 24px 64px rgba(0, 0, 0, 0.20)',
+                'accent': '0 8px 32px rgba(167, 158, 242, 0.25)',
             },
             // Border radius
             borderRadius: {
                 '4xl': '2rem',
                 '5xl': '2.5rem',
-            },
-            // Line height for better readability
-            lineHeight: {
-                'tight': '1.15',
-                'snug': '1.3',
-                'relaxed-more': '1.75',
-                'loose-more': '2',
             },
             // Animation
             animation: {
@@ -131,7 +138,7 @@ const config: Config = {
                 'pulse-ring': {
                     '0%': { transform: 'scale(0.95)', boxShadow: '0 0 0 0 rgba(20, 184, 166, 0.7)' },
                     '70%': { transform: 'scale(1)', boxShadow: '0 0 0 12px rgba(20, 184, 166, 0)' },
-                    '100%': { transform: 'scale(0.95)', boxShadow: '0 0 0 0 rgba(20, 184, 166, 0)' },
+                    '100%': { transform: 'scale(0.95)', boxShadow: '0 0 0 0 rgba(167, 158, 242, 0)' },
                 },
                 'bounce-subtle': {
                     '0%, 100%': { transform: 'translateY(0)' },
