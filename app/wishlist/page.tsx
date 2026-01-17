@@ -18,7 +18,7 @@ export default function WishlistPage() {
 
     if (wishlist.length === 0) {
         return (
-            <div className="pt-32 min-h-screen bg-white flex items-center justify-center px-4">
+            <div className="pt-32 min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center px-4">
                 <div className="text-center space-y-12 max-w-xl">
                     <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
@@ -29,10 +29,10 @@ export default function WishlistPage() {
                         <div className="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </motion.div>
                     <div className="space-y-6">
-                        <h2 className="text-6xl md:text-8xl font-black text-primary tracking-tighter leading-[0.9]">
+                        <h2 className="text-6xl md:text-8xl font-black text-primary dark:text-white tracking-tighter leading-[0.9]">
                             Infinite <br />Desire.
                         </h2>
-                        <p className="text-xl text-secondary font-medium leading-relaxed">
+                        <p className="text-xl text-secondary dark:text-gray-400 font-medium leading-relaxed">
                             Your personal gallery of interest is currently empty.
                             Curate your collection by exploring our archive.
                         </p>
@@ -46,20 +46,20 @@ export default function WishlistPage() {
     }
 
     return (
-        <div className="pt-32 md:pt-40 pb-48 min-h-screen bg-white">
+        <div className="pt-32 md:pt-40 pb-48 min-h-screen bg-white dark:bg-slate-950">
             <div className="max-w-[1440px] mx-auto px-4 md:px-12">
 
                 <header className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-24">
                     <div className="space-y-6">
                         <span className="text-accent font-black tracking-[0.4em] text-xs uppercase block">Private Curation</span>
-                        <h1 className="text-6xl md:text-9xl font-black text-primary leading-[0.8] tracking-tighter">
+                        <h1 className="text-6xl md:text-9xl font-black text-primary dark:text-white leading-[0.8] tracking-tighter">
                             Wishlist <br />Archive.
                         </h1>
                     </div>
-                    <div className="flex items-center gap-10 bg-primary/2 px-10 py-6 rounded-[2.5rem] border border-primary/5">
+                    <div className="flex items-center gap-10 bg-primary/2 dark:bg-white/5 px-10 py-6 rounded-[2.5rem] border border-primary/5 dark:border-white/5">
                         <div className="text-right">
                             <span className="text-[10px] font-black tracking-widest text-gray-400 uppercase block mb-1">Items</span>
-                            <span className="text-3xl font-black text-primary uppercase">{wishlist.length} Selection{wishlist.length !== 1 ? 's' : ''}</span>
+                            <span className="text-3xl font-black text-primary dark:text-white uppercase">{wishlist.length} Selection{wishlist.length !== 1 ? 's' : ''}</span>
                         </div>
                         <button
                             onClick={handleAddAllToCart}
@@ -88,12 +88,12 @@ export default function WishlistPage() {
                     </AnimatePresence>
                 </div>
 
-                <div className="mt-32 border-t-2 border-primary/5 pt-12">
+                <div className="mt-32 border-t-2 border-primary/5 dark:border-white/5 pt-12">
                     <Link
                         href="/products"
-                        className="inline-flex items-center gap-6 text-[10px] font-black tracking-widest text-primary uppercase group"
+                        className="inline-flex items-center gap-6 text-[10px] font-black tracking-widest text-primary dark:text-white uppercase group"
                     >
-                        <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                        <div className="w-16 h-16 rounded-full bg-primary/5 dark:bg-white/5 flex items-center justify-center group-hover:bg-primary dark:group-hover:bg-white group-hover:text-white dark:group-hover:text-primary transition-all duration-500">
                             <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
                         </div>
                         Return to Store

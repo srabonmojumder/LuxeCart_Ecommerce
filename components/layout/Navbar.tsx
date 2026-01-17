@@ -6,12 +6,14 @@ import { ShoppingCart, Heart, Search, Menu, X, User } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import SearchModal from '@/components/search/SearchModal';
+import Sidebar from '@/components/layout/Sidebar';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [mounted, setMounted] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const wishlist = useStore((state) => state.wishlist);
     const getTotalItems = useStore((state) => state.getTotalItems);
@@ -35,16 +37,22 @@ export default function Navbar() {
                     <div className="flex justify-between items-center h-14 md:h-16">
                         {/* Left - Menu & Search */}
                         <div className="flex items-center gap-2 md:gap-4 flex-1">
-                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                            <button
+                                onClick={() => setIsSidebarOpen(true)}
+                                className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                            >
                                 <Menu className="w-6 h-6 text-primary dark:text-white" />
                             </button>
                             {/* Desktop Search Button */}
                             <button
                                 onClick={() => setIsSearchOpen(true)}
-                                className="hidden md:flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-gray-400 dark:text-gray-500 group"
+                                className="hidden md:flex items-center gap-3 px-4 py-2.5 bg-gray-100/50 dark:bg-slate-800/50 hover:bg-gray-100 dark:hover:bg-slate-800 border-2 border-transparent hover:border-gray-200 dark:hover:border-slate-700 rounded-full transition-all duration-300 group w-[220px]"
                             >
-                                <Search className="w-5 h-5 group-hover:text-primary dark:group-hover:text-white transition-colors" />
-                                <span className="text-sm font-medium">Search</span>
+                                <Search className="w-4 h-4 text-gray-400 group-hover:text-primary dark:group-hover:text-white transition-colors" />
+                                <span className="text-sm font-medium text-gray-400 group-hover:text-primary dark:group-hover:text-white transition-colors">Search products...</span>
+                                <div className="ml-auto flex items-center gap-1">
+                                    <span className="text-[10px] font-bold text-gray-300 dark:text-slate-600 border border-gray-200 dark:border-slate-700 rounded px-1.5 py-0.5">⌘K</span>
+                                </div>
                             </button>
                             {/* Mobile Search Button */}
                             <button
@@ -91,6 +99,9 @@ export default function Navbar() {
 
             {/* Search Modal */}
             <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+
+            {/* Sidebar Navigation */}
+            <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
         </>
     );
 }
