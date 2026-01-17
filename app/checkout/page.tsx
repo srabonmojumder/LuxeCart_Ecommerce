@@ -59,7 +59,7 @@ export default function CheckoutPage() {
 
     if (cart.length === 0) {
         return (
-            <div className="pt-24 md:pt-32 min-h-screen bg-white flex items-center justify-center px-4 pb-24">
+            <div className="pt-24 md:pt-32 min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center px-4 pb-24">
                 <div className="text-center space-y-8 max-w-sm">
                     <motion.div
                         initial={{ scale: 0.9, opacity: 0 }}
@@ -69,7 +69,7 @@ export default function CheckoutPage() {
                         <ArrowLeft className="w-10 h-10 md:w-12 md:h-12 text-primary/20" />
                     </motion.div>
                     <div className="space-y-3">
-                        <h2 className="text-2xl md:text-3xl font-black text-primary tracking-tight">
+                        <h2 className="text-2xl md:text-3xl font-black text-primary dark:text-white tracking-tight">
                             Your cart is empty
                         </h2>
                         <p className="text-base text-secondary font-medium leading-relaxed">
@@ -85,7 +85,7 @@ export default function CheckoutPage() {
     }
 
     return (
-        <div className="pt-20 md:pt-32 pb-32 md:pb-40 min-h-screen bg-white">
+        <div className="pt-20 md:pt-32 pb-32 md:pb-40 min-h-screen bg-white dark:bg-slate-950">
             <div className="max-w-[1200px] mx-auto px-4 md:px-8">
 
                 <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-12 mb-8 md:mb-16">
@@ -94,7 +94,7 @@ export default function CheckoutPage() {
                             <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
                             Return to Cart
                         </Link>
-                        <h1 className="text-3xl md:text-6xl font-black text-primary leading-tight tracking-tighter">
+                        <h1 className="text-3xl md:text-6xl font-black text-primary dark:text-white leading-tight tracking-tighter">
                             Checkout
                         </h1>
                     </div>
@@ -122,7 +122,7 @@ export default function CheckoutPage() {
                                 <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/5 rounded-xl flex items-center justify-center text-accent">
                                     <User className="w-5 h-5 md:w-6 md:h-6" />
                                 </div>
-                                <h2 className="text-lg md:text-2xl font-black text-primary tracking-tight">Contact Information</h2>
+                                <h2 className="text-lg md:text-2xl font-black text-primary dark:text-white tracking-tight">Contact Information</h2>
                             </div>
                             <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                                 <div className="md:col-span-2 space-y-2">
@@ -170,7 +170,7 @@ export default function CheckoutPage() {
                                 <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/5 rounded-xl flex items-center justify-center text-accent">
                                     <MapPin className="w-5 h-5 md:w-6 md:h-6" />
                                 </div>
-                                <h2 className="text-lg md:text-2xl font-black text-primary tracking-tight">Shipping Address</h2>
+                                <h2 className="text-lg md:text-2xl font-black text-primary dark:text-white tracking-tight">Shipping Address</h2>
                             </div>
                             <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                                 <div className="md:col-span-2 space-y-2">
@@ -275,8 +275,8 @@ export default function CheckoutPage() {
 
                     {/* Summary Sidebar */}
                     <aside className="lg:col-span-5 lg:sticky lg:top-28 h-fit order-first lg:order-last">
-                        <section className="bg-gray-50 p-5 md:p-8 rounded-2xl md:rounded-3xl border border-primary/5 space-y-5 md:space-y-8">
-                            <h2 className="text-lg md:text-xl font-black text-primary tracking-tight">Order Summary</h2>
+                        <section className="bg-gray-50 dark:bg-slate-900/50 p-5 md:p-8 rounded-2xl md:rounded-3xl border border-primary/5 dark:border-slate-800 space-y-5 md:space-y-8">
+                            <h2 className="text-lg md:text-xl font-black text-primary dark:text-white tracking-tight">Order Summary</h2>
 
                             <div className="space-y-4 max-h-[200px] md:max-h-[280px] overflow-y-auto scrollbar-hide">
                                 {cart.map((item) => {
@@ -290,10 +290,10 @@ export default function CheckoutPage() {
                                                 <Image src={item.image} alt={item.name} fill className="object-cover" />
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-xs md:text-sm font-semibold text-primary truncate">{item.name}</p>
+                                                <p className="text-xs md:text-sm font-semibold text-primary dark:text-white truncate">{item.name}</p>
                                                 <p className="text-[10px] md:text-xs text-gray-400">Qty: {item.quantity}</p>
                                             </div>
-                                            <span className="text-sm font-bold text-primary">
+                                            <span className="text-sm font-bold text-primary dark:text-white">
                                                 ${(price * item.quantity).toFixed(2)}
                                             </span>
                                         </div>
@@ -304,19 +304,19 @@ export default function CheckoutPage() {
                             <div className="space-y-3 pt-4 border-t border-primary/10">
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="text-gray-500">Subtotal</span>
-                                    <span className="font-semibold text-primary">${totalPrice.toFixed(2)}</span>
+                                    <span className="font-semibold text-primary dark:text-white">${totalPrice.toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="text-gray-500">Shipping</span>
-                                    <span className="font-semibold text-primary">{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+                                    <span className="font-semibold text-primary dark:text-white">{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
                                 </div>
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="text-gray-500">Tax</span>
-                                    <span className="font-semibold text-primary">${tax.toFixed(2)}</span>
+                                    <span className="font-semibold text-primary dark:text-white">${tax.toFixed(2)}</span>
                                 </div>
-                                <div className="flex justify-between items-center pt-3 border-t border-primary/10">
-                                    <span className="text-sm font-bold text-primary">Total</span>
-                                    <span className="text-2xl md:text-3xl font-black text-primary">${finalTotal.toFixed(2)}</span>
+                                <div className="flex justify-between items-center pt-3 border-t border-primary/10 dark:border-slate-800">
+                                    <span className="text-sm font-bold text-primary dark:text-white">Total</span>
+                                    <span className="text-2xl md:text-3xl font-black text-primary dark:text-white">${finalTotal.toFixed(2)}</span>
                                 </div>
                             </div>
 

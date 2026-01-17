@@ -6,6 +6,7 @@ import { ShoppingCart, Heart, Search, Menu, X, User } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import SearchModal from '@/components/search/SearchModal';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -62,7 +63,8 @@ export default function Navbar() {
                         </div>
 
                         {/* Right - Actions */}
-                        <div className="flex items-center justify-end gap-2 md:gap-6 flex-1">
+                        <div className="flex items-center justify-end gap-2 md:gap-4 flex-1">
+                            <ThemeToggle />
                             <Link href="/account" className="hidden md:block p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors">
                                 <User className="w-6 h-6 text-primary dark:text-white" />
                             </Link>

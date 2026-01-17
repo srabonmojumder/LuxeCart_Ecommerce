@@ -101,9 +101,9 @@ export default function ProductsPage() {
                         step="50"
                         value={priceRange[1]}
                         onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                        className="w-full h-1.5 bg-gray-100 rounded-full appearance-none cursor-pointer accent-primary"
+                        className="w-full h-1.5 bg-gray-100 dark:bg-slate-800 rounded-full appearance-none cursor-pointer accent-primary"
                     />
-                    <div className="flex justify-between items-center px-4 lg:px-6 py-4 lg:py-5 bg-primary text-white rounded-2xl shadow-xl">
+                    <div className="flex justify-between items-center px-4 lg:px-6 py-4 lg:py-5 bg-primary dark:bg-slate-900 text-white rounded-2xl shadow-xl border border-primary/5 dark:border-slate-800">
                         <span className="text-[10px] font-black tracking-widest uppercase opacity-60">Max Price</span>
                         <span className="text-xl lg:text-2xl font-black">${priceRange[1]}</span>
                     </div>
@@ -117,8 +117,8 @@ export default function ProductsPage() {
                     onClick={() => setInStockOnly(!inStockOnly)}
                     className="flex items-center justify-between w-full group"
                 >
-                    <span className={`text-[10px] font-black tracking-widest uppercase transition-colors ${inStockOnly ? 'text-primary' : 'text-gray-400'}`}>In Stock Only</span>
-                    <div className={`w-12 h-6 rounded-full transition-all duration-300 relative ${inStockOnly ? 'bg-primary' : 'bg-gray-100'}`}>
+                    <span className={`text-[10px] font-black tracking-widest uppercase transition-colors ${inStockOnly ? 'text-primary dark:text-accent' : 'text-gray-400'}`}>In Stock Only</span>
+                    <div className={`w-12 h-6 rounded-full transition-all duration-300 relative ${inStockOnly ? 'bg-primary dark:bg-accent' : 'bg-gray-100 dark:bg-slate-800'}`}>
                         <motion.div
                             animate={{ x: inStockOnly ? 26 : 4 }}
                             className="absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm"
@@ -129,8 +129,8 @@ export default function ProductsPage() {
                     onClick={() => setOnSaleOnly(!onSaleOnly)}
                     className="flex items-center justify-between w-full group"
                 >
-                    <span className={`text-[10px] font-black tracking-widest uppercase transition-colors ${onSaleOnly ? 'text-primary' : 'text-gray-400'}`}>On Sale Items</span>
-                    <div className={`w-12 h-6 rounded-full transition-all duration-300 relative ${onSaleOnly ? 'bg-accent' : 'bg-gray-100'}`}>
+                    <span className={`text-[10px] font-black tracking-widest uppercase transition-colors ${onSaleOnly ? 'text-primary dark:text-accent' : 'text-gray-400'}`}>On Sale Items</span>
+                    <div className={`w-12 h-6 rounded-full transition-all duration-300 relative ${onSaleOnly ? 'bg-accent' : 'bg-gray-100 dark:bg-slate-800'}`}>
                         <motion.div
                             animate={{ x: onSaleOnly ? 26 : 4 }}
                             className="absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm"
@@ -227,7 +227,7 @@ export default function ProductsPage() {
 
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-20">
                     {/* Filters Sidebar - Desktop Only */}
-                    <aside className="hidden lg:block w-72 flex-shrink-0 space-y-16">
+                    <aside className="hidden lg:block w-72 flex-shrink-0 sticky top-32 self-start space-y-16">
                         <div>
                             <div className="flex items-center justify-between mb-10 pb-4 border-b-2 border-primary dark:border-white">
                                 <h3 className="text-sm font-black tracking-[0.2em] text-primary dark:text-white uppercase flex items-center gap-3">

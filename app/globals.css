@@ -94,19 +94,24 @@
 
 /* Dark Mode - Uses class-based detection to match Tailwind config */
 .dark {
-  --background: #0f172a;
+  --background: #020617;
+  /* slate-950 */
   --foreground: #f1f5f9;
-  --surface-1: #1e293b;
-  --surface-2: #0f172a;
-  --surface-3: #1e293b;
+  /* slate-100 */
+  --surface-1: #0f172a;
+  /* slate-900 */
+  --surface-2: #1e293b;
+  /* slate-800 */
+  --surface-3: #334155;
+  /* slate-700 */
   --surface-elevated: #1e293b;
 
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 0 40px rgba(20, 184, 166, 0.25);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.7);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 0 40px rgba(104, 91, 199, 0.2);
 }
 
 /* Base Styles */

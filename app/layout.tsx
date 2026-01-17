@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import TopUtilityBar from "@/components/layout/TopUtilityBar";
 import MegaMenu from "@/components/layout/MegaMenu";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 export const metadata: Metadata = {
     title: "LuxeCart - Modern Home Accessories",
@@ -27,35 +28,25 @@ export default function RootLayout({
                 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" />
                 <meta name="theme-color" content="#000000" />
                 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
-                            (function() {
-                                function updateTheme() {
-                                    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                                        document.documentElement.classList.add('dark');
-                                    } else {
-                                        document.documentElement.classList.remove('dark');
-                                    }
-                                }
-                                updateTheme();
-                                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme);
-                            })();
-                        `,
-                    }}
-                />
             </head>
             <body suppressHydrationWarning className="antialiased bg-white dark:bg-slate-950 text-secondary dark:text-gray-400">
-                <TopUtilityBar />
-                <div className="sticky top-0 z-50">
-                    <Navbar />
-                    <MegaMenu />
-                </div>
-                <main className="relative min-h-screen">
-                    {children}
-                </main>
-                <Footer />
-                <Toaster position="top-right" richColors />
+                <ThemeProvider
+                    attribute="class"
+                    defaultTheme="system"
+                    enableSystem
+                    disableTransitionOnChange
+                >
+                    <TopUtilityBar />
+                    <div className="sticky top-0 z-50">
+                        <Navbar />
+                        <MegaMenu />
+                    </div>
+                    <main className="relative min-h-screen">
+                        {children}
+                    </main>
+                    <Footer />
+                    <Toaster position="top-right" richColors />
+                </ThemeProvider>
             </body>
         </html>
     );
