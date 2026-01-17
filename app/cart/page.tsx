@@ -63,7 +63,7 @@ export default function CartPage() {
     }
 
     return (
-        <div className="pt-24 md:pt-[112px] min-h-screen bg-white dark:bg-slate-950 pb-32">
+        <div className="pt-0 md:pt-0 min-h-screen bg-white dark:bg-slate-950 pb-32">
             <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 px-4 md:px-0">
@@ -136,11 +136,11 @@ export default function CartPage() {
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, x: -50 }}
                                             transition={{ delay: index * 0.05 }}
-                                            className="group flex flex-col sm:flex-row gap-8 pb-8 border-b border-primary/5 dark:border-white/5 last:border-0"
+                                            className="group flex flex-row gap-4 sm:gap-8 pb-8 border-b border-primary/5 dark:border-white/5 last:border-0"
                                         >
                                             {/* Product Image */}
                                             <Link href={`/products/${item.id}`} className="flex-shrink-0">
-                                                <div className="relative w-full sm:w-40 h-48 bg-primary/5 rounded-[2rem] overflow-hidden">
+                                                <div className="relative w-24 h-32 sm:w-40 sm:h-48 bg-primary/5 rounded-xl sm:rounded-[2rem] overflow-hidden">
                                                     <Image
                                                         src={item.image}
                                                         alt={item.name}
@@ -151,55 +151,55 @@ export default function CartPage() {
                                             </Link>
 
                                             {/* Product Info */}
-                                            <div className="flex-1 flex flex-col pt-2">
-                                                <div className="flex justify-between items-start gap-4 mb-4">
+                                            <div className="flex-1 flex flex-col pt-1 sm:pt-2">
+                                                <div className="flex justify-between items-start gap-2 sm:gap-4 mb-2 sm:mb-4">
                                                     <div>
-                                                        <p className="text-[10px] text-accent font-black uppercase tracking-[0.3em] mb-2">
+                                                        <p className="text-[8px] sm:text-[10px] text-accent font-black uppercase tracking-[0.3em] mb-1 sm:mb-2">
                                                             {item.category}
                                                         </p>
                                                         <Link
                                                             href={`/products/${item.id}`}
-                                                            className="text-2xl font-black text-primary dark:text-white hover:text-accent transition-colors tracking-tight leading-tight"
+                                                            className="text-lg sm:text-2xl font-black text-primary dark:text-white hover:text-accent transition-colors tracking-tight leading-tight line-clamp-2"
                                                         >
                                                             {item.name}
                                                         </Link>
                                                     </div>
                                                     <button
                                                         onClick={() => handleRemove(item.id)}
-                                                        className="w-10 h-10 rounded-full bg-primary/5 dark:bg-white/5 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center dark:text-white"
+                                                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/5 dark:bg-white/5 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center dark:text-white flex-shrink-0"
                                                     >
-                                                        <Trash2 className="w-4 h-4" />
+                                                        <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                                                     </button>
                                                 </div>
 
-                                                <div className="flex flex-wrap items-end justify-between mt-auto gap-6 pt-4">
+                                                <div className="flex flex-wrap items-end justify-between mt-auto gap-4 pt-2 sm:pt-4">
                                                     {/* Quantity Controls - New Bold Style */}
-                                                    <div className="flex items-center gap-6 bg-primary/5 dark:bg-white/5 px-6 py-3 rounded-2xl">
+                                                    <div className="flex items-center gap-3 sm:gap-6 bg-primary/5 dark:bg-white/5 px-3 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl">
                                                         <button
                                                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                                             disabled={item.quantity <= 1}
                                                             className="text-primary dark:text-white hover:scale-125 transition-transform disabled:opacity-20"
                                                         >
-                                                            <Minus className="w-5 h-5" />
+                                                            <Minus className="w-3 h-3 sm:w-5 sm:h-5" />
                                                         </button>
-                                                        <span className="text-xl font-black text-primary dark:text-white min-w-[2ch] text-center">
+                                                        <span className="text-base sm:text-xl font-black text-primary dark:text-white min-w-[1.5ch] text-center">
                                                             {item.quantity}
                                                         </span>
                                                         <button
                                                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                                                             className="text-primary dark:text-white hover:scale-125 transition-transform"
                                                         >
-                                                            <Plus className="w-5 h-5" />
+                                                            <Plus className="w-3 h-3 sm:w-5 sm:h-5" />
                                                         </button>
                                                     </div>
 
                                                     {/* Price - Bold and Clean */}
                                                     <div className="text-right">
-                                                        <div className="text-2xl font-black text-primary dark:text-white">
+                                                        <div className="text-lg sm:text-2xl font-black text-primary dark:text-white">
                                                             ${(discountedPrice * item.quantity).toFixed(2)}
                                                         </div>
                                                         {item.discount && (
-                                                            <div className="text-sm text-gray-400 line-through font-bold">
+                                                            <div className="text-xs sm:text-sm text-gray-400 line-through font-bold">
                                                                 ${(item.price * item.quantity).toFixed(2)}
                                                             </div>
                                                         )}
@@ -229,7 +229,7 @@ export default function CartPage() {
                         <motion.div
                             initial={{ opacity: 0, x: 50 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="card-elevated"
+                            className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-primary/5 dark:border-white/5 p-8 transition-all duration-500"
                         >
                             <h2 className="text-2xl font-black text-primary dark:text-white mb-10 tracking-tight">
                                 Order Summary
@@ -292,8 +292,8 @@ export default function CartPage() {
             </div>
 
             {/* Mobile Checkout Bar - Styled Clean */}
-            <div className="lg:hidden fixed bottom-16 left-0 right-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-primary/5 dark:border-white/5 px-6 py-6 pb-8 shadow-2xl">
-                <div className="flex items-center justify-between mb-6">
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-primary/5 dark:border-white/5 px-6 py-4 pb-safe shadow-2xl">
+                <div className="flex items-center justify-between mb-2">
                     <div>
                         <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Total Amount</p>
                         <p className="text-3xl font-black text-primary dark:text-white tracking-tighter">
@@ -303,7 +303,7 @@ export default function CartPage() {
                     <Link href="/checkout" className="flex-1 max-w-[200px]">
                         <motion.button
                             whileTap={{ scale: 0.95 }}
-                            className="btn-primary w-full py-5 text-xs"
+                            className="btn-primary w-full py-4 text-xs"
                         >
                             Checkout
                         </motion.button>

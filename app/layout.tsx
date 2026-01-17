@@ -41,7 +41,7 @@ export default function RootLayout({
                         <Navbar />
                         <MegaMenu />
                     </div>
-                    <main className="relative min-h-screen">
+                    <main className="relative my-5">
                         {children}
                     </main>
                     <Footer />

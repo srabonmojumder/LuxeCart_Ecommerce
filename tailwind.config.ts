@@ -101,6 +101,7 @@ const config: Config = {
                 'strong': '0 8px 32px rgba(0, 0, 0, 0.12)',
                 'xl': '0 16px 48px rgba(0, 0, 0, 0.16)',
                 '2xl': '0 24px 64px rgba(0, 0, 0, 0.20)',
+                'premium': '0 30px 60px -10px rgba(0, 0, 0, 0.12), 0 10px 30px -5px rgba(0, 0, 0, 0.04)',
                 'accent': '0 8px 32px rgba(167, 158, 242, 0.25)',
             },
             // Border radius

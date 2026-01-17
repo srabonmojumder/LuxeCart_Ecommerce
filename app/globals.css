@@ -330,7 +330,7 @@ body {
   }
 
   .card-elevated {
-    @apply bg-white dark:bg-slate-900 rounded-[2.5rem] border border-primary/5 shadow-2xl p-8 transition-all duration-500;
+    @apply bg-white dark:bg-slate-900 rounded-[2.5rem] border border-primary/5 dark:border-white/5 shadow-premium dark:shadow-2xl p-8 transition-all duration-500;
   }
 
   .card-interactive {

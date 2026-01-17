@@ -13,7 +13,7 @@ export default function OrderSuccessPage() {
     }, []);
 
     return (
-        <div className="pt-32 min-h-screen bg-white flex items-center justify-center px-4">
+        <div className="pt-0 min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center px-4">
             <div className="max-w-4xl mx-auto text-center space-y-16">
 
                 {/* Status Hero */}
@@ -32,7 +32,7 @@ export default function OrderSuccessPage() {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="text-6xl md:text-8xl font-black text-primary leading-[0.9] tracking-tighter"
+                            className="text-6xl md:text-8xl font-black text-primary dark:text-white leading-[0.9] tracking-tighter"
                         >
                             Sequence <br />Complete.
                         </motion.h1>
@@ -40,7 +40,7 @@ export default function OrderSuccessPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.4 }}
-                            className="text-xl text-secondary max-w-xl mx-auto font-medium"
+                            className="text-xl text-secondary dark:text-gray-400 max-w-xl mx-auto font-medium"
                         >
                             Your selection has been authorized and is now entering our logistics pipeline.
                             Thank you for your refined choice.
@@ -54,11 +54,11 @@ export default function OrderSuccessPage() {
                         initial={{ opacity: 0, x: -30 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.6 }}
-                        className="p-10 bg-primary rounded-[3rem] text-white space-y-4 text-left shadow-2xl"
+                        className="p-10 bg-primary dark:bg-white/5 rounded-[3rem] text-white space-y-4 text-left shadow-2xl dark:border dark:border-white/10"
                     >
                         <Package className="w-10 h-10 text-accent mb-4" />
                         <span className="text-[10px] font-black uppercase tracking-widest text-white/40 block">Reference ID</span>
-                        <p className="text-2xl font-black tracking-tighter">
+                        <p className="text-2xl font-black tracking-tighter text-white">
                             {orderNumber || "PROCESS..."}
                         </p>
                     </motion.div>
@@ -67,7 +67,7 @@ export default function OrderSuccessPage() {
                         initial={{ opacity: 0, x: 30 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.7 }}
-                        className="p-10 bg-primary/2 rounded-[3rem] border-2 border-primary/5 text-primary space-y-4 text-left shadow-sm"
+                        className="p-10 bg-primary/2 dark:bg-white/5 rounded-[3rem] border-2 border-primary/5 dark:border-white/10 text-primary dark:text-white space-y-4 text-left shadow-sm"
                     >
                         <Mail className="w-10 h-10 text-accent mb-4" />
                         <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 block">Notification</span>
@@ -87,7 +87,7 @@ export default function OrderSuccessPage() {
                     <Link href="/products" className="btn-primary flex items-center gap-4">
                         Explore Collection <ArrowRight className="w-5 h-5 text-accent" />
                     </Link>
-                    <Link href="/account" className="flex items-center gap-4 text-xs font-black uppercase tracking-widest text-primary hover:gap-6 transition-all group">
+                    <Link href="/account" className="flex items-center gap-4 text-xs font-black uppercase tracking-widest text-primary dark:text-white hover:gap-6 transition-all group">
                         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                         Account Dashboard.
                     </Link>

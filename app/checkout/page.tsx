@@ -213,16 +213,16 @@ export default function CheckoutPage() {
                         </section>
 
                         {/* Section: Payment */}
-                        <section className="space-y-5 md:space-y-8 p-5 md:p-8 bg-primary text-white rounded-2xl md:rounded-3xl shadow-xl relative overflow-hidden">
+                        <section className="space-y-5 md:space-y-8 p-5 md:p-8 bg-primary/5 dark:bg-white/5 rounded-2xl md:rounded-3xl border border-primary/10 dark:border-white/10 relative overflow-hidden">
                             <div className="relative z-10 space-y-5 md:space-y-8">
-                                <div className="flex items-center justify-between border-b border-white/10 pb-4 md:pb-6">
+                                <div className="flex items-center justify-between border-b border-primary/10 dark:border-white/10 pb-4 md:pb-6">
                                     <div className="flex items-center gap-3 md:gap-4">
-                                        <div className="w-10 h-10 md:w-12 md:h-12 bg-white/10 rounded-xl flex items-center justify-center text-accent">
+                                        <div className="w-10 h-10 md:w-12 md:h-12 bg-white dark:bg-white/10 rounded-xl flex items-center justify-center text-accent shadow-sm">
                                             <Lock className="w-5 h-5 md:w-6 md:h-6" />
                                         </div>
-                                        <h2 className="text-lg md:text-2xl font-black tracking-tight">Payment Details</h2>
+                                        <h2 className="text-lg md:text-2xl font-black text-primary dark:text-white tracking-tight">Payment Details</h2>
                                     </div>
-                                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-accent/20 text-accent rounded-full text-[9px] md:text-[10px] font-bold tracking-wider uppercase border border-accent/30">
+                                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-accent/10 text-accent rounded-full text-[9px] md:text-[10px] font-bold tracking-wider uppercase border border-accent/20">
                                         <ShieldCheck className="w-3 h-3 md:w-3.5 md:h-3.5" />
                                         <span className="hidden xs:inline">Secure</span>
                                     </div>
@@ -230,43 +230,53 @@ export default function CheckoutPage() {
 
                                 <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                                     <div className="md:col-span-2 space-y-2">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-white/50">Card Number</label>
-                                        <input
-                                            type="text"
-                                            name="cardNumber"
-                                            required
-                                            value={formData.cardNumber}
-                                            onChange={handleChange}
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 md:py-4 text-base md:text-lg font-bold placeholder:text-white/20 focus:border-accent focus:outline-none transition-all tracking-wider"
-                                            placeholder="1234 5678 9012 3456"
-                                            maxLength={16}
-                                        />
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Card Number</label>
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                name="cardNumber"
+                                                required
+                                                value={formData.cardNumber}
+                                                onChange={handleChange}
+                                                className="input-field pl-12"
+                                                placeholder="0000 0000 0000 0000"
+                                                maxLength={19}
+                                            />
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                                <CreditCard className="w-5 h-5" />
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-white/50">Expiry Date</label>
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Expiry Date</label>
                                         <input
                                             type="text"
                                             name="expiryDate"
                                             required
                                             value={formData.expiryDate}
                                             onChange={handleChange}
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 md:py-4 text-base md:text-lg font-bold placeholder:text-white/20 focus:border-accent focus:outline-none transition-all"
+                                            className="input-field"
                                             placeholder="MM/YY"
                                             maxLength={5}
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-white/50">CVV</label>
-                                        <input
-                                            type="text"
-                                            name="cvv"
-                                            required
-                                            value={formData.cvv}
-                                            onChange={handleChange}
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 md:py-4 text-base md:text-lg font-bold placeholder:text-white/20 focus:border-accent focus:outline-none transition-all"
-                                            placeholder="123"
-                                            maxLength={3}
-                                        />
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">CVV</label>
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                name="cvv"
+                                                required
+                                                value={formData.cvv}
+                                                onChange={handleChange}
+                                                className="input-field"
+                                                placeholder="123"
+                                                maxLength={3}
+                                            />
+                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                                <Lock className="w-4 h-4" />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
