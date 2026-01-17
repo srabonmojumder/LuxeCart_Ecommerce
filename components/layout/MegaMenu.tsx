@@ -145,7 +145,7 @@ export default function MegaMenu() {
 
     return (
         <nav className="hidden lg:block border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto px-4 md:px-8">
                 <ul className="flex items-center gap-0">
                     {menuItems.map((item) => (
                         <li
@@ -156,11 +156,10 @@ export default function MegaMenu() {
                         >
                             <Link
                                 href={item.href}
-                                className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium transition-colors ${
-                                    item.featured
-                                        ? 'text-orange-500 hover:text-orange-600'
-                                        : 'text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400'
-                                } ${activeMenu === item.label ? 'text-teal-600 dark:text-teal-400' : ''}`}
+                                className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium transition-colors ${item.featured
+                                    ? 'text-hot hover:text-hot/80'
+                                    : 'text-slate-700 dark:text-slate-300 hover:text-accent dark:hover:text-accent-400'
+                                    } ${activeMenu === item.label ? 'text-accent dark:text-accent-400' : ''}`}
                             >
                                 {item.icon && <item.icon className="w-4 h-4" />}
                                 {item.label}
@@ -190,18 +189,17 @@ export default function MegaMenu() {
                                                                 <li key={link.label}>
                                                                     <Link
                                                                         href={link.href}
-                                                                        className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors group"
+                                                                        className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-accent dark:hover:text-accent-400 transition-colors group"
                                                                     >
                                                                         <ChevronRight className="w-3 h-3 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />
                                                                         {link.label}
                                                                         {link.badge && (
-                                                                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                                                                                link.badge === 'New'
-                                                                                    ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400'
-                                                                                    : link.badge === 'Hot'
-                                                                                    ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400'
+                                                                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${link.badge === 'New'
+                                                                                ? 'bg-accent/10 dark:bg-accent/20 text-accent'
+                                                                                : link.badge === 'Hot'
+                                                                                    ? 'bg-hot/10 dark:bg-hot/20 text-hot'
                                                                                     : 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400'
-                                                                            }`}>
+                                                                                }`}>
                                                                                 {link.badge}
                                                                             </span>
                                                                         )}
@@ -228,7 +226,7 @@ export default function MegaMenu() {
                                                             <p className="text-white text-sm font-semibold mb-1">
                                                                 {item.promoTitle}
                                                             </p>
-                                                            <p className="text-teal-400 text-xs font-bold">
+                                                            <p className="text-accent-400 text-xs font-bold">
                                                                 {item.promoDiscount}
                                                             </p>
                                                         </div>

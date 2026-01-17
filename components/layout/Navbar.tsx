@@ -28,74 +28,67 @@ export default function Navbar() {
 
     return (
         <>
-        {/* Top Banner - Free Shipping */}
-        <div className={`fixed top-0 left-0 right-0 z-50 bg-primary py-2 text-center transition-all duration-300 ${isScrolled ? 'opacity-0 -translate-y-full pointer-events-none' : 'opacity-100 translate-y-0'}`}>
-            <p className="text-white text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase">
-                Free Shipping on All Orders Over $75!
-            </p>
-        </div>
+            <header className={`transition-all duration-300 ${isScrolled ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm py-2' : 'bg-white dark:bg-slate-900 py-3 md:py-4'
+                }`}>
+                <div className="max-w-7xl mx-auto px-4 md:px-8">
+                    <div className="flex justify-between items-center h-14 md:h-16">
+                        {/* Left - Menu & Search */}
+                        <div className="flex items-center gap-2 md:gap-4 flex-1">
+                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                                <Menu className="w-6 h-6 text-primary dark:text-white" />
+                            </button>
+                            {/* Desktop Search Button */}
+                            <button
+                                onClick={() => setIsSearchOpen(true)}
+                                className="hidden md:flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-gray-400 dark:text-gray-500 group"
+                            >
+                                <Search className="w-5 h-5 group-hover:text-primary dark:group-hover:text-white transition-colors" />
+                                <span className="text-sm font-medium">Search</span>
+                            </button>
+                            {/* Mobile Search Button */}
+                            <button
+                                onClick={() => setIsSearchOpen(true)}
+                                className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                            >
+                                <Search className="w-5 h-5 text-primary dark:text-white" />
+                            </button>
+                        </div>
 
-        <header className={`fixed left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'top-0 bg-white/95 backdrop-blur-md shadow-sm py-2' : 'top-8 bg-white py-3 md:py-4'
-            }`}>
-            <div className="max-w-7xl mx-auto px-4 md:px-8">
-                <div className="flex justify-between items-center h-14 md:h-16">
-                    {/* Left - Menu & Search */}
-                    <div className="flex items-center gap-2 md:gap-4 flex-1">
-                        <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                            <Menu className="w-6 h-6 text-primary" />
-                        </button>
-                        {/* Desktop Search Button */}
-                        <button
-                            onClick={() => setIsSearchOpen(true)}
-                            className="hidden md:flex items-center gap-2 p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-400 group"
-                        >
-                            <Search className="w-5 h-5 group-hover:text-primary transition-colors" />
-                            <span className="text-sm font-medium">Search</span>
-                        </button>
-                        {/* Mobile Search Button */}
-                        <button
-                            onClick={() => setIsSearchOpen(true)}
-                            className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
-                        >
-                            <Search className="w-5 h-5 text-primary" />
-                        </button>
-                    </div>
+                        {/* Center - Logo */}
+                        <div className="flex justify-center">
+                            <Link href="/" className="text-2xl md:text-4xl font-black tracking-tighter text-primary dark:text-white">
+                                LuxeCart
+                            </Link>
+                        </div>
 
-                    {/* Center - Logo */}
-                    <div className="flex justify-center">
-                        <Link href="/" className="text-2xl md:text-4xl font-black tracking-tighter text-primary">
-                            LuxeCart
-                        </Link>
-                    </div>
-
-                    {/* Right - Actions */}
-                    <div className="flex items-center justify-end gap-2 md:gap-6 flex-1">
-                        <Link href="/account" className="hidden md:block p-2 hover:bg-gray-100 rounded-full transition-colors">
-                            <User className="w-6 h-6 text-primary" />
-                        </Link>
-                        <Link href="/wishlist" className="relative p-2 hover:bg-gray-100 rounded-full transition-colors group">
-                            <Heart className="w-6 h-6 text-primary group-hover:text-accent transition-colors" />
-                            {mounted && wishlist.length > 0 && (
-                                <span className="absolute top-1 right-1 bg-accent text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-                                    {wishlist.length}
-                                </span>
-                            )}
-                        </Link>
-                        <Link href="/cart" className="relative p-2 hover:bg-gray-100 rounded-full transition-colors group">
-                            <ShoppingCart className="w-6 h-6 text-primary group-hover:text-accent transition-colors" />
-                            {mounted && totalItems > 0 && (
-                                <span className="absolute top-1 right-1 bg-accent text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-                                    {totalItems}
-                                </span>
-                            )}
-                        </Link>
+                        {/* Right - Actions */}
+                        <div className="flex items-center justify-end gap-2 md:gap-6 flex-1">
+                            <Link href="/account" className="hidden md:block p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                                <User className="w-6 h-6 text-primary dark:text-white" />
+                            </Link>
+                            <Link href="/wishlist" className="relative p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors group">
+                                <Heart className="w-6 h-6 text-primary dark:text-white group-hover:text-accent transition-colors" />
+                                {mounted && wishlist.length > 0 && (
+                                    <span className="absolute top-1 right-1 bg-accent text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                                        {wishlist.length}
+                                    </span>
+                                )}
+                            </Link>
+                            <Link href="/cart" className="relative p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors group">
+                                <ShoppingCart className="w-6 h-6 text-primary dark:text-white group-hover:text-accent transition-colors" />
+                                {mounted && totalItems > 0 && (
+                                    <span className="absolute top-1 right-1 bg-accent text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                                        {totalItems}
+                                    </span>
+                                )}
+                            </Link>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </header>
+            </header>
 
-        {/* Search Modal */}
-        <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+            {/* Search Modal */}
+            <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
         </>
     );
 }

@@ -71,7 +71,7 @@ export default function ProductDetailPage() {
     const images = [product.image, product.image, product.image];
 
     return (
-        <div className="pt-[104px] md:pt-[112px] pb-36 md:pb-8 min-h-screen bg-slate-50 dark:bg-slate-900">
+        <div className="pb-36 md:pb-8 min-h-screen bg-slate-50 dark:bg-slate-900">
             <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 md:py-8 lg:py-12">
                 {/* Breadcrumb */}
                 <nav className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm text-slate-600 dark:text-slate-400 mb-4 md:mb-8 overflow-x-auto">
@@ -97,11 +97,10 @@ export default function ProductDetailPage() {
                                             onClick={() => setSelectedImage(idx)}
                                             whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
-                                            className={`relative aspect-square rounded-xl overflow-hidden transition-all duration-300 ${
-                                                selectedImage === idx
+                                            className={`relative aspect-square rounded-xl overflow-hidden transition-all duration-300 ${selectedImage === idx
                                                     ? 'ring-2 ring-teal-500 shadow-lg shadow-teal-500/30'
                                                     : 'opacity-60 hover:opacity-100 grayscale hover:grayscale-0'
-                                            }`}
+                                                }`}
                                         >
                                             <Image
                                                 src={img}
@@ -217,11 +216,10 @@ export default function ProductDetailPage() {
                                             key={idx}
                                             onClick={() => setSelectedImage(idx)}
                                             whileTap={{ scale: 0.95 }}
-                                            className={`relative mt-3 flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden transition-all duration-200 ${
-                                                selectedImage === idx
+                                            className={`relative mt-3 flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden transition-all duration-200 ${selectedImage === idx
                                                     ? 'ring-2 ring-teal-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-900 shadow-md'
                                                     : 'opacity-50 hover:opacity-80'
-                                            }`}
+                                                }`}
                                         >
                                             <Image
                                                 src={img}
@@ -245,11 +243,10 @@ export default function ProductDetailPage() {
                                         <button
                                             key={idx}
                                             onClick={() => setSelectedImage(idx)}
-                                            className={`h-1.5 rounded-full transition-all duration-300 ${
-                                                selectedImage === idx
+                                            className={`h-1.5 rounded-full transition-all duration-300 ${selectedImage === idx
                                                     ? 'w-6 bg-teal-500'
                                                     : 'w-1.5 bg-slate-300 dark:bg-slate-600'
-                                            }`}
+                                                }`}
                                         />
                                     ))}
                                 </div>

@@ -3,6 +3,8 @@ import "./globals.css";
 import { Toaster } from 'sonner';
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import TopUtilityBar from "@/components/layout/TopUtilityBar";
+import MegaMenu from "@/components/layout/MegaMenu";
 
 export const metadata: Metadata = {
     title: "LuxeCart - Modern Home Accessories",
@@ -43,9 +45,13 @@ export default function RootLayout({
                     }}
                 />
             </head>
-            <body suppressHydrationWarning className="antialiased bg-white text-secondary">
-                <Navbar />
-                <main className="min-h-screen">
+            <body suppressHydrationWarning className="antialiased bg-white dark:bg-slate-950 text-secondary dark:text-gray-400">
+                <TopUtilityBar />
+                <div className="sticky top-0 z-50">
+                    <Navbar />
+                    <MegaMenu />
+                </div>
+                <main className="relative min-h-screen">
                     {children}
                 </main>
                 <Footer />

@@ -65,7 +65,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
             className="group block"
         >
             <Link href={`/products/${product.id}`} className="block touch-manipulation">
-                <div className="relative aspect-[3/4] overflow-hidden bg-gray-50 rounded-xl md:rounded-2xl mb-2.5 md:mb-3 group">
+                <div className="relative aspect-[3/4] overflow-hidden bg-gray-50 dark:bg-slate-900 rounded-xl md:rounded-2xl mb-2.5 md:mb-3 group">
                     <Image
                         src={product.image}
                         alt={product.name}
@@ -93,7 +93,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                     {/* Mobile Wishlist Button */}
                     <button
                         onClick={handleToggleWishlist}
-                        className={`md:hidden absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-colors ${inWishlist ? 'bg-accent text-white' : 'bg-white/90 text-primary'}`}
+                        className={`md:hidden absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-colors ${inWishlist ? 'bg-accent text-white' : 'bg-white/90 dark:bg-slate-900/90 text-primary dark:text-white'}`}
                     >
                         <Heart className={`w-4 h-4 ${inWishlist ? 'fill-current' : ''}`} />
                     </button>
@@ -102,7 +102,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                     <div className="absolute inset-x-3 bottom-3 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 hidden md:block">
                         <button
                             onClick={handleAddToCart}
-                            className="w-full bg-primary text-white py-2.5 rounded-lg font-bold text-xs tracking-wide shadow-xl hover:bg-black transition-colors"
+                            className="w-full bg-primary dark:bg-white text-white dark:text-primary py-2.5 rounded-lg font-bold text-xs tracking-wide shadow-xl hover:bg-black dark:hover:bg-gray-200 transition-colors"
                         >
                             ADD TO CART
                         </button>
@@ -112,7 +112,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                     <div className="absolute top-3 right-3 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 hidden md:flex flex-col gap-2">
                         <button
                             onClick={handleToggleWishlist}
-                            className={`w-9 h-9 rounded-full flex items-center justify-center shadow-lg transition-colors ${inWishlist ? 'bg-accent text-white' : 'bg-white text-primary hover:bg-accent hover:text-white'}`}
+                            className={`w-9 h-9 rounded-full flex items-center justify-center shadow-lg transition-colors ${inWishlist ? 'bg-accent text-white' : 'bg-white dark:bg-slate-800 text-primary dark:text-white hover:bg-accent hover:text-white'}`}
                         >
                             <Heart className={`w-4 h-4 ${inWishlist ? 'fill-current' : ''}`} />
                         </button>
@@ -120,12 +120,12 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                 </div>
 
                 <div className="space-y-0.5 md:space-y-1 px-0.5">
-                    <h3 className="text-secondary text-xs md:text-sm font-medium line-clamp-1 group-hover:text-primary transition-colors">
+                    <h3 className="text-secondary dark:text-gray-400 text-xs md:text-sm font-medium line-clamp-1 group-hover:text-primary dark:group-hover:text-white transition-colors">
                         {product.name}
                     </h3>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5">
-                            <span className="text-primary font-bold text-sm md:text-base">
+                            <span className="text-primary dark:text-white font-bold text-sm md:text-base">
                                 ${discountedPrice.toFixed(2)}
                             </span>
                             {product.discount && (
@@ -136,7 +136,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                         </div>
                         <div className="flex items-center gap-0.5">
                             <Star className="w-3 h-3 text-amber-400 fill-current" />
-                            <span className="text-[10px] font-bold text-primary">{product.rating}</span>
+                            <span className="text-[10px] font-bold text-primary dark:text-white">{product.rating}</span>
                         </div>
                     </div>
                 </div>

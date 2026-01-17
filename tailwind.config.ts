@@ -72,17 +72,17 @@ const config: Config = {
             },
             // Custom spacing scale (8px base unit)
             spacing: {
-                '3xs': '0.125rem',   // 2px
-                '2xs': '0.25rem',    // 4px
-                'xs': '0.5rem',      // 8px
-                'sm': '0.75rem',     // 12px
-                'md': '1rem',        // 16px
-                'lg': '1.5rem',      // 24px
-                'xl': '2rem',        // 32px
-                '2xl': '3rem',       // 48px
-                '3xl': '4rem',       // 64px
-                '4xl': '6rem',       // 96px
-                '5xl': '8rem',       // 128px
+                'tk-3xs': '0.125rem',   // 2px
+                'tk-2xs': '0.25rem',    // 4px
+                'tk-xs': '0.5rem',      // 8px
+                'tk-sm': '0.75rem',     // 12px
+                'tk-md': '1rem',        // 16px
+                'tk-lg': '1.5rem',      // 24px
+                'tk-xl': '2rem',        // 32px
+                'tk-2xl': '3rem',       // 48px
+                'tk-3xl': '4rem',       // 64px
+                'tk-4xl': '6rem',       // 96px
+                'tk-5xl': '8rem',       // 128px
                 '18': '4.5rem',      // 72px - for navbar
                 '22': '5.5rem',      // 88px
                 'safe': 'env(safe-area-inset-bottom)',

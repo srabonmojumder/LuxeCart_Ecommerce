@@ -32,7 +32,7 @@ export default function TopUtilityBar() {
 
                     {/* Center - Promo Text (mobile only) */}
                     <div className="md:hidden text-center flex-1">
-                        <span className="text-teal-400 font-medium">Free Shipping on orders $50+</span>
+                        <span className="text-accent-400 font-medium">Free Shipping on orders $50+</span>
                     </div>
 
                     {/* Right - Actions */}
@@ -66,9 +66,8 @@ export default function TopUtilityBar() {
                                                 setCurrency(c);
                                                 setShowCurrencyDropdown(false);
                                             }}
-                                            className={`block w-full text-left px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 ${
-                                                currency === c ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400' : ''
-                                            }`}
+                                            className={`block w-full text-left px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 ${currency === c ? 'bg-accent/10 text-accent' : ''
+                                                }`}
                                         >
                                             {c}
                                         </button>
@@ -98,9 +97,8 @@ export default function TopUtilityBar() {
                                                 setLanguage(l);
                                                 setShowLanguageDropdown(false);
                                             }}
-                                            className={`block w-full text-left px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 ${
-                                                language === l ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400' : ''
-                                            }`}
+                                            className={`block w-full text-left px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 ${language === l ? 'bg-accent/10 text-accent' : ''
+                                                }`}
                                         >
                                             {l}
                                         </button>

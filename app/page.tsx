@@ -38,9 +38,9 @@ export default function Home() {
     ];
 
     return (
-        <div className="pt-24 md:pt-32 bg-white min-h-screen">
+        <div className="bg-white dark:bg-slate-950 min-h-screen">
             {/* Hero Section */}
-            <section className="relative h-[80vh] min-h-[500px] max-h-[800px] bg-gray-100 overflow-hidden mx-4 md:mx-8 rounded-[2rem] md:rounded-[3rem]">
+            <section className="relative h-[80vh] min-h-[500px] max-h-[800px] bg-gray-100 dark:bg-slate-900 overflow-hidden mx-4 md:mx-8 rounded-[2rem] md:rounded-[3rem]">
                 <Image
                     src="/home_accessories_hero.png"
                     alt="LuxeCart Collection"
@@ -85,10 +85,10 @@ export default function Home() {
                             viewport={{ once: true }}
                         >
                             <Link href={`/products?category=${cat.name.toLowerCase()}`} className="flex flex-col items-center gap-4 group">
-                                <div className="w-20 h-20 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-gray-50 shadow-sm group-hover:shadow-xl group-hover:border-accent transition-all duration-500 relative bg-gray-50">
+                                <div className="w-20 h-20 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-gray-50 dark:border-slate-800 shadow-sm group-hover:shadow-xl group-hover:border-accent transition-all duration-500 relative bg-gray-50 dark:bg-slate-800">
                                     <Image src={cat.image} alt={cat.name} fill sizes="112px" className="object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
                                 </div>
-                                <span className="text-xs md:text-sm font-black tracking-widest uppercase text-primary group-hover:text-accent transition-colors">{cat.name}</span>
+                                <span className="text-xs md:text-sm font-black tracking-widest uppercase text-primary dark:text-white group-hover:text-accent transition-colors">{cat.name}</span>
                             </Link>
                         </motion.div>
                     ))}
@@ -100,12 +100,12 @@ export default function Home() {
                 <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
                     {features.map((f, i) => (
                         <div key={i} className="flex items-center gap-4 group justify-center md:justify-start">
-                            <div className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-colors">
-                                <f.icon className="w-6 h-6" />
+                            <div className="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-colors">
+                                <f.icon className="w-6 h-6 dark:text-gray-300" />
                             </div>
                             <div className="hidden sm:block">
-                                <h4 className="font-bold text-sm text-primary">{f.title}</h4>
-                                <p className="text-xs text-secondary">{f.desc}</p>
+                                <h4 className="font-bold text-sm text-primary dark:text-white">{f.title}</h4>
+                                <p className="text-xs text-secondary dark:text-gray-400">{f.desc}</p>
                             </div>
                         </div>
                     ))}
@@ -113,24 +113,24 @@ export default function Home() {
             </section>
 
             {/* Best Sellers */}
-            <section className="py-12 md:py-24 bg-white">
+            <section className="py-12 md:py-24 bg-white dark:bg-slate-950">
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
                         <div className="max-w-xl">
-                            <h2 className="text-4xl md:text-6xl font-black text-primary tracking-tighter mb-4">Our Best Sellers</h2>
-                            <p className="text-secondary text-lg">Shop the most loved items this season.</p>
+                            <h2 className="text-4xl md:text-6xl font-black text-primary dark:text-white tracking-tighter mb-4">Our Best Sellers</h2>
+                            <p className="text-secondary dark:text-gray-400 text-lg">Shop the most loved items this season.</p>
                         </div>
                         <div className="flex gap-8 border-b border-gray-100">
                             {['Hot', 'New', 'Sale'].map((tab) => (
                                 <button
                                     key={tab}
                                     onClick={() => setActiveTab(tab)}
-                                    className={`pb-4 text-sm font-black tracking-widest uppercase transition-all relative ${activeTab === tab ? 'text-primary' : 'text-gray-400'
+                                    className={`pb-4 text-sm font-black tracking-widest uppercase transition-all relative ${activeTab === tab ? 'text-primary dark:text-white' : 'text-gray-400'
                                         }`}
                                 >
                                     {tab}
                                     {activeTab === tab && (
-                                        <motion.div layoutId="activeTabHome" className="absolute bottom-[-1px] left-0 right-0 h-0.5 bg-primary" />
+                                        <motion.div layoutId="activeTabHome" className="absolute bottom-[-1px] left-0 right-0 h-0.5 bg-primary dark:bg-white" />
                                     )}
                                 </button>
                             ))}
@@ -144,9 +144,9 @@ export default function Home() {
                     </div>
 
                     <div className="mt-20 text-center">
-                        <Link href="/products" className="inline-flex items-center gap-3 text-primary font-black tracking-[0.2em] text-sm group uppercase">
+                        <Link href="/products" className="inline-flex items-center gap-3 text-primary dark:text-white font-black tracking-[0.2em] text-sm group uppercase">
                             Shop All Products
-                            <div className="w-10 h-10 rounded-full border border-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+                            <div className="w-10 h-10 rounded-full border border-primary dark:border-white/20 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
                                 <ArrowRight className="w-5 h-5" />
                             </div>
                         </Link>
@@ -174,19 +174,19 @@ export default function Home() {
                     <div className="space-y-8">
                         <div className="space-y-4">
                             <span className="text-accent font-black tracking-[0.4em] text-xs uppercase">LIMITED OFFER</span>
-                            <h2 className="text-4xl md:text-7xl font-black text-primary tracking-tighter leading-tight">
+                            <h2 className="text-4xl md:text-7xl font-black text-primary dark:text-white tracking-tighter leading-tight">
                                 Minimalist <br />Design Deal
                             </h2>
                         </div>
-                        <p className="text-secondary text-xl leading-relaxed font-medium">
+                        <p className="text-secondary dark:text-gray-400 text-xl leading-relaxed font-medium">
                             Experience the perfect blend of form and function. Our sculptural vase collection is now available at an exclusive mid-season price.
                         </p>
                         <div className="flex gap-6 items-center">
                             <div className="flex flex-col">
                                 <span className="text-gray-400 text-sm font-bold line-through">$89.00</span>
-                                <span className="text-4xl md:text-5xl font-black text-primary">$45.00</span>
+                                <span className="text-4xl md:text-5xl font-black text-primary dark:text-white">$45.00</span>
                             </div>
-                            <div className="h-16 w-[1px] bg-gray-200 hidden sm:block" />
+                            <div className="h-16 w-[1px] bg-gray-200 dark:bg-slate-700 hidden sm:block" />
                             <div className="flex flex-col">
                                 <span className="text-[10px] text-secondary font-black tracking-widest uppercase mb-2">Offer ends in</span>
                                 <div className="flex gap-4">
@@ -210,14 +210,14 @@ export default function Home() {
             <section className="py-24 md:py-40">
                 <div className="max-w-4xl mx-auto px-4 text-center space-y-12">
                     <div className="space-y-4">
-                        <h2 className="text-4xl md:text-7xl font-black text-primary tracking-tighter">Stay Inspired</h2>
-                        <p className="text-secondary text-lg px-8">Join our community and get exclusive early access to our new drops, styling tips, and 15% off your first order.</p>
+                        <h2 className="text-4xl md:text-7xl font-black text-primary dark:text-white tracking-tighter">Stay Inspired</h2>
+                        <p className="text-secondary dark:text-gray-400 text-lg px-8">Join our community and get exclusive early access to our new drops, styling tips, and 15% off your first order.</p>
                     </div>
                     <div className="max-w-md mx-auto relative group">
                         <input
                             type="email"
                             placeholder="Enter your email"
-                            className="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl px-8 py-5 text-sm focus:outline-none focus:border-accent transition-all pl-8 pr-32"
+                            className="w-full bg-gray-50 dark:bg-slate-900 border-2 border-gray-100 dark:border-slate-800 rounded-2xl px-8 py-5 text-sm focus:outline-none focus:border-accent transition-all pl-8 pr-32 dark:text-white"
                         />
                         <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white px-8 py-3 rounded-xl text-xs font-black tracking-widest hover:bg-accent transition-all uppercase">
                             Join
