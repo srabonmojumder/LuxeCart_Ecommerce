@@ -25,8 +25,8 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
 
     useEffect(() => {
         const handleScroll = () => {
-            // Show bar when scrolled down 300px
-            setVisible(window.scrollY > 300);
+            // Show bar when scrolled down 100px
+            setVisible(window.scrollY > 100);
         };
 
         window.addEventListener('scroll', handleScroll);
@@ -97,7 +97,7 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 100, opacity: 0 }}
                     transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                    className="md:hidden fixed bottom-[85px] left-0 right-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800 shadow-2xl rounded-t-2xl"
+                    className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800 shadow-2xl safe-area-bottom pb-safe"
                 >
                     {/* Out of stock banner */}
                     {!product.inStock && (
@@ -136,8 +136,8 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
                                     whileTap={{ scale: 0.9 }}
                                     onClick={handleToggleWishlist}
                                     className={`p-2.5 sm:p-3 rounded-xl transition-all ${inWishlist
-                                            ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
-                                            : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
+                                        ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
+                                        : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
                                         }`}
                                 >
                                     <Heart className={`w-4 h-4 sm:w-5 sm:h-5 ${inWishlist ? 'fill-current' : ''}`} />
