@@ -65,8 +65,15 @@ export default function Navbar() {
 
                         {/* Center - Logo */}
                         <div className="flex justify-center">
-                            <Link href="/" className="text-2xl md:text-4xl font-black tracking-tighter text-primary dark:text-white">
-                                LuxeCart
+                            <Link
+                                href="/"
+                                className="relative group"
+                            >
+                                <span className="text-xl md:text-2xl lg:text-3xl font-black tracking-tighter bg-gradient-to-r from-primary via-accent to-primary dark:from-accent dark:via-purple-400 dark:to-accent bg-clip-text text-transparent hover:from-accent hover:via-primary hover:to-accent dark:hover:from-purple-300 dark:hover:via-accent dark:hover:to-purple-300 transition-all duration-500 bg-[length:200%_auto] hover:bg-right">
+                                    LuxeCart
+                                </span>
+                                {/* Subtle glow effect on hover */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-accent/0 via-accent/20 to-accent/0 dark:from-purple-400/0 dark:via-purple-400/30 dark:to-purple-400/0 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
                             </Link>
                         </div>
 
