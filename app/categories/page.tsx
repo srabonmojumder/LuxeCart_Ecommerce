@@ -64,7 +64,7 @@ export default function CategoriesPage() {
                     className="mt-16 relative h-96 rounded-3xl overflow-hidden"
                 >
                     <Image
-                        src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1600"
+                        src="/photo-1607082348824-0a96f2a4b9da.webp"
                         alt="Special Offers"
                         fill
                         className="object-cover"

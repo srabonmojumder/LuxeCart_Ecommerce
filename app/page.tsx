@@ -20,7 +20,7 @@ import { products } from '@/data/products';
 const categories = [
     { name: 'Decor', image: '/category_decor.png' },
     { name: 'Kitchen', image: '/category_kitchen.png' },
-    { name: 'Furniture', image: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400' },
+    { name: 'Furniture', image: '/photo-1592078615290-033ee584e267.webp' },
     { name: 'Lighting', image: '/category_lighting.png' },
     { name: 'Textiles', image: '/category_textiles.png' },
     { name: 'Plants', image: '/category_plants.png' },
@@ -46,6 +46,7 @@ export default function Home() {
                     alt="LuxeCart Collection"
                     fill
                     priority
+                    sizes="100vw"
                     className="object-cover"
                 />
                 <div className="absolute inset-0 bg-black/15" />
@@ -85,7 +86,7 @@ export default function Home() {
                         >
                             <Link href={`/products?category=${cat.name.toLowerCase()}`} className="flex flex-col items-center gap-4 group">
                                 <div className="w-20 h-20 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-gray-50 shadow-sm group-hover:shadow-xl group-hover:border-accent transition-all duration-500 relative bg-gray-50">
-                                    <Image src={cat.image} alt={cat.name} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    <Image src={cat.image} alt={cat.name} fill sizes="112px" className="object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
                                 </div>
                                 <span className="text-xs md:text-sm font-black tracking-widest uppercase text-primary group-hover:text-accent transition-colors">{cat.name}</span>
                             </Link>
@@ -158,10 +159,12 @@ export default function Home() {
                 <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-16 items-center">
                     <div className="relative aspect-[4/5] md:aspect-square rounded-[2rem] overflow-hidden shadow-2xl">
                         <Image
-                            src="https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800"
+                            src="/photo-1513506003901-1e6a229e2d15.webp"
                             alt="Modern Decor"
                             fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
                             className="object-cover"
+                            loading="lazy"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                         <div className="absolute top-8 left-8">

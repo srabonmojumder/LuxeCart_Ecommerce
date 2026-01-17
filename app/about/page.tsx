@@ -55,7 +55,7 @@ export default function AboutPage() {
                             className="relative h-96 rounded-2xl overflow-hidden shadow-2xl"
                         >
                             <Image
-                                src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800"
+                                src="/photo-1556742049-0cfed4f6a45d.webp"
                                 alt="Our Team"
                                 fill
                                 className="object-cover"
@@ -170,17 +170,17 @@ export default function AboutPage() {
                             {
                                 name: 'Sarah Johnson',
                                 role: 'CEO & Founder',
-                                image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400',
+                                image: '/photo-1494790108377-be9c29b29330.webp',
                             },
                             {
                                 name: 'Michael Chen',
                                 role: 'Head of Operations',
-                                image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+                                image: '/photo-1507003211169-0a1dd7228f2d.webp',
                             },
                             {
                                 name: 'Emily Davis',
                                 role: 'Customer Success Lead',
-                                image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400',
+                                image: '/photo-1438761681033-6461ffad8d80.webp',
                             },
                         ].map((member, index) => (
                             <motion.div

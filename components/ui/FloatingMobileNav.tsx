@@ -53,15 +53,15 @@ export default function FloatingMobileNav() {
         <motion.nav
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.3 }}
+            transition={{ delay: 0.3, duration: 0.25 }}
             className="md:hidden fixed bottom-0 left-0 right-0 z-50"
         >
             {/* Gradient fade effect above nav */}
-            <div className="h-6 bg-gradient-to-t from-white dark:from-slate-900 to-transparent pointer-events-none" />
+            <div className="h-4 bg-gradient-to-t from-white dark:from-slate-900 to-transparent pointer-events-none" />
 
             {/* Main Navigation Bar */}
-            <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-700/50 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
-                <div className="flex items-center justify-around px-2 pt-2 pb-safe">
+            <div className="bg-white/98 dark:bg-slate-900/98 backdrop-blur-xl border-t border-slate-200/60 dark:border-slate-700/60 shadow-[0_-2px_16px_rgba(0,0,0,0.06)]">
+                <div className="flex items-center justify-around px-1 pt-1.5 pb-safe">
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = pathname === item.href ||
@@ -71,15 +71,15 @@ export default function FloatingMobileNav() {
                             <Link
                                 key={item.label}
                                 href={item.href}
-                                className="relative flex flex-col items-center min-w-[60px] no-tap-highlight touch-manipulation"
+                                className="relative flex flex-col items-center min-w-[56px] no-tap-highlight touch-manipulation"
                             >
                                 <motion.div
-                                    whileTap={{ scale: 0.9 }}
+                                    whileTap={{ scale: 0.92 }}
                                     className={`
-                                        relative flex flex-col items-center gap-1 py-2 px-3 rounded-xl
+                                        relative flex flex-col items-center gap-0.5 py-1.5 px-2.5 rounded-lg
                                         transition-colors duration-200
                                         ${isActive
-                                            ? 'text-teal-600 dark:text-teal-400'
+                                            ? 'text-accent'
                                             : 'text-slate-500 dark:text-slate-400'
                                         }
                                     `}
@@ -87,8 +87,8 @@ export default function FloatingMobileNav() {
                                     {/* Icon Container */}
                                     <div className="relative">
                                         <Icon
-                                            className={`w-6 h-6 transition-transform duration-200 ${
-                                                isActive ? 'scale-110' : ''
+                                            className={`w-5 h-5 transition-transform duration-200 ${
+                                                isActive ? 'scale-105' : ''
                                             }`}
                                             strokeWidth={isActive ? 2.5 : 2}
                                         />
@@ -99,13 +99,12 @@ export default function FloatingMobileNav() {
                                                 initial={{ scale: 0 }}
                                                 animate={{ scale: 1 }}
                                                 className={`
-                                                    absolute -top-1.5 -right-1.5
-                                                    ${item.badgeColor || 'bg-teal-500'}
-                                                    text-white text-[10px] font-bold
-                                                    rounded-full min-w-[18px] h-[18px]
-                                                    flex items-center justify-center px-1
-                                                    border-2 border-white dark:border-slate-900
-                                                    shadow-sm
+                                                    absolute -top-1 -right-1.5
+                                                    bg-accent
+                                                    text-white text-[9px] font-bold
+                                                    rounded-full min-w-[16px] h-[16px]
+                                                    flex items-center justify-center px-0.5
+                                                    border-[1.5px] border-white dark:border-slate-900
                                                 `}
                                             >
                                                 {item.badge > 99 ? '99+' : item.badge}
@@ -115,10 +114,10 @@ export default function FloatingMobileNav() {
 
                                     {/* Label */}
                                     <span className={`
-                                        text-[10px] font-medium
+                                        text-[10px] font-semibold
                                         transition-colors duration-200
                                         ${isActive
-                                            ? 'text-teal-600 dark:text-teal-400'
+                                            ? 'text-accent'
                                             : 'text-slate-500 dark:text-slate-400'
                                         }
                                     `}>
@@ -129,7 +128,7 @@ export default function FloatingMobileNav() {
                                     {isActive && (
                                         <motion.div
                                             layoutId="mobileNavIndicator"
-                                            className="absolute -bottom-1 w-8 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full"
+                                            className="absolute -bottom-0.5 w-6 h-0.5 bg-accent rounded-full"
                                             transition={{
                                                 type: 'spring',
                                                 stiffness: 500,

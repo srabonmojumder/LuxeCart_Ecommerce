@@ -5,10 +5,12 @@ import Link from 'next/link';
 import { ShoppingCart, Heart, Search, Menu, X, User } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { motion, AnimatePresence } from 'framer-motion';
+import SearchModal from '@/components/search/SearchModal';
 
 export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     const wishlist = useStore((state) => state.wishlist);
     const getTotalItems = useStore((state) => state.getTotalItems);
@@ -25,27 +27,37 @@ export default function Navbar() {
     const totalItems = getTotalItems();
 
     return (
-        <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-2' : 'bg-white py-4'
-            }`}>
-            {/* Top Bar */}
-            {!isScrolled && (
-                <div className="bg-primary py-2 text-center absolute -top-10 left-0 right-0 transform translate-y-10">
-                    <p className="text-white text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase">
-                        Free Shipping on All Orders Over $75!
-                    </p>
-                </div>
-            )}
+        <>
+        {/* Top Banner - Free Shipping */}
+        <div className={`fixed top-0 left-0 right-0 z-50 bg-primary py-2 text-center transition-all duration-300 ${isScrolled ? 'opacity-0 -translate-y-full pointer-events-none' : 'opacity-100 translate-y-0'}`}>
+            <p className="text-white text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase">
+                Free Shipping on All Orders Over $75!
+            </p>
+        </div>
 
-            <div className="max-w-7xl mx-auto px-4 md:px-8 mt-8 md:mt-2">
-                <div className="flex justify-between items-center h-16 md:h-20">
+        <header className={`fixed left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'top-0 bg-white/95 backdrop-blur-md shadow-sm py-2' : 'top-8 bg-white py-3 md:py-4'
+            }`}>
+            <div className="max-w-7xl mx-auto px-4 md:px-8">
+                <div className="flex justify-between items-center h-14 md:h-16">
                     {/* Left - Menu & Search */}
-                    <div className="flex items-center gap-4 flex-1">
+                    <div className="flex items-center gap-2 md:gap-4 flex-1">
                         <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
                             <Menu className="w-6 h-6 text-primary" />
                         </button>
-                        <button className="hidden md:flex items-center gap-2 p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-400 group">
+                        {/* Desktop Search Button */}
+                        <button
+                            onClick={() => setIsSearchOpen(true)}
+                            className="hidden md:flex items-center gap-2 p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-400 group"
+                        >
                             <Search className="w-5 h-5 group-hover:text-primary transition-colors" />
                             <span className="text-sm font-medium">Search</span>
+                        </button>
+                        {/* Mobile Search Button */}
+                        <button
+                            onClick={() => setIsSearchOpen(true)}
+                            className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        >
+                            <Search className="w-5 h-5 text-primary" />
                         </button>
                     </div>
 
@@ -81,5 +93,9 @@ export default function Navbar() {
                 </div>
             </div>
         </header>
+
+        {/* Search Modal */}
+        <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+        </>
     );
 }

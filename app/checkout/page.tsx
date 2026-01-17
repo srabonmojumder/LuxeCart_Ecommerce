@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CreditCard, Lock, ArrowLeft, Check, Mail, Truck, Calendar, ShieldCheck, User, MapPin } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
@@ -58,26 +59,25 @@ export default function CheckoutPage() {
 
     if (cart.length === 0) {
         return (
-            <div className="pt-32 min-h-screen bg-white flex items-center justify-center px-4">
-                <div className="text-center space-y-12 max-w-xl">
+            <div className="pt-24 md:pt-32 min-h-screen bg-white flex items-center justify-center px-4 pb-24">
+                <div className="text-center space-y-8 max-w-sm">
                     <motion.div
-                        initial={{ scale: 0.8, opacity: 0 }}
+                        initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="w-48 h-48 mx-auto bg-primary/5 rounded-[4rem] flex items-center justify-center shadow-2xl"
+                        className="w-24 h-24 md:w-32 md:h-32 mx-auto bg-primary/5 rounded-3xl flex items-center justify-center shadow-lg"
                     >
-                        <ArrowLeft className="w-16 h-16 text-primary/20" />
+                        <ArrowLeft className="w-10 h-10 md:w-12 md:h-12 text-primary/20" />
                     </motion.div>
-                    <div className="space-y-6">
-                        <h2 className="text-6xl md:text-8xl font-black text-primary tracking-tighter leading-[0.9]">
-                            Void <br />Checkout.
+                    <div className="space-y-3">
+                        <h2 className="text-2xl md:text-3xl font-black text-primary tracking-tight">
+                            Your cart is empty
                         </h2>
-                        <p className="text-xl text-secondary font-medium leading-relaxed">
-                            No items detected for processing.
-                            Please return to the index to begin your selection.
+                        <p className="text-base text-secondary font-medium leading-relaxed">
+                            Add some items to your cart before checking out.
                         </p>
                     </div>
-                    <Link href="/products" className="btn-primary inline-flex">
-                        Return to Index
+                    <Link href="/products" className="inline-flex px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm tracking-wide">
+                        Browse Products
                     </Link>
                 </div>
             </div>
@@ -85,48 +85,48 @@ export default function CheckoutPage() {
     }
 
     return (
-        <div className="pt-32 md:pt-40 pb-48 min-h-screen bg-white">
-            <div className="max-w-[1440px] mx-auto px-4 md:px-12">
+        <div className="pt-20 md:pt-32 pb-32 md:pb-40 min-h-screen bg-white">
+            <div className="max-w-[1200px] mx-auto px-4 md:px-8">
 
-                <header className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-24">
-                    <div className="space-y-8">
-                        <Link href="/cart" className="inline-flex items-center gap-6 text-[10px] font-black tracking-widest text-accent uppercase group">
-                            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                            Return to Selection
+                <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-12 mb-8 md:mb-16">
+                    <div className="space-y-4 md:space-y-6">
+                        <Link href="/cart" className="inline-flex items-center gap-3 text-[10px] font-black tracking-widest text-accent uppercase group">
+                            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+                            Return to Cart
                         </Link>
-                        <h1 className="text-6xl md:text-9xl font-black text-primary leading-[0.8] tracking-tighter">
-                            Final <br />Sequence.
+                        <h1 className="text-3xl md:text-6xl font-black text-primary leading-tight tracking-tighter">
+                            Checkout
                         </h1>
                     </div>
 
-                    <nav className="flex items-center gap-8">
+                    <nav className="flex items-center gap-3 md:gap-6">
                         {[1, 2, 3].map((step) => (
-                            <div key={step} className="flex items-center gap-4">
-                                <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center font-black transition-all ${step <= 3 ? 'bg-primary text-white shadow-2xl' : 'bg-primary/5 text-primary/20'
+                            <div key={step} className="flex items-center gap-2 md:gap-3">
+                                <div className={`w-9 h-9 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center font-bold text-sm md:text-base transition-all ${step <= 3 ? 'bg-primary text-white shadow-lg' : 'bg-primary/5 text-primary/20'
                                     }`}>
                                     {step}
                                 </div>
-                                {step < 3 && <div className="w-12 h-0.5 bg-primary/10 rounded-full" />}
+                                {step < 3 && <div className="w-6 md:w-10 h-0.5 bg-primary/10 rounded-full" />}
                             </div>
                         ))}
                     </nav>
                 </header>
 
-                <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-24">
+                <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-8 md:gap-16">
 
-                    <div className="lg:col-span-8 space-y-24">
+                    <div className="lg:col-span-7 space-y-8 md:space-y-12">
 
                         {/* Section: Identity */}
-                        <section className="space-y-12">
-                            <div className="flex items-center gap-6 border-b-2 border-primary pb-8">
-                                <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-accent">
-                                    <User className="w-8 h-8" />
+                        <section className="space-y-5 md:space-y-8">
+                            <div className="flex items-center gap-3 md:gap-4 border-b border-primary/20 pb-4 md:pb-6">
+                                <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/5 rounded-xl flex items-center justify-center text-accent">
+                                    <User className="w-5 h-5 md:w-6 md:h-6" />
                                 </div>
-                                <h2 className="text-4xl font-black text-primary tracking-tighter uppercase">01 / Identity</h2>
+                                <h2 className="text-lg md:text-2xl font-black text-primary tracking-tight">Contact Information</h2>
                             </div>
-                            <div className="grid md:grid-cols-2 gap-12">
-                                <div className="md:col-span-2 space-y-4">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">Electronic Mail</label>
+                            <div className="grid md:grid-cols-2 gap-4 md:gap-6">
+                                <div className="md:col-span-2 space-y-2">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Email</label>
                                     <input
                                         type="email"
                                         name="email"
@@ -134,11 +134,11 @@ export default function CheckoutPage() {
                                         value={formData.email}
                                         onChange={handleChange}
                                         className="input-field"
-                                        placeholder="user@luxecart.com"
+                                        placeholder="you@example.com"
                                     />
                                 </div>
-                                <div className="space-y-4">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">Given Name</label>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">First Name</label>
                                     <input
                                         type="text"
                                         name="firstName"
@@ -146,11 +146,11 @@ export default function CheckoutPage() {
                                         value={formData.firstName}
                                         onChange={handleChange}
                                         className="input-field"
-                                        placeholder="JOHN"
+                                        placeholder="John"
                                     />
                                 </div>
-                                <div className="space-y-4">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">Family Name</label>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Last Name</label>
                                     <input
                                         type="text"
                                         name="lastName"
@@ -158,23 +158,23 @@ export default function CheckoutPage() {
                                         value={formData.lastName}
                                         onChange={handleChange}
                                         className="input-field"
-                                        placeholder="DOE"
+                                        placeholder="Doe"
                                     />
                                 </div>
                             </div>
                         </section>
 
-                        {/* Section: Logistics */}
-                        <section className="space-y-12">
-                            <div className="flex items-center gap-6 border-b-2 border-primary pb-8">
-                                <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-accent">
-                                    <MapPin className="w-8 h-8" />
+                        {/* Section: Shipping */}
+                        <section className="space-y-5 md:space-y-8">
+                            <div className="flex items-center gap-3 md:gap-4 border-b border-primary/20 pb-4 md:pb-6">
+                                <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/5 rounded-xl flex items-center justify-center text-accent">
+                                    <MapPin className="w-5 h-5 md:w-6 md:h-6" />
                                 </div>
-                                <h2 className="text-4xl font-black text-primary tracking-tighter uppercase">02 / Logistics</h2>
+                                <h2 className="text-lg md:text-2xl font-black text-primary tracking-tight">Shipping Address</h2>
                             </div>
-                            <div className="grid md:grid-cols-2 gap-12">
-                                <div className="md:col-span-2 space-y-4">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">Residential Address</label>
+                            <div className="grid md:grid-cols-2 gap-4 md:gap-6">
+                                <div className="md:col-span-2 space-y-2">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Street Address</label>
                                     <input
                                         type="text"
                                         name="address"
@@ -182,11 +182,11 @@ export default function CheckoutPage() {
                                         value={formData.address}
                                         onChange={handleChange}
                                         className="input-field"
-                                        placeholder="101 MINIMALIST DRIVE"
+                                        placeholder="123 Main Street"
                                     />
                                 </div>
-                                <div className="space-y-4">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">Administrative City</label>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">City</label>
                                     <input
                                         type="text"
                                         name="city"
@@ -194,11 +194,11 @@ export default function CheckoutPage() {
                                         value={formData.city}
                                         onChange={handleChange}
                                         className="input-field"
-                                        placeholder="LONDRES"
+                                        placeholder="New York"
                                     />
                                 </div>
-                                <div className="space-y-4">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">Postal Index</label>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">ZIP Code</label>
                                     <input
                                         type="text"
                                         name="zipCode"
@@ -206,65 +206,65 @@ export default function CheckoutPage() {
                                         value={formData.zipCode}
                                         onChange={handleChange}
                                         className="input-field"
-                                        placeholder="SW1A 1AA"
+                                        placeholder="10001"
                                     />
                                 </div>
                             </div>
                         </section>
 
-                        {/* Section: Transaction */}
-                        <section className="space-y-12 p-12 bg-primary text-white rounded-[4rem] shadow-2xl relative overflow-hidden">
-                            <div className="relative z-10 space-y-12">
-                                <div className="flex items-center justify-between border-b border-white/10 pb-8">
-                                    <div className="flex items-center gap-6">
-                                        <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-accent">
-                                            <Lock className="w-8 h-8" />
+                        {/* Section: Payment */}
+                        <section className="space-y-5 md:space-y-8 p-5 md:p-8 bg-primary text-white rounded-2xl md:rounded-3xl shadow-xl relative overflow-hidden">
+                            <div className="relative z-10 space-y-5 md:space-y-8">
+                                <div className="flex items-center justify-between border-b border-white/10 pb-4 md:pb-6">
+                                    <div className="flex items-center gap-3 md:gap-4">
+                                        <div className="w-10 h-10 md:w-12 md:h-12 bg-white/10 rounded-xl flex items-center justify-center text-accent">
+                                            <Lock className="w-5 h-5 md:w-6 md:h-6" />
                                         </div>
-                                        <h2 className="text-4xl font-black tracking-tighter uppercase">03 / Transaction</h2>
+                                        <h2 className="text-lg md:text-2xl font-black tracking-tight">Payment Details</h2>
                                     </div>
-                                    <div className="flex items-center gap-3 px-6 py-2 bg-accent/20 text-accent rounded-full text-[10px] font-black tracking-widest uppercase border border-accent/30">
-                                        <ShieldCheck className="w-4 h-4" />
-                                        SECURED
+                                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-accent/20 text-accent rounded-full text-[9px] md:text-[10px] font-bold tracking-wider uppercase border border-accent/30">
+                                        <ShieldCheck className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                                        <span className="hidden xs:inline">Secure</span>
                                     </div>
                                 </div>
 
-                                <div className="grid md:grid-cols-2 gap-12">
-                                    <div className="md:col-span-2 space-y-4">
-                                        <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Credential Number</label>
+                                <div className="grid md:grid-cols-2 gap-4 md:gap-6">
+                                    <div className="md:col-span-2 space-y-2">
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-white/50">Card Number</label>
                                         <input
                                             type="text"
                                             name="cardNumber"
                                             required
                                             value={formData.cardNumber}
                                             onChange={handleChange}
-                                            className="w-full bg-white/5 border-2 border-white/10 rounded-2xl px-8 py-6 text-xl font-black placeholder:text-white/20 focus:border-accent focus:outline-none transition-all tracking-[0.2em]"
-                                            placeholder="XXXX XXXX XXXX XXXX"
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 md:py-4 text-base md:text-lg font-bold placeholder:text-white/20 focus:border-accent focus:outline-none transition-all tracking-wider"
+                                            placeholder="1234 5678 9012 3456"
                                             maxLength={16}
                                         />
                                     </div>
-                                    <div className="space-y-4">
-                                        <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Temporal Limit</label>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-white/50">Expiry Date</label>
                                         <input
                                             type="text"
                                             name="expiryDate"
                                             required
                                             value={formData.expiryDate}
                                             onChange={handleChange}
-                                            className="w-full bg-white/5 border-2 border-white/10 rounded-2xl px-8 py-6 text-xl font-black placeholder:text-white/20 focus:border-accent focus:outline-none transition-all uppercase"
-                                            placeholder="MM / YY"
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 md:py-4 text-base md:text-lg font-bold placeholder:text-white/20 focus:border-accent focus:outline-none transition-all"
+                                            placeholder="MM/YY"
                                             maxLength={5}
                                         />
                                     </div>
-                                    <div className="space-y-4">
-                                        <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Security Matrix</label>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-white/50">CVV</label>
                                         <input
                                             type="text"
                                             name="cvv"
                                             required
                                             value={formData.cvv}
                                             onChange={handleChange}
-                                            className="w-full bg-white/5 border-2 border-white/10 rounded-2xl px-8 py-6 text-xl font-black placeholder:text-white/20 focus:border-accent focus:outline-none transition-all"
-                                            placeholder="000"
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 md:py-4 text-base md:text-lg font-bold placeholder:text-white/20 focus:border-accent focus:outline-none transition-all"
+                                            placeholder="123"
                                             maxLength={3}
                                         />
                                     </div>
@@ -274,26 +274,26 @@ export default function CheckoutPage() {
                     </div>
 
                     {/* Summary Sidebar */}
-                    <aside className="lg:col-span-4 lg:sticky lg:top-40 h-fit">
-                        <section className="bg-white p-12 rounded-[3.5rem] shadow-2xl border-2 border-primary/5 space-y-12">
-                            <h2 className="text-4xl font-black text-primary tracking-tighter uppercase">Manifest.</h2>
+                    <aside className="lg:col-span-5 lg:sticky lg:top-28 h-fit order-first lg:order-last">
+                        <section className="bg-gray-50 p-5 md:p-8 rounded-2xl md:rounded-3xl border border-primary/5 space-y-5 md:space-y-8">
+                            <h2 className="text-lg md:text-xl font-black text-primary tracking-tight">Order Summary</h2>
 
-                            <div className="space-y-8 max-h-[30rem] overflow-y-auto no-scrollbar py-2">
+                            <div className="space-y-4 max-h-[200px] md:max-h-[280px] overflow-y-auto scrollbar-hide">
                                 {cart.map((item) => {
                                     const price = item.discount
                                         ? item.price * (1 - item.discount / 100)
                                         : item.price;
 
                                     return (
-                                        <div key={item.id} className="flex justify-between items-center gap-6 group">
-                                            <div className="relative w-16 h-20 bg-primary/5 rounded-xl overflow-hidden flex-shrink-0">
+                                        <div key={item.id} className="flex items-center gap-3 group">
+                                            <div className="relative w-12 h-12 md:w-14 md:h-14 bg-white rounded-lg overflow-hidden flex-shrink-0 shadow-sm">
                                                 <Image src={item.image} alt={item.name} fill className="object-cover" />
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-[10px] font-black tracking-tight text-primary uppercase truncate mb-1">{item.name}</p>
-                                                <p className="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em]">Quantity: {item.quantity}</p>
+                                                <p className="text-xs md:text-sm font-semibold text-primary truncate">{item.name}</p>
+                                                <p className="text-[10px] md:text-xs text-gray-400">Qty: {item.quantity}</p>
                                             </div>
-                                            <span className="text-sm font-black text-primary tracking-tighter">
+                                            <span className="text-sm font-bold text-primary">
                                                 ${(price * item.quantity).toFixed(2)}
                                             </span>
                                         </div>
@@ -301,37 +301,49 @@ export default function CheckoutPage() {
                                 })}
                             </div>
 
-                            <div className="space-y-4 pt-10 border-t-2 border-primary/5">
-                                <div className="flex justify-between items-center px-4">
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Total Valuation</span>
-                                    <span className="text-5xl font-black text-primary tracking-tighter leading-none">${finalTotal.toFixed(2)}</span>
+                            <div className="space-y-3 pt-4 border-t border-primary/10">
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-gray-500">Subtotal</span>
+                                    <span className="font-semibold text-primary">${totalPrice.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-gray-500">Shipping</span>
+                                    <span className="font-semibold text-primary">{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-gray-500">Tax</span>
+                                    <span className="font-semibold text-primary">${tax.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between items-center pt-3 border-t border-primary/10">
+                                    <span className="text-sm font-bold text-primary">Total</span>
+                                    <span className="text-2xl md:text-3xl font-black text-primary">${finalTotal.toFixed(2)}</span>
                                 </div>
                             </div>
 
                             <motion.button
-                                whileHover={{ scale: isProcessing ? 1 : 1.02 }}
+                                whileHover={{ scale: isProcessing ? 1 : 1.01 }}
                                 whileTap={{ scale: isProcessing ? 1 : 0.98 }}
                                 type="submit"
                                 disabled={isProcessing}
-                                className="w-full h-24 bg-accent text-white rounded-[2rem] font-black tracking-[0.2em] uppercase text-xs flex items-center justify-center gap-6 shadow-xl hover:bg-accent/90 transition-all disabled:opacity-50"
+                                className="w-full py-4 md:py-5 bg-accent text-white rounded-xl md:rounded-2xl font-bold tracking-wider uppercase text-sm flex items-center justify-center gap-3 shadow-lg hover:bg-accent/90 transition-all disabled:opacity-50 touch-manipulation"
                             >
                                 {isProcessing ? (
                                     <>
-                                        <div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin" />
-                                        PROCESSING
+                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                        Processing...
                                     </>
                                 ) : (
                                     <>
-                                        <CreditCard className="w-6 h-6" />
-                                        AUTHORIZE PAYMENT
+                                        <CreditCard className="w-5 h-5" />
+                                        Place Order
                                     </>
                                 )}
                             </motion.button>
 
-                            <div className="flex items-center justify-center gap-8 pt-8 opacity-20">
-                                <ShieldCheck className="w-6 h-6 text-primary" />
-                                <Lock className="w-6 h-6 text-primary" />
-                                <span className="text-[10px] font-black tracking-[0.3em] uppercase">End-to-End Secure</span>
+                            <div className="flex items-center justify-center gap-4 pt-2 opacity-40">
+                                <ShieldCheck className="w-4 h-4 text-primary" />
+                                <span className="text-[10px] font-bold tracking-wider uppercase text-primary">Secure Checkout</span>
+                                <Lock className="w-4 h-4 text-primary" />
                             </div>
                         </section>
                     </aside>

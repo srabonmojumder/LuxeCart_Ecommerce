@@ -20,7 +20,7 @@ const mockReviews: Review[] = [
     {
         id: 1,
         author: 'John Smith',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+        avatar: '/photo-1472099645785-5658abf4ff4e.webp',
         rating: 5,
         date: '2 days ago',
         comment: 'Absolutely love this product! The quality is outstanding and it exceeded my expectations. Highly recommend!',
@@ -30,7 +30,7 @@ const mockReviews: Review[] = [
     {
         id: 2,
         author: 'Emma Wilson',
-        avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100',
+        avatar: '/photo-1438761681033-6461ffad8d80.webp',
         rating: 4,
         date: '1 week ago',
         comment: 'Great product overall. Delivery was fast and packaging was excellent. Only minor issue was the color was slightly different than shown.',
@@ -40,7 +40,7 @@ const mockReviews: Review[] = [
     {
         id: 3,
         author: 'Michael Brown',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100',
+        avatar: '/photo-1507003211169-0a1dd7228f2d.webp',
         rating: 5,
         date: '2 weeks ago',
         comment: 'Best purchase I\'ve made this year! The build quality is premium and it works perfectly. Will buy again!',
