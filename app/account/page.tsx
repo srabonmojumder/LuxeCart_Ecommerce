@@ -6,6 +6,15 @@ import { User, Package, Heart, Settings, LogOut, ArrowRight, ChevronRight, MapPi
 import LoyaltyBadge from '@/components/loyalty/LoyaltyBadge';
 import Link from 'next/link';
 
+// Format date consistently to prevent hydration mismatch
+const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
+};
+
 export default function AccountPage() {
     const [activeTab, setActiveTab] = useState('orders');
 
@@ -105,7 +114,7 @@ export default function AccountPage() {
                                                 <div className="space-y-4">
                                                     <div className="flex items-center gap-4">
                                                         <span className="text-[10px] font-black text-accent uppercase tracking-widest underline underline-offset-4">{order.id}</span>
-                                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{new Date(order.date).toLocaleDateString()}</span>
+                                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{formatDate(order.date)}</span>
                                                     </div>
                                                     <h3 className="text-3xl font-black text-primary tracking-tighter uppercase">Valuation: ${order.total.toFixed(2)}</h3>
                                                     <p className="text-[10px] font-black text-secondary uppercase tracking-[0.2em]">{order.items} Units Processing</p>

@@ -1,0 +1,20 @@
+# LuxeCart - Robots.txt
+# Allow all crawlers to access all content
+
+User-agent: *
+Allow: /
+
+# Disallow certain paths
+Disallow: /api/
+Disallow: /checkout
+Disallow: /cart
+Disallow: /account
+Disallow: /wishlist
+Disallow: /compare
+Disallow: /payment/
+
+# Sitemap location
+Sitemap: https://luxecart.com/sitemap.xml
+
+# Crawl-delay for polite crawlers
+Crawl-delay: 1

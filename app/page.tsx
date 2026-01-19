@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import ProductCard from '@/components/product/ProductCard';
 import { products } from '@/data/products';
+import { generateWebSiteSchema } from '@/lib/seo';
 
 const categories = [
     { name: 'Decor', image: '/category_decor.png' },
@@ -37,8 +38,15 @@ export default function Home() {
         { icon: Zap, title: 'Fast Delivery', desc: 'Across the globe' },
     ];
 
+    const websiteSchema = generateWebSiteSchema();
+
     return (
         <div className="bg-white dark:bg-slate-950 min-h-screen">
+            {/* JSON-LD for WebSite Schema */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+            />
             {/* Hero Section */}
             <section className="relative h-[80vh] min-h-[500px] max-h-[800px] bg-gray-100 dark:bg-slate-900 overflow-hidden mx-4 md:mx-8 rounded-[2rem] md:rounded-[3rem]">
                 <Image
@@ -96,16 +104,16 @@ export default function Home() {
             </section>
 
             {/* Features Strip */}
-            <section className="py-8 border-y border-gray-100 mb-12">
-                <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+            <section className="py-8 border-y border-gray-100 dark:border-slate-800 mb-12">
+                <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
                     {features.map((f, i) => (
-                        <div key={i} className="flex items-center gap-4 group justify-center md:justify-start">
-                            <div className="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-colors">
+                        <div key={i} className="flex flex-col md:flex-row items-center gap-3 md:gap-4 group justify-center md:justify-start text-center md:text-left">
+                            <div className="w-12 h-12 md:w-12 md:h-12 rounded-2xl bg-gray-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-colors flex-shrink-0">
                                 <f.icon className="w-6 h-6 dark:text-gray-300" />
                             </div>
-                            <div className="hidden sm:block">
-                                <h4 className="font-bold text-sm text-primary dark:text-white">{f.title}</h4>
-                                <p className="text-xs text-secondary dark:text-gray-400">{f.desc}</p>
+                            <div>
+                                <h4 className="font-bold text-xs md:text-sm text-primary dark:text-white">{f.title}</h4>
+                                <p className="text-[10px] md:text-xs text-secondary dark:text-gray-400">{f.desc}</p>
                             </div>
                         </div>
                     ))}

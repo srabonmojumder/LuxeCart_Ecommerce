@@ -15,15 +15,19 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
     const [visible, setVisible] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
     const [added, setAdded] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     const addToCart = useStore((state) => state.addToCart);
     const addToWishlist = useStore((state) => state.addToWishlist);
     const removeFromWishlist = useStore((state) => state.removeFromWishlist);
     const isInWishlist = useStore((state) => state.isInWishlist);
 
-    const inWishlist = isInWishlist(product.id);
+    // Only check wishlist after component is mounted to prevent hydration mismatch
+    const inWishlist = mounted ? isInWishlist(product.id) : false;
 
     useEffect(() => {
+        setMounted(true);
+
         const handleScroll = () => {
             // Show bar when scrolled down 100px
             setVisible(window.scrollY > 100);
@@ -97,7 +101,7 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 100, opacity: 0 }}
                     transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                    className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800 shadow-2xl safe-area-bottom pb-safe"
+                    className="md:hidden fixed bottom-[60px] left-0 right-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800 shadow-2xl safe-area-bottom pb-safe"
                 >
                     {/* Out of stock banner */}
                     {!product.inStock && (

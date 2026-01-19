@@ -231,8 +231,16 @@ body {
     padding-bottom: env(safe-area-inset-bottom);
   }
 
+  .safe-bottom {
+    bottom: env(safe-area-inset-bottom);
+  }
+
   .pb-safe {
     padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
   }
 
   .mb-safe {

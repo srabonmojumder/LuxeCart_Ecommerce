@@ -46,7 +46,7 @@ export default function WishlistPage() {
     }
 
     return (
-        <div className="pt-24 md:pt-40 pb-48 min-h-screen bg-white dark:bg-slate-950">
+        <div className="pt-0 md:pt-5 pb-48 min-h-screen bg-white dark:bg-slate-950">
             <div className="max-w-[1440px] mx-auto px-4 md:px-12">
 
                 <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 md:gap-12 mb-12 md:mb-24">

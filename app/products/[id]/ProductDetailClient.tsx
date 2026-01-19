@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -20,11 +20,17 @@ export default function ProductDetailPage() {
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('description');
+    const [mounted, setMounted] = useState(false);
 
     const addToCart = useStore((state) => state.addToCart);
     const addToWishlist = useStore((state) => state.addToWishlist);
     const removeFromWishlist = useStore((state) => state.removeFromWishlist);
     const isInWishlist = useStore((state) => state.isInWishlist);
+
+    // Prevent hydration mismatch by only checking wishlist after mount
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     if (!product) {
         return (
@@ -41,7 +47,8 @@ export default function ProductDetailPage() {
         );
     }
 
-    const inWishlist = isInWishlist(product.id);
+    // Only check wishlist after component is mounted to prevent hydration mismatch
+    const inWishlist = mounted ? isInWishlist(product.id) : false;
     const discountedPrice = product.discount
         ? product.price * (1 - product.discount / 100)
         : product.price;

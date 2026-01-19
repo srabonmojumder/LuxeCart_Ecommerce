@@ -292,7 +292,7 @@ export default function CartPage() {
             </div>
 
             {/* Mobile Checkout Bar - Styled Clean */}
-            <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-primary/5 dark:border-white/5 px-6 py-4 pb-safe shadow-2xl">
+            <div className="lg:hidden fixed bottom-[60px] left-0 right-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-primary/5 dark:border-white/5 px-6 py-4 pb-safe shadow-2xl">
                 <div className="flex items-center justify-between mb-2">
                     <div>
                         <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Total Amount</p>
