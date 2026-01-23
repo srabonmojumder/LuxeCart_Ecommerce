@@ -23,14 +23,14 @@ export default function WishlistPage() {
                     <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="w-48 h-48 mx-auto bg-primary/5 rounded-[4rem] flex items-center justify-center shadow-2xl overflow-hidden relative group"
+                        className="w-48 h-48 mx-auto bg-primary/5 rounded-[4rem] flex items-center justify-center  overflow-hidden relative group"
                     >
                         <Heart className="w-16 h-16 text-primary group-hover:scale-125 transition-transform duration-500" />
                         <div className="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </motion.div>
                     <div className="space-y-6">
                         <h2 className="text-4xl md:text-8xl font-black text-primary dark:text-white tracking-tighter leading-[0.9]">
-                            Infinite <br />Desire.
+                            Infinite    Desire.
                         </h2>
                         <p className="text-xl text-secondary dark:text-gray-400 font-medium leading-relaxed">
                             Your personal gallery of interest is currently empty.

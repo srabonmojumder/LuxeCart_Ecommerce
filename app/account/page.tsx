@@ -31,10 +31,10 @@ export default function AccountPage() {
     ];
 
     return (
-        <div className="pt-32 md:pt-40 pb-48 min-h-screen bg-white">
+        <div className="pt-5  md:pt-5 pb-48  bg-white">
             <div className="max-w-[1440px] mx-auto px-4 md:px-12">
 
-                <header className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-24">
+                <header className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-8">
                     <div className="space-y-6">
                         <span className="text-accent font-black tracking-[0.4em] text-xs uppercase block">Personal Terminal</span>
                         <h1 className="text-6xl md:text-9xl font-black text-primary leading-[0.8] tracking-tighter">

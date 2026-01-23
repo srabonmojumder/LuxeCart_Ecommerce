@@ -25,7 +25,7 @@ export default function LoyaltyBadge({ points }: LoyaltyBadgeProps) {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white p-8 rounded-[2.5rem] border border-primary/5 shadow-2xl relative overflow-hidden group"
+            className="bg-white p-8 rounded-[2.5rem] border border-primary/5  relative overflow-hidden group"
         >
             <div className="relative z-10 flex items-center justify-between mb-10">
                 <div className="flex items-center gap-6">
