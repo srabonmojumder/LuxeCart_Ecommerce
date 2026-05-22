@@ -95,6 +95,7 @@ export default function QuickFilters({ onFilterChange, activeFilter }: QuickFilt
                         onClick={() => handleFilterClick(filter.id)}
                         index={index}
                         showFullLabel
+                        layoutGroup="desktop"
                     />
                 ))}
             </div>
@@ -118,6 +119,7 @@ export default function QuickFilters({ onFilterChange, activeFilter }: QuickFilt
                             onClick={() => handleFilterClick(filter.id)}
                             index={index}
                             showFullLabel={false}
+                            layoutGroup="mobile"
                         />
                     ))}
                 </div>
@@ -133,9 +135,10 @@ interface FilterPillProps {
     onClick: () => void;
     index: number;
     showFullLabel: boolean;
+    layoutGroup: string;
 }
 
-function FilterPill({ filter, isActive, onClick, index, showFullLabel }: FilterPillProps) {
+function FilterPill({ filter, isActive, onClick, index, showFullLabel, layoutGroup }: FilterPillProps) {
     return (
         <motion.button
             initial={{ opacity: 0, y: 10 }}
@@ -156,7 +159,7 @@ function FilterPill({ filter, isActive, onClick, index, showFullLabel }: FilterP
             {/* Active Gradient Background */}
             {isActive && (
                 <motion.div
-                    layoutId="activeFilterBg"
+                    layoutId={`activeFilterBg-${layoutGroup}`}
                     className={`absolute inset-0 bg-gradient-to-r ${filter.gradient}`}
                     initial={false}
                     transition={{ type: "spring", stiffness: 500, damping: 35 }}
