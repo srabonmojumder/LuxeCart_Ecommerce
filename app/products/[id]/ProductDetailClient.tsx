@@ -6,16 +6,18 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Heart, Star, Truck, Shield, RotateCcw, Share2, Minus, Plus } from 'lucide-react';
-import { products } from '@/data/products';
 import { useStore } from '@/store/useStore';
+import { useProduct, useRelatedProducts } from '@/lib/hooks';
 import ProductCard from '@/components/product/ProductCard';
 import StickyMobileBar from '@/components/product/StickyMobileBar';
+import ReviewSection from '@/components/product/ReviewSection';
 import { toast } from 'sonner';
 
 export default function ProductDetailPage() {
     const params = useParams();
-    const productId = parseInt(params.id as string);
-    const product = products.find(p => p.id === productId);
+    const slug = params.id as string; // route param holds the product slug
+    const { product, isLoading } = useProduct(slug);
+    const { related: relatedProducts } = useRelatedProducts(slug);
 
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
@@ -31,6 +33,14 @@ export default function ProductDetailPage() {
     useEffect(() => {
         setMounted(true);
     }, []);
+
+    if (isLoading) {
+        return (
+            <div className="pt-20 min-h-screen flex items-center justify-center">
+                <div className="w-10 h-10 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+        );
+    }
 
     if (!product) {
         return (
@@ -52,10 +62,6 @@ export default function ProductDetailPage() {
     const discountedPrice = product.discount
         ? product.price * (1 - product.discount / 100)
         : product.price;
-
-    const relatedProducts = products
-        .filter(p => p.category === product.category && p.id !== product.id)
-        .slice(0, 4);
 
     const handleAddToCart = () => {
         for (let i = 0; i < quantity; i++) {
@@ -464,12 +470,13 @@ export default function ProductDetailPage() {
                         )}
                         {activeTab === 'reviews' && (
                             <div>
-                                <h3 className="text-lg md:text-2xl font-bold text-slate-900 dark:text-white mb-3 md:mb-4">
+                                <h3 className="text-lg md:text-2xl font-bold text-slate-900 dark:text-white mb-1">
                                     Customer Reviews ({product.reviews})
                                 </h3>
-                                <p className="text-sm md:text-base text-slate-600 dark:text-slate-400">
+                                <p className="text-sm md:text-base text-slate-600 dark:text-slate-400 mb-6">
                                     Average Rating: {product.rating} / 5.0
                                 </p>
+                                <ReviewSection slug={slug} />
                             </div>
                         )}
                     </div>

@@ -6,6 +6,49 @@ A modern, fully-featured e-commerce website built with **Next.js 15**, **TypeScr
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
+## 🚀 Full-Stack Setup (Node.js API + MySQL)
+
+LuxeCart is now a **dynamic full-stack app**: a Next.js frontend backed by a standalone **Node.js + Express + Prisma + MySQL** API in [`backend/`](backend/). Products, categories, cart, wishlist, orders, reviews, auth, and an admin API are all served from the database.
+
+### 1. Start the backend API
+
+```bash
+cd backend
+cp .env.example .env          # set DATABASE_URL (MySQL), JWT secrets
+npm install
+npm run extract               # data/products.ts -> prisma/data/*.json
+npm run prisma:migrate        # create DB + tables (auto-runs the seed)
+npm run dev                   # API on http://localhost:4000/api
+```
+
+Seeds **48 products / 7 categories** plus an admin user: `admin@luxecart.com` / `admin123`.
+
+### 2. Start the frontend
+
+```bash
+# in the project root
+cp .env.local.example .env.local   # NEXT_PUBLIC_API_URL=http://localhost:4000/api
+npm install
+npm run dev                        # http://localhost:3000
+```
+
+> Or run MySQL + API together with Docker: `docker compose up` (then start the frontend with `npm run dev`).
+
+### Architecture
+
+| Layer | Tech |
+|---|---|
+| Frontend | Next.js 16 (App Router), React 19, Tailwind, SWR, Zustand |
+| API | Node.js, Express, Zod, JWT auth (access + refresh) |
+| ORM / DB | Prisma + MySQL |
+| Payments | Stripe (auto "mock mode" when no keys are configured) |
+
+**Auth:** JWT access token (in `localStorage`) + httpOnly refresh cookie with rotation. A guest cart/wishlist (localStorage) merges into the server account on login.
+
+**Deployment:** API → any Node host + managed MySQL (Railway/Render/Fly/PlanetScale) using the included [`backend/Dockerfile`](backend/Dockerfile). Frontend → Vercel or Firebase App Hosting (note: it is no longer a static export, so plain static Firebase Hosting won't serve the SSR routes).
+
+See [`backend/README.md`](backend/README.md) for the full endpoint list.
+
 ## ✨ Features
 
 ### 📱 **NEW: Mobile-First Excellence** 

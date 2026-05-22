@@ -1,11 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronDown, ChevronRight, Sparkles, Zap, Tag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { categories } from '@/data/products';
+import { useCategories } from '@/lib/hooks';
+
+// Fallback shown before live categories load (and if the API is unreachable).
+const fallbackCategoryLinks = [
+    { label: 'Electronics', href: '/products?category=electronics' },
+    { label: 'Fashion', href: '/products?category=fashion' },
+    { label: 'Sports', href: '/products?category=sports' },
+    { label: 'Home', href: '/products?category=home' },
+    { label: 'Beauty', href: '/products?category=beauty' },
+    { label: 'Kitchen', href: '/products?category=kitchen' },
+    { label: 'Gaming', href: '/products?category=gaming' },
+];
 
 interface MenuItem {
     label: string;
@@ -29,10 +40,7 @@ const menuItems: MenuItem[] = [
         submenu: [
             {
                 title: 'Shop by Category',
-                links: categories.map(cat => ({
-                    label: cat.name,
-                    href: `/products?category=${cat.name.toLowerCase()}`,
-                })),
+                links: fallbackCategoryLinks,
             },
             {
                 title: 'Featured',
@@ -142,12 +150,28 @@ const menuItems: MenuItem[] = [
 
 export default function MegaMenu() {
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
+    const { categories } = useCategories();
+
+    // Inject live categories into the "Shop by Category" section.
+    const items = useMemo(() => {
+        const clone = menuItems.map(m => ({
+            ...m,
+            submenu: m.submenu?.map(s => ({ ...s, links: [...s.links] })),
+        }));
+        if (categories.length && clone[0].submenu) {
+            clone[0].submenu[0] = {
+                title: 'Shop by Category',
+                links: categories.map(c => ({ label: c.name, href: `/products?category=${c.slug}` })),
+            };
+        }
+        return clone;
+    }, [categories]);
 
     return (
         <nav className="hidden lg:block border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
             <div className="max-w-7xl mx-auto px-4 md:px-8">
                 <ul className="flex items-center gap-0">
-                    {menuItems.map((item) => (
+                    {items.map((item) => (
                         <li
                             key={item.label}
                             className="relative"

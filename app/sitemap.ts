@@ -1,12 +1,23 @@
-import { products } from '@/data/products';
 import { MetadataRoute } from 'next';
 
-export const dynamic = 'force-static';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+interface SlugProduct { slug?: string; id: number }
+
+async function fetchProducts(): Promise<SlugProduct[]> {
+  try {
+    const res = await fetch(`${API_URL}/products?limit=500`, { cache: 'no-store' });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return (json.data ?? []) as SlugProduct[];
+  } catch {
+    return [];
+  }
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://luxecart.com';
 
-  // Static pages with their priorities
   const staticPages = [
     { route: '', priority: 1.0, changeFrequency: 'daily' as const },
     { route: '/products', priority: 0.9, changeFrequency: 'daily' as const },
@@ -22,9 +33,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority,
   }));
 
-  // Dynamic product pages
-  const productPages = products.map(product => ({
-    url: `${baseUrl}/products/${product.id}`,
+  const products = await fetchProducts();
+  const productPages = products.map((product) => ({
+    url: `${baseUrl}/products/${product.slug ?? product.id}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.6,

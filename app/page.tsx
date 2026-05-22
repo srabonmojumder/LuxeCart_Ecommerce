@@ -14,8 +14,11 @@ import {
     RotateCcw,
     Zap
 } from 'lucide-react';
+import { toast } from 'sonner';
 import ProductCard from '@/components/product/ProductCard';
-import { products } from '@/data/products';
+import ProductGridSkeleton from '@/components/product/ProductGridSkeleton';
+import { useProducts, useBanners, useFeaturedProducts } from '@/lib/hooks';
+import { api } from '@/lib/api';
 import { generateWebSiteSchema } from '@/lib/seo';
 
 const categories = [
@@ -29,7 +32,30 @@ const categories = [
 
 export default function Home() {
     const [activeTab, setActiveTab] = useState('Hot');
-    const homeProducts = products.filter(p => ['home', 'kitchen', 'decor', 'furniture'].includes(p.category.toLowerCase())).slice(0, 8);
+    const { products, isLoading } = useProducts();
+    const { banners } = useBanners();
+    const { products: featured } = useFeaturedProducts();
+    const heroBanner = banners[0];
+    const [newsletterEmail, setNewsletterEmail] = useState('');
+    const [subscribing, setSubscribing] = useState(false);
+
+    const matched = products.filter(p => ['home', 'kitchen', 'decor', 'furniture'].includes(p.category.toLowerCase()));
+    // Prefer admin-curated "Featured" products; fall back to category match, then any.
+    const homeProducts = (featured.length >= 4 ? featured : matched.length >= 8 ? matched : products).slice(0, 8);
+
+    const subscribe = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSubscribing(true);
+        try {
+            await api.post('/newsletter', { email: newsletterEmail });
+            toast.success('Subscribed! 🎉');
+            setNewsletterEmail('');
+        } catch {
+            toast.error('Could not subscribe. Try again.');
+        } finally {
+            setSubscribing(false);
+        }
+    };
 
     const features = [
         { icon: Truck, title: 'Free Shipping', desc: 'Orders over $75' },
@@ -50,8 +76,8 @@ export default function Home() {
             {/* Hero Section */}
             <section className="relative h-[80vh] min-h-[500px] max-h-[800px] bg-gray-100 dark:bg-slate-900 overflow-hidden mx-4 md:mx-8 rounded-[2rem] md:rounded-[3rem]">
                 <Image
-                    src="/home_accessories_hero.png"
-                    alt="LuxeCart Collection"
+                    src={heroBanner?.image || "/home_accessories_hero.png"}
+                    alt={heroBanner?.title || "LuxeCart Collection"}
                     fill
                     priority
                     sizes="100vw"
@@ -66,16 +92,16 @@ export default function Home() {
                         className="max-w-2xl"
                     >
                         <span className="inline-block text-white font-bold tracking-[0.3em] text-xs md:text-sm mb-6 uppercase">
-                            New Collection 2026
+                            {heroBanner?.subtitle || 'New Collection 2026'}
                         </span>
                         <h1 className="text-5xl md:text-8xl font-black text-white leading-tight mb-8 tracking-tighter">
-                            Modern <br />Minimal
+                            {heroBanner?.title || <>Modern <br />Minimal</>}
                         </h1>
                         <p className="text-lg md:text-xl text-white/90 mb-10 max-w-lg leading-relaxed font-medium">
                             Elevate your living experience with our curated collection of premium home accessories designed for the modern lifestyle.
                         </p>
-                        <Link href="/products" className="inline-flex items-center gap-3 bg-white text-primary px-10 py-5 rounded-2xl font-black text-sm tracking-widest hover:bg-accent hover:text-white transition-all transform hover:scale-105 active:scale-95 shadow-2xl uppercase">
-                            Explore Now <ArrowRight className="w-5 h-5" />
+                        <Link href={heroBanner?.ctaLink || "/products"} className="inline-flex items-center gap-3 bg-white text-primary px-10 py-5 rounded-2xl font-black text-sm tracking-widest hover:bg-accent hover:text-white transition-all transform hover:scale-105 active:scale-95 shadow-2xl uppercase">
+                            {heroBanner?.ctaText || 'Explore Now'} <ArrowRight className="w-5 h-5" />
                         </Link>
                     </motion.div>
                 </div>
@@ -145,11 +171,15 @@ export default function Home() {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12">
-                        {homeProducts.map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
+                    {isLoading ? (
+                        <ProductGridSkeleton count={8} />
+                    ) : (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12">
+                            {homeProducts.map((product) => (
+                                <ProductCard key={product.id} product={product} />
+                            ))}
+                        </div>
+                    )}
 
                     <div className="mt-20 text-center">
                         <Link href="/products" className="inline-flex items-center gap-3 text-primary dark:text-white font-black tracking-[0.2em] text-sm group uppercase">
@@ -221,16 +251,19 @@ export default function Home() {
                         <h2 className="text-4xl md:text-7xl font-black text-primary dark:text-white tracking-tighter">Stay Inspired</h2>
                         <p className="text-secondary dark:text-gray-400 text-lg px-8">Join our community and get exclusive early access to our new drops, styling tips, and 15% off your first order.</p>
                     </div>
-                    <div className="max-w-md mx-auto relative group">
+                    <form onSubmit={subscribe} className="max-w-md mx-auto relative group">
                         <input
                             type="email"
+                            required
+                            value={newsletterEmail}
+                            onChange={(e) => setNewsletterEmail(e.target.value)}
                             placeholder="Enter your email"
                             className="w-full bg-gray-50 dark:bg-slate-900 border-2 border-gray-100 dark:border-slate-800 rounded-2xl px-8 py-5 text-sm focus:outline-none focus:border-accent transition-all pl-8 pr-32 dark:text-white"
                         />
-                        <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white px-8 py-3 rounded-xl text-xs font-black tracking-widest hover:bg-accent transition-all uppercase">
-                            Join
+                        <button type="submit" disabled={subscribing} className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white px-8 py-3 rounded-xl text-xs font-black tracking-widest hover:bg-accent transition-all uppercase disabled:opacity-60">
+                            {subscribing ? '...' : 'Join'}
                         </button>
-                    </div>
+                    </form>
                 </div>
             </section>
         </div>

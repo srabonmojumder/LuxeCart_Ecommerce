@@ -1,16 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Filter, SlidersHorizontal, X, Package, RotateCcw, Check, ArrowRight } from 'lucide-react';
 import ProductCard from '@/components/product/ProductCard';
 import QuickFilters from '@/components/ui/QuickFilters';
 import SortDropdown from '@/components/ui/SortDropdown';
 import ProductGridSkeleton from '@/components/product/ProductGridSkeleton';
-import { products } from '@/data/products';
+import { useProducts, useCategory } from '@/lib/hooks';
 
 export default function ProductsPage() {
+    const { products, isLoading: productsLoading } = useProducts();
     const [selectedCategory, setSelectedCategory] = useState('All');
+    const [categoryParam, setCategoryParam] = useState<string | null>(null);
+
+    // Read the ?category=<slug> URL param and resolve it to a category.
+    useEffect(() => {
+        setCategoryParam(new URLSearchParams(window.location.search).get('category'));
+    }, []);
+    const { category: activeCategory } = useCategory(categoryParam);
+    useEffect(() => {
+        if (activeCategory?.name) setSelectedCategory(activeCategory.name);
+    }, [activeCategory?.name]);
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 2000]);
     const [sortBy, setSortBy] = useState('featured');
     const [showFilters, setShowFilters] = useState(false);
@@ -152,13 +163,13 @@ export default function ProductsPage() {
                         className="max-w-2xl"
                     >
                         <span className="inline-block text-accent font-black tracking-[0.3em] text-[10px] md:text-xs uppercase mb-2 md:mb-6">
-                            Premium Collection
+                            {activeCategory ? 'Collection' : 'Premium Collection'}
                         </span>
                         <h1 className="text-3xl md:text-7xl font-black text-primary dark:text-white leading-tight tracking-tighter">
-                            All Products
+                            {activeCategory?.name ?? 'All Products'}
                         </h1>
                         <p className="text-base md:text-lg text-secondary dark:text-gray-400 mt-3 md:mt-6 max-w-lg font-medium leading-relaxed hidden md:block">
-                            Discover our full range of curated minimalist home accessories, designed to bring harmony to your living space.
+                            {activeCategory?.description ?? 'Discover our full range of curated minimalist home accessories, designed to bring harmony to your living space.'}
                         </p>
                     </motion.div>
 
@@ -269,7 +280,7 @@ export default function ProductsPage() {
                         </div>
 
                         {/* Product Grid */}
-                        {isLoading ? (
+                        {(isLoading || productsLoading) ? (
                             <ProductGridSkeleton count={12} />
                         ) : filteredProducts.length > 0 ? (
                             <div className="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-x-3 gap-y-5 md:gap-x-6 md:gap-y-12">

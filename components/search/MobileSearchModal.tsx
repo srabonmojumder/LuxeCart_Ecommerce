@@ -3,12 +3,13 @@
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { Search, X, TrendingUp, Clock, Tag } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { products } from '@/data/products';
+import { useProducts } from '@/lib/hooks';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product } from '@/store/useStore';
 
 export default function MobileSearchModal() {
+    const { products } = useProducts();
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<Product[]>([]);
@@ -148,7 +149,7 @@ export default function MobileSearchModal() {
                                             {results.map((product) => (
                                                 <Link
                                                     key={product.id}
-                                                    href={`/products/${product.id}`}
+                                                    href={`/products/${product.slug ?? product.id}`}
                                                     onClick={() => {
                                                         handleSearch(query);
                                                         setIsOpen(false);

@@ -2,11 +2,17 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Package, Heart, Settings, LogOut, ArrowRight, ChevronRight, MapPin, CreditCard, Bell } from 'lucide-react';
-import LoyaltyBadge from '@/components/loyalty/LoyaltyBadge';
+import { User, Package, Settings, LogOut, ChevronRight, CreditCard, Bell, Home } from 'lucide-react';
 import Link from 'next/link';
+import { Shield } from 'lucide-react';
+import LoyaltyBadge from '@/components/loyalty/LoyaltyBadge';
+import AuthForm from '@/components/auth/AuthForm';
+import AddressBook from '@/components/account/AddressBook';
+import ProfileForm from '@/components/account/ProfileForm';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useOrders } from '@/lib/hooks';
+import { toast } from 'sonner';
 
-// Format date consistently to prevent hydration mismatch
 const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -15,30 +21,65 @@ const formatDate = (dateString: string) => {
     return `${month}/${day}/${year}`;
 };
 
+const statusStyles = (status: string) => {
+    const s = status.toUpperCase();
+    if (s === 'DELIVERED' || s === 'PAID') return 'bg-new/5 border-new text-new';
+    if (s === 'SHIPPED' || s === 'PROCESSING') return 'bg-accent/5 border-accent text-accent';
+    if (s === 'CANCELLED' || s === 'REFUNDED') return 'bg-hot/5 border-hot text-hot';
+    return 'bg-limited/5 border-limited text-limited';
+};
+
 export default function AccountPage() {
     const [activeTab, setActiveTab] = useState('orders');
+    const { user, status, logout } = useAuthStore();
+    const isAuthed = status === 'authenticated';
+    const { orders, isLoading: ordersLoading } = useOrders(isAuthed);
 
     const tabs = [
         { id: 'orders', label: 'History', icon: Package },
+        { id: 'addresses', label: 'Addresses', icon: Home },
         { id: 'profile', label: 'Identity', icon: User },
         { id: 'settings', label: 'Control', icon: Settings },
     ];
 
-    const mockOrders = [
-        { id: 'LC-982-FX', date: '2026-01-05', status: 'Delivered', total: 299.99, items: 3 },
-        { id: 'LC-114-AQ', date: '2026-01-01', status: 'Shipped', total: 599.99, items: 2 },
-        { id: 'LC-002-ZT', date: '2025-12-28', status: 'Processing', total: 159.99, items: 1 },
-    ];
+    const handleLogout = async () => {
+        await logout();
+        toast.success('Signed out');
+    };
+
+    if (status === 'loading') {
+        return (
+            <div className="min-h-[60vh] flex items-center justify-center">
+                <div className="w-10 h-10 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+            </div>
+        );
+    }
+
+    if (!isAuthed) {
+        return (
+            <div className="pt-10 pb-48 bg-white dark:bg-slate-950">
+                <div className="max-w-[1440px] mx-auto px-4 md:px-12">
+                    <header className="text-center mb-12 space-y-4">
+                        <span className="text-accent font-black tracking-[0.4em] text-xs uppercase block">Personal Terminal</span>
+                        <h1 className="text-5xl md:text-7xl font-black text-primary dark:text-white leading-[0.85] tracking-tighter">
+                            Client Access
+                        </h1>
+                    </header>
+                    <AuthForm />
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div className="pt-5  md:pt-5 pb-48  bg-white">
+        <div className="pt-5 md:pt-5 pb-48 bg-white dark:bg-slate-950">
             <div className="max-w-[1440px] mx-auto px-4 md:px-12">
 
                 <header className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-8">
                     <div className="space-y-6">
                         <span className="text-accent font-black tracking-[0.4em] text-xs uppercase block">Personal Terminal</span>
-                        <h1 className="text-6xl md:text-9xl font-black text-primary leading-[0.8] tracking-tighter">
-                            Client <br />Dashboard.
+                        <h1 className="text-6xl md:text-9xl font-black text-primary dark:text-white leading-[0.8] tracking-tighter">
+                            Welcome,<br />{(user?.displayName || 'Client').split(' ')[0]}.
                         </h1>
                     </div>
                 </header>
@@ -49,7 +90,7 @@ export default function AccountPage() {
                     <aside className="lg:col-span-4 space-y-12">
                         <LoyaltyBadge points={3500} />
 
-                        <nav className="bg-primary/2 rounded-[3.5rem] border border-primary/5 p-10 space-y-4">
+                        <nav className="bg-primary/2 dark:bg-slate-900 rounded-[3.5rem] border border-primary/5 dark:border-slate-800 p-10 space-y-4">
                             <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-10">Navigation Matrix</h3>
                             <div className="space-y-4">
                                 {tabs.map((tab) => {
@@ -61,11 +102,11 @@ export default function AccountPage() {
                                             onClick={() => setActiveTab(tab.id)}
                                             className={`w-full group flex items-center justify-between p-6 rounded-2xl transition-all duration-500 ${isActive
                                                     ? 'bg-primary text-white shadow-2xl scale-105'
-                                                    : 'text-primary hover:bg-primary/5'
+                                                    : 'text-primary dark:text-white hover:bg-primary/5 dark:hover:bg-slate-800'
                                                 }`}
                                         >
                                             <div className="flex items-center gap-6">
-                                                <Icon className={`w-6 h-6 ${isActive ? 'text-accent' : 'text-primary'}`} />
+                                                <Icon className={`w-6 h-6 ${isActive ? 'text-accent' : 'text-primary dark:text-white'}`} />
                                                 <span className="text-xs font-black uppercase tracking-widest">{tab.label}</span>
                                             </div>
                                             {isActive ? (
@@ -76,14 +117,27 @@ export default function AccountPage() {
                                         </button>
                                     );
                                 })}
-                                <div className="pt-8 mt-8 border-t border-primary/5">
-                                    <button className="w-full flex items-center gap-6 p-6 rounded-2xl text-hot hover:bg-hot/5 transition-all group">
+                                <div className="pt-8 mt-8 border-t border-primary/5 dark:border-slate-800">
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full flex items-center gap-6 p-6 rounded-2xl text-hot hover:bg-hot/5 transition-all group"
+                                    >
                                         <LogOut className="w-6 h-6 group-hover:rotate-12 transition-transform" />
                                         <span className="text-xs font-black uppercase tracking-widest">Terminate Session</span>
                                     </button>
                                 </div>
                             </div>
                         </nav>
+
+                        {user?.role === 'ADMIN' && (
+                            <Link
+                                href="/admin"
+                                className="flex items-center justify-center gap-3 p-6 rounded-[2rem] bg-primary text-white dark:bg-accent font-black uppercase tracking-widest text-xs hover:opacity-90 transition-opacity"
+                            >
+                                <Shield className="w-5 h-5" />
+                                Admin Dashboard
+                            </Link>
+                        )}
                     </aside>
 
                     {/* Data Display */}
@@ -97,42 +151,59 @@ export default function AccountPage() {
                                     exit={{ opacity: 0, x: -20 }}
                                     className="space-y-12"
                                 >
-                                    <div className="flex items-center justify-between border-b-2 border-primary pb-8">
-                                        <h2 className="text-4xl font-black text-primary tracking-tighter uppercase">Archived Sequences</h2>
-                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{mockOrders.length} Records</span>
+                                    <div className="flex items-center justify-between border-b-2 border-primary dark:border-white pb-8">
+                                        <h2 className="text-4xl font-black text-primary dark:text-white tracking-tighter uppercase">Order History</h2>
+                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{orders.length} Records</span>
                                     </div>
 
-                                    <div className="space-y-8">
-                                        {mockOrders.map((order, i) => (
-                                            <motion.div
-                                                key={order.id}
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ delay: i * 0.1 }}
-                                                className="group p-10 bg-white border border-primary/5 rounded-[3rem] hover:shadow-2xl transition-all flex flex-col md:flex-row md:items-center justify-between gap-8"
-                                            >
-                                                <div className="space-y-4">
+                                    {ordersLoading ? (
+                                        <p className="text-secondary dark:text-gray-400 font-medium">Loading orders…</p>
+                                    ) : orders.length === 0 ? (
+                                        <p className="text-secondary dark:text-gray-400 font-medium">No orders yet. Start shopping to see them here.</p>
+                                    ) : (
+                                        <div className="space-y-8">
+                                            {orders.map((order, i) => (
+                                                <motion.div
+                                                    key={order.id}
+                                                    initial={{ opacity: 0, y: 20 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{ delay: i * 0.1 }}
+                                                    className="group p-10 bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-[3rem] hover:shadow-2xl transition-all flex flex-col md:flex-row md:items-center justify-between gap-8"
+                                                >
+                                                    <div className="space-y-4">
+                                                        <div className="flex items-center gap-4">
+                                                            <span className="text-[10px] font-black text-accent uppercase tracking-widest underline underline-offset-4">LC-{String(order.id).padStart(4, '0')}</span>
+                                                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{formatDate(order.createdAt)}</span>
+                                                        </div>
+                                                        <h3 className="text-3xl font-black text-primary dark:text-white tracking-tighter uppercase">Total: ${order.total.toFixed(2)}</h3>
+                                                        <p className="text-[10px] font-black text-secondary dark:text-gray-400 uppercase tracking-[0.2em]">{order.items.reduce((n, it) => n + it.quantity, 0)} Units</p>
+                                                    </div>
                                                     <div className="flex items-center gap-4">
-                                                        <span className="text-[10px] font-black text-accent uppercase tracking-widest underline underline-offset-4">{order.id}</span>
-                                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{formatDate(order.date)}</span>
+                                                        <div className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border-2 ${statusStyles(order.status)}`}>
+                                                            {order.status}
+                                                        </div>
+                                                        <Link
+                                                            href={`/orders/${order.id}`}
+                                                            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white dark:bg-accent text-[10px] font-black uppercase tracking-widest hover:opacity-90"
+                                                        >
+                                                            Track <ChevronRight className="w-3.5 h-3.5" />
+                                                        </Link>
                                                     </div>
-                                                    <h3 className="text-3xl font-black text-primary tracking-tighter uppercase">Valuation: ${order.total.toFixed(2)}</h3>
-                                                    <p className="text-[10px] font-black text-secondary uppercase tracking-[0.2em]">{order.items} Units Processing</p>
-                                                </div>
-                                                <div className="flex items-center gap-8">
-                                                    <div className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border-2 ${order.status === 'Delivered' ? 'bg-new/5 border-new text-new' :
-                                                            order.status === 'Shipped' ? 'bg-accent/5 border-accent text-accent' :
-                                                                'bg-limited/5 border-limited text-limited'
-                                                        }`}>
-                                                        {order.status}
-                                                    </div>
-                                                    <button className="w-14 h-14 rounded-2xl bg-primary text-white flex items-center justify-center hover:bg-accent transition-all shadow-xl group/btn">
-                                                        <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-                                                    </button>
-                                                </div>
-                                            </motion.div>
-                                        ))}
-                                    </div>
+                                                </motion.div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </motion.div>
+                            )}
+
+                            {activeTab === 'addresses' && (
+                                <motion.div
+                                    key="addresses"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                >
+                                    <AddressBook />
                                 </motion.div>
                             )}
 
@@ -144,28 +215,10 @@ export default function AccountPage() {
                                     exit={{ opacity: 0, x: -20 }}
                                     className="space-y-16"
                                 >
-                                    <div className="border-b-2 border-primary pb-8">
-                                        <h2 className="text-4xl font-black text-primary tracking-tighter uppercase">Client Identity</h2>
+                                    <div className="border-b-2 border-primary dark:border-white pb-8">
+                                        <h2 className="text-4xl font-black text-primary dark:text-white tracking-tighter uppercase">Client Identity</h2>
                                     </div>
-                                    <div className="grid md:grid-cols-2 gap-12">
-                                        {[
-                                            { label: 'Display Identifier', value: 'JOHN DOE', icon: User },
-                                            { label: 'Electronic Address', value: 'JOHN@LUXECART.COM', icon: Bell },
-                                            { label: 'Contact Index', value: '+44 020 7946 0000', icon: Package },
-                                            { label: 'Primary Residence', value: 'LONDON, UK', icon: MapPin }
-                                        ].map((field, i) => (
-                                            <div key={i} className="p-8 bg-primary/2 rounded-[2.5rem] border border-primary/5 space-y-4">
-                                                <div className="flex items-center gap-4 text-accent">
-                                                    <field.icon className="w-4 h-4" />
-                                                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">{field.label}</span>
-                                                </div>
-                                                <p className="text-xl font-black text-primary tracking-tight">{field.value}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <button className="btn-primary w-full md:w-auto px-16 h-20 text-xs">
-                                        AUTHENTICATE & UPDATE
-                                    </button>
+                                    <ProfileForm />
                                 </motion.div>
                             )}
 
@@ -177,30 +230,27 @@ export default function AccountPage() {
                                     exit={{ opacity: 0, x: -20 }}
                                     className="space-y-16"
                                 >
-                                    <div className="border-b-2 border-primary pb-8">
-                                        <h2 className="text-4xl font-black text-primary tracking-tighter uppercase">System Control</h2>
+                                    <div className="border-b-2 border-primary dark:border-white pb-8">
+                                        <h2 className="text-4xl font-black text-primary dark:text-white tracking-tighter uppercase">System Control</h2>
                                     </div>
                                     <div className="space-y-8">
                                         {[
                                             { title: 'Information Dispatch', desc: 'Receive periodic archival updates and event notifications.', icon: Bell },
                                             { title: 'Metric Tracking', desc: 'Allow system to calibrate your experience based on navigation data.', icon: Settings },
-                                            { title: 'Secure Vault', desc: 'Manage your biometric and transaction credentials.', icon: CreditCard }
+                                            { title: 'Secure Vault', desc: 'Manage your biometric and transaction credentials.', icon: CreditCard },
                                         ].map((opt, i) => (
-                                            <div key={i} className="flex items-center justify-between p-10 bg-white border border-primary/5 rounded-[3rem] hover:border-accent transition-all group">
+                                            <div key={i} className="flex items-center justify-between p-10 bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-[3rem] hover:border-accent transition-all group">
                                                 <div className="flex items-center gap-10">
-                                                    <div className="w-16 h-16 rounded-2xl bg-primary/2 flex items-center justify-center text-primary group-hover:bg-accent group-hover:text-white transition-all">
+                                                    <div className="w-16 h-16 rounded-2xl bg-primary/2 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-white group-hover:bg-accent group-hover:text-white transition-all">
                                                         <opt.icon className="w-8 h-8" />
                                                     </div>
                                                     <div>
-                                                        <h3 className="text-xl font-black text-primary uppercase tracking-tight mb-2">{opt.title}</h3>
-                                                        <p className="text-sm font-medium text-secondary max-w-sm">{opt.desc}</p>
+                                                        <h3 className="text-xl font-black text-primary dark:text-white uppercase tracking-tight mb-2">{opt.title}</h3>
+                                                        <p className="text-sm font-medium text-secondary dark:text-gray-400 max-w-sm">{opt.desc}</p>
                                                     </div>
                                                 </div>
-                                                <div className="w-16 h-8 bg-primary/5 rounded-full relative cursor-pointer border-2 border-primary/5">
-                                                    <motion.div
-                                                        animate={{ x: 36 }}
-                                                        className="absolute top-1 left-1 w-5 h-5 bg-accent rounded-full shadow-lg"
-                                                    />
+                                                <div className="w-16 h-8 bg-primary/5 dark:bg-slate-800 rounded-full relative cursor-pointer border-2 border-primary/5 dark:border-slate-700">
+                                                    <motion.div animate={{ x: 36 }} className="absolute top-1 left-1 w-5 h-5 bg-accent rounded-full shadow-lg" />
                                                 </div>
                                             </div>
                                         ))}

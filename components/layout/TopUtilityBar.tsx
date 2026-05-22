@@ -3,8 +3,13 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Phone, Mail, ChevronDown, Facebook, Instagram, Twitter, User, Heart, MapPin } from 'lucide-react';
+import { useSettings } from '@/lib/hooks';
 
 export default function TopUtilityBar() {
+    const { settings } = useSettings();
+    const phone = settings?.supportPhone || '+1 (234) 567-890';
+    const email = settings?.supportEmail || 'support@luxecart.com';
+    const promo = settings?.announcement || 'Free Shipping on orders $50+';
     const [currency, setCurrency] = useState('USD');
     const [language, setLanguage] = useState('English');
     const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
@@ -19,20 +24,20 @@ export default function TopUtilityBar() {
                 <div className="flex items-center justify-between">
                     {/* Left - Contact Info */}
                     <div className="hidden md:flex items-center gap-4">
-                        <a href="tel:+1234567890" className="flex items-center gap-1.5 hover:text-white transition-colors">
+                        <a href={`tel:${phone}`} className="flex items-center gap-1.5 hover:text-white transition-colors">
                             <Phone className="w-3.5 h-3.5" />
-                            <span>+1 (234) 567-890</span>
+                            <span>{phone}</span>
                         </a>
                         <span className="w-px h-3 bg-slate-700" />
-                        <a href="mailto:support@luxecart.com" className="flex items-center gap-1.5 hover:text-white transition-colors">
+                        <a href={`mailto:${email}`} className="flex items-center gap-1.5 hover:text-white transition-colors">
                             <Mail className="w-3.5 h-3.5" />
-                            <span>support@luxecart.com</span>
+                            <span>{email}</span>
                         </a>
                     </div>
 
                     {/* Center - Promo Text (mobile only) */}
                     <div className="md:hidden text-center flex-1">
-                        <span className="text-accent-400 font-medium">Free Shipping on orders $50+</span>
+                        <span className="text-accent-400 font-medium">{promo}</span>
                     </div>
 
                     {/* Right - Actions */}
@@ -58,7 +63,7 @@ export default function TopUtilityBar() {
                                 <ChevronDown className="w-3 h-3" />
                             </button>
                             {showCurrencyDropdown && (
-                                <div className="absolute top-full right-0 mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-lg py-1 z-50 min-w-[80px]">
+                                <div className="absolute top-full right-0 mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-lg py-1 z-[60] min-w-[80px]">
                                     {currencies.map((c) => (
                                         <button
                                             key={c}
@@ -89,7 +94,7 @@ export default function TopUtilityBar() {
                                 <ChevronDown className="w-3 h-3" />
                             </button>
                             {showLanguageDropdown && (
-                                <div className="absolute top-full right-0 mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-lg py-1 z-50 min-w-[100px]">
+                                <div className="absolute top-full right-0 mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-lg py-1 z-[60] min-w-[100px]">
                                     {languages.map((l) => (
                                         <button
                                             key={l}
@@ -111,13 +116,13 @@ export default function TopUtilityBar() {
 
                         {/* Social Links */}
                         <div className="hidden md:flex items-center gap-2">
-                            <a href="#" className="hover:text-white transition-colors">
+                            <a href={settings?.facebook || '#'} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                                 <Facebook className="w-3.5 h-3.5" />
                             </a>
-                            <a href="#" className="hover:text-white transition-colors">
+                            <a href={settings?.instagram || '#'} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                                 <Instagram className="w-3.5 h-3.5" />
                             </a>
-                            <a href="#" className="hover:text-white transition-colors">
+                            <a href={settings?.twitter || '#'} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                                 <Twitter className="w-3.5 h-3.5" />
                             </a>
                         </div>

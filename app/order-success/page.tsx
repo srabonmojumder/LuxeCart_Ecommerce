@@ -1,20 +1,30 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, Package, Mail, ArrowRight, ShoppingBag, ArrowLeft } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { CheckCircle, Package, Mail, ArrowRight, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { useOrder } from '@/lib/hooks';
 
 export default function OrderSuccessPage() {
-    const [orderNumber, setOrderNumber] = useState<string | null>(null);
+    const [orderId, setOrderId] = useState<string | null>(null);
+    const { order } = useOrder(orderId);
 
     useEffect(() => {
-        setOrderNumber(`LC-${Math.random().toString(36).substr(2, 6).toUpperCase()}-${Math.floor(Math.random() * 1000)}`);
+        const params = new URLSearchParams(window.location.search);
+        setOrderId(params.get('order'));
     }, []);
 
+    const reference = order
+        ? `LC-${String(order.id).padStart(4, '0')}`
+        : orderId
+            ? `LC-${orderId.padStart(4, '0')}`
+            : 'PROCESS…';
+
     return (
-        <div className="pt-0 min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center px-4">
-            <div className="max-w-4xl mx-auto text-center space-y-16">
+        <div className="pt-0 min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center px-4 py-12">
+            <div className="max-w-4xl w-full mx-auto text-center space-y-16">
 
                 {/* Status Hero */}
                 <div className="space-y-10">
@@ -58,9 +68,10 @@ export default function OrderSuccessPage() {
                     >
                         <Package className="w-10 h-10 text-accent mb-4" />
                         <span className="text-[10px] font-black uppercase tracking-widest text-white/40 block">Reference ID</span>
-                        <p className="text-2xl font-black tracking-tighter text-white">
-                            {orderNumber || "PROCESS..."}
-                        </p>
+                        <p className="text-2xl font-black tracking-tighter text-white">{reference}</p>
+                        {order && (
+                            <span className="inline-block text-[10px] font-black uppercase tracking-widest text-accent">{order.status}</span>
+                        )}
                     </motion.div>
 
                     <motion.div
@@ -71,11 +82,46 @@ export default function OrderSuccessPage() {
                     >
                         <Mail className="w-10 h-10 text-accent mb-4" />
                         <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 block">Notification</span>
-                        <p className="text-lg font-black leading-tight">
-                            Digital receipt and tracking index sent to your mail.
-                        </p>
+                        <p className="text-lg font-black leading-tight">Digital receipt and tracking index sent to your mail.</p>
                     </motion.div>
                 </div>
+
+                {/* Real order summary */}
+                {order && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.8 }}
+                        className="max-w-2xl mx-auto text-left p-8 bg-gray-50 dark:bg-slate-900/50 rounded-[2rem] border border-primary/5 dark:border-slate-800 space-y-5"
+                    >
+                        <h2 className="text-sm font-black uppercase tracking-widest text-gray-400">Order Summary</h2>
+                        <div className="space-y-4">
+                            {order.items.map((item) => (
+                                <div key={item.productId} className="flex items-center gap-4">
+                                    {item.image && (
+                                        <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-white flex-shrink-0">
+                                            <Image src={item.image} alt={item.name} fill className="object-cover" />
+                                        </div>
+                                    )}
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-semibold text-primary dark:text-white truncate">{item.name}</p>
+                                        <p className="text-xs text-gray-400">Qty: {item.quantity}</p>
+                                    </div>
+                                    <span className="text-sm font-bold text-primary dark:text-white">${(item.price * item.quantity).toFixed(2)}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="pt-4 border-t border-primary/10 dark:border-slate-800 space-y-2 text-sm">
+                            <div className="flex justify-between text-gray-500"><span>Subtotal</span><span>${order.subtotal.toFixed(2)}</span></div>
+                            {order.discount > 0 && <div className="flex justify-between text-new"><span>Discount{order.couponCode ? ` (${order.couponCode})` : ''}</span><span>−${order.discount.toFixed(2)}</span></div>}
+                            <div className="flex justify-between text-gray-500"><span>Shipping</span><span>{order.shipping === 0 ? 'Free' : `$${order.shipping.toFixed(2)}`}</span></div>
+                            <div className="flex justify-between text-gray-500"><span>Tax</span><span>${order.tax.toFixed(2)}</span></div>
+                            <div className="flex justify-between pt-2 border-t border-primary/10 dark:border-slate-800 font-black text-primary dark:text-white text-lg">
+                                <span>Total</span><span>${order.total.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
 
                 {/* Actions */}
                 <motion.div
@@ -84,8 +130,13 @@ export default function OrderSuccessPage() {
                     transition={{ delay: 0.9 }}
                     className="flex flex-col sm:flex-row gap-8 justify-center items-center pt-8"
                 >
-                    <Link href="/products" className="btn-primary flex items-center gap-4">
-                        Explore Collection <ArrowRight className="w-5 h-5 text-accent" />
+                    {orderId && (
+                        <Link href={`/orders/${orderId}`} className="btn-primary flex items-center gap-4">
+                            Track Order <Package className="w-5 h-5 text-accent" />
+                        </Link>
+                    )}
+                    <Link href="/products" className="flex items-center gap-4 text-xs font-black uppercase tracking-widest text-primary dark:text-white hover:gap-6 transition-all group">
+                        Explore Collection <ArrowRight className="w-4 h-4" />
                     </Link>
                     <Link href="/account" className="flex items-center gap-4 text-xs font-black uppercase tracking-widest text-primary dark:text-white hover:gap-6 transition-all group">
                         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />

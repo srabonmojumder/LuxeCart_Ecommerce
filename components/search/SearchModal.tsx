@@ -5,7 +5,7 @@ import { X, Search as SearchIcon, TrendingUp, Clock, Tag, Star } from 'lucide-re
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { products } from '@/data/products';
+import { useProducts } from '@/lib/hooks';
 import { Product } from '@/store/useStore';
 
 interface SearchModalProps {
@@ -14,6 +14,7 @@ interface SearchModalProps {
 }
 
 export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
+    const { products } = useProducts();
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<Product[]>([]);
     const [recentSearches, setRecentSearches] = useState<string[]>([]);
@@ -152,7 +153,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                             {results.map((product) => (
                                                 <Link
                                                     key={product.id}
-                                                    href={`/products/${product.id}`}
+                                                    href={`/products/${product.slug ?? product.id}`}
                                                     onClick={handleProductClick}
                                                 >
                                                     <motion.div
@@ -330,7 +331,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                             {results.map((product, index) => (
                                                 <Link
                                                     key={product.id}
-                                                    href={`/products/${product.id}`}
+                                                    href={`/products/${product.slug ?? product.id}`}
                                                     onClick={handleProductClick}
                                                 >
                                                     <motion.div

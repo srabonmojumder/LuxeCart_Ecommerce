@@ -4,6 +4,12 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CreditCard, Lock, ArrowLeft, Check, Mail, Truck, Calendar, ShieldCheck, User, MapPin } from 'lucide-react';
 import { useStore } from '@/store/useStore';
+import { useAuthStore } from '@/store/useAuthStore';
+import StripePayment from '@/components/checkout/StripePayment';
+import { api, ApiError } from '@/lib/api';
+import { useAddresses, useSettings } from '@/lib/hooks';
+
+const STRIPE_ENABLED = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -14,11 +20,21 @@ export default function CheckoutPage() {
     const cart = useStore((state) => state.cart);
     const getTotalPrice = useStore((state) => state.getTotalPrice);
     const clearCart = useStore((state) => state.clearCart);
+    const authStatus = useAuthStore((state) => state.status);
+    const register = useAuthStore((state) => state.register);
+    const { addresses } = useAddresses(authStatus === 'authenticated');
+    const { settings } = useSettings();
+    const isGuest = authStatus !== 'authenticated';
+
+    const [couponInput, setCouponInput] = useState('');
+    const [coupon, setCoupon] = useState<{ code: string; discount: number } | null>(null);
+    const [applyingCoupon, setApplyingCoupon] = useState(false);
 
     const [formData, setFormData] = useState({
         email: '',
         firstName: '',
         lastName: '',
+        phone: '',
         address: '',
         city: '',
         state: '',
@@ -31,11 +47,41 @@ export default function CheckoutPage() {
     });
 
     const [isProcessing, setIsProcessing] = useState(false);
+    const [pendingOrderId, setPendingOrderId] = useState<number | null>(null);
+    const [createAccount, setCreateAccount] = useState(false);
+    const [password, setPassword] = useState('');
 
     const totalPrice = getTotalPrice();
-    const shipping = totalPrice > 50 ? 0 : 10;
-    const tax = totalPrice * 0.1;
-    const finalTotal = totalPrice + shipping + tax;
+    const freeShipThreshold = settings?.freeShippingThreshold ?? 50;
+    const shipFlat = settings?.shippingFlat ?? 9.99;
+    const taxRate = settings?.taxRate ?? 0.08;
+    const discount = coupon?.discount ?? 0;
+    const taxable = Math.max(0, totalPrice - discount);
+    const shipping = totalPrice >= freeShipThreshold ? 0 : shipFlat;
+    const tax = taxable * taxRate;
+    const finalTotal = taxable + shipping + tax;
+
+    const applyCoupon = async () => {
+        if (!couponInput.trim()) return;
+        setApplyingCoupon(true);
+        try {
+            const res = await api.post<{ valid: boolean; discount: number; message: string; code: string }>(
+                '/coupons/validate',
+                { code: couponInput.trim(), subtotal: totalPrice }
+            );
+            if (res.valid) {
+                setCoupon({ code: res.code, discount: res.discount });
+                toast.success(`Coupon applied — you saved $${res.discount.toFixed(2)}`);
+            } else {
+                setCoupon(null);
+                toast.error(res.message);
+            }
+        } catch {
+            toast.error('Could not validate coupon');
+        } finally {
+            setApplyingCoupon(false);
+        }
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -44,17 +90,76 @@ export default function CheckoutPage() {
         });
     };
 
+    const applyAddress = (a: { fullName: string; line1: string; city: string; state?: string | null; postalCode: string; country: string; phone?: string | null }) => {
+        const [first, ...rest] = a.fullName.split(' ');
+        setFormData((prev) => ({
+            ...prev,
+            firstName: first || '',
+            lastName: rest.join(' '),
+            phone: a.phone || prev.phone,
+            address: a.line1,
+            city: a.city,
+            state: a.state || '',
+            zipCode: a.postalCode,
+            country: a.country,
+        }));
+        toast.success('Address applied');
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsProcessing(true);
 
-        // Simulate payment processing
-        setTimeout(() => {
-            setIsProcessing(false);
+        try {
+            // Optional: turn a guest into an account before placing the order.
+            if (isGuest && createAccount) {
+                if (password.length < 6) {
+                    toast.error('Password must be at least 6 characters');
+                    setIsProcessing(false);
+                    return;
+                }
+                await register(formData.email, password, `${formData.firstName} ${formData.lastName}`.trim() || formData.email);
+                // register() merges the guest cart into the new account's server cart.
+            }
+
+            const shippingAddress = {
+                fullName: `${formData.firstName} ${formData.lastName}`.trim(),
+                line1: formData.address,
+                city: formData.city,
+                state: formData.state || undefined,
+                postalCode: formData.zipCode,
+                country: formData.country || 'USA',
+                phone: formData.phone || undefined,
+            };
+
+            const stillGuest = useAuthStore.getState().status !== 'authenticated';
+
+            const res = stillGuest
+                ? await api.post<{ data: { id: number; status: string } }>('/orders', {
+                      email: formData.email,
+                      items: cart.map((i) => ({ productId: i.id, quantity: i.quantity })),
+                      shippingAddress,
+                      couponCode: coupon?.code,
+                  })
+                : await api.post<{ data: { id: number; status: string } }>('/orders', { shippingAddress, couponCode: coupon?.code }, true);
+
             clearCart();
-            toast.success('Sequence completed successfully!');
-            router.push('/order-success');
-        }, 2000);
+
+            if (!stillGuest && STRIPE_ENABLED && res.data.status === 'PENDING') {
+                setPendingOrderId(res.data.id); // collect card via Stripe modal
+            } else if (stillGuest) {
+                toast.success('Order placed!');
+                router.push(`/track?order=${res.data.id}&email=${encodeURIComponent(formData.email)}`);
+            } else {
+                toast.success('Order placed successfully!');
+                router.push(`/order-success?order=${res.data.id}`);
+            }
+        } catch (err) {
+            const message = err instanceof ApiError ? err.message : 'Checkout failed. Please try again.';
+            toast.error(message);
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     if (cart.length === 0) {
@@ -116,6 +221,26 @@ export default function CheckoutPage() {
 
                     <div className="lg:col-span-7 space-y-8 md:space-y-12">
 
+                        {/* Saved addresses quick-fill */}
+                        {addresses.length > 0 && (
+                            <section className="space-y-3">
+                                <h2 className="text-[10px] font-black uppercase tracking-widest text-gray-400">Use a saved address</h2>
+                                <div className="grid sm:grid-cols-2 gap-3">
+                                    {addresses.map((a) => (
+                                        <button
+                                            type="button"
+                                            key={a.id}
+                                            onClick={() => applyAddress(a)}
+                                            className="text-left p-4 border border-primary/10 dark:border-slate-800 rounded-xl hover:border-accent transition-colors"
+                                        >
+                                            <p className="font-semibold text-primary dark:text-white text-sm">{a.fullName}{a.isDefault ? ' · Default' : ''}</p>
+                                            <p className="text-xs text-secondary dark:text-gray-400 mt-1">{a.line1}, {a.city} {a.postalCode}</p>
+                                        </button>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+
                         {/* Section: Identity */}
                         <section className="space-y-5 md:space-y-8">
                             <div className="flex items-center gap-3 md:gap-4 border-b border-primary/20 pb-4 md:pb-6">
@@ -161,6 +286,42 @@ export default function CheckoutPage() {
                                         placeholder="Doe"
                                     />
                                 </div>
+                                <div className="md:col-span-2 space-y-2">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Phone (for order &amp; delivery updates via SMS)</label>
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                        className="input-field"
+                                        placeholder="+1 555 000 1234"
+                                    />
+                                </div>
+
+                                {isGuest && (
+                                    <div className="md:col-span-2 space-y-3 pt-1">
+                                        <label className="flex items-center gap-2.5 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                checked={createAccount}
+                                                onChange={(e) => setCreateAccount(e.target.checked)}
+                                                className="w-4 h-4 accent-accent"
+                                            />
+                                            <span className="text-sm font-medium text-primary dark:text-white">Create an account for faster checkout &amp; order tracking <span className="text-gray-400">(optional)</span></span>
+                                        </label>
+                                        {createAccount && (
+                                            <input
+                                                type="password"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                minLength={6}
+                                                required
+                                                className="input-field"
+                                                placeholder="Choose a password (min 6 characters)"
+                                            />
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </section>
 
@@ -212,7 +373,16 @@ export default function CheckoutPage() {
                             </div>
                         </section>
 
-                        {/* Section: Payment */}
+                        {/* Section: Payment (manual inputs only in mock mode; Stripe collects card after order) */}
+                        {STRIPE_ENABLED ? (
+                            <section className="space-y-3 p-5 md:p-6 bg-primary/5 dark:bg-white/5 rounded-2xl border border-primary/10 dark:border-white/10">
+                                <div className="flex items-center gap-3">
+                                    <Lock className="w-5 h-5 text-accent" />
+                                    <h2 className="text-lg font-black text-primary dark:text-white tracking-tight">Secure Payment</h2>
+                                </div>
+                                <p className="text-sm text-secondary dark:text-gray-400">You'll enter your card details securely via Stripe after placing the order.</p>
+                            </section>
+                        ) : (
                         <section className="space-y-5 md:space-y-8 p-5 md:p-8 bg-primary/5 dark:bg-white/5 rounded-2xl md:rounded-3xl border border-primary/10 dark:border-white/10 relative overflow-hidden">
                             <div className="relative z-10 space-y-5 md:space-y-8">
                                 <div className="flex items-center justify-between border-b border-primary/10 dark:border-white/10 pb-4 md:pb-6">
@@ -281,6 +451,7 @@ export default function CheckoutPage() {
                                 </div>
                             </div>
                         </section>
+                        )}
                     </div>
 
                     {/* Summary Sidebar */}
@@ -311,11 +482,39 @@ export default function CheckoutPage() {
                                 })}
                             </div>
 
+                            {/* Coupon */}
+                            <div className="pt-4 border-t border-primary/10">
+                                {coupon ? (
+                                    <div className="flex items-center justify-between text-sm bg-new/10 text-new rounded-xl px-4 py-2.5">
+                                        <span className="font-bold">{coupon.code} applied</span>
+                                        <button type="button" onClick={() => { setCoupon(null); setCouponInput(''); }} className="text-xs font-bold underline">Remove</button>
+                                    </div>
+                                ) : (
+                                    <div className="flex gap-2">
+                                        <input
+                                            value={couponInput}
+                                            onChange={(e) => setCouponInput(e.target.value)}
+                                            placeholder="Promo code"
+                                            className="flex-1 px-4 py-2.5 bg-gray-50 dark:bg-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
+                                        />
+                                        <button type="button" onClick={applyCoupon} disabled={applyingCoupon} className="px-4 py-2.5 bg-primary dark:bg-accent text-white rounded-xl font-bold text-sm disabled:opacity-60">
+                                            {applyingCoupon ? '...' : 'Apply'}
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
                             <div className="space-y-3 pt-4 border-t border-primary/10">
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="text-gray-500">Subtotal</span>
                                     <span className="font-semibold text-primary dark:text-white">${totalPrice.toFixed(2)}</span>
                                 </div>
+                                {discount > 0 && (
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-gray-500">Discount</span>
+                                        <span className="font-semibold text-new">−${discount.toFixed(2)}</span>
+                                    </div>
+                                )}
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="text-gray-500">Shipping</span>
                                     <span className="font-semibold text-primary dark:text-white">{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
@@ -358,6 +557,18 @@ export default function CheckoutPage() {
                         </section>
                     </aside>
                 </form>
+
+                {pendingOrderId && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60">
+                        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 w-full max-w-md space-y-5">
+                            <h3 className="text-xl font-black text-primary dark:text-white uppercase tracking-tight">Complete Payment</h3>
+                            <StripePayment
+                                orderId={pendingOrderId}
+                                onPaid={() => router.push(`/order-success?order=${pendingOrderId}`)}
+                            />
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

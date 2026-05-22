@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from 'sonner';
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import TopUtilityBar from "@/components/layout/TopUtilityBar";
-import MegaMenu from "@/components/layout/MegaMenu";
-import FloatingMobileNav from "@/components/ui/FloatingMobileNav";
+import ConditionalChrome from "@/components/layout/ConditionalChrome";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { AuthProvider } from "@/components/providers/AuthProvider";
 import { generateOrganizationSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -88,17 +85,10 @@ export default function RootLayout({
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <TopUtilityBar />
-                    <div className="sticky top-0 z-50">
-                        <Navbar />
-                        <MegaMenu />
-                    </div>
-                    <main className="relative my-5">
-                        {children}
-                    </main>
-                    <Footer />
-                    <FloatingMobileNav />
-                    <Toaster position="top-right" richColors />
+                    <AuthProvider>
+                        <ConditionalChrome>{children}</ConditionalChrome>
+                        <Toaster position="top-right" richColors />
+                    </AuthProvider>
                 </ThemeProvider>
             </body>
         </html>

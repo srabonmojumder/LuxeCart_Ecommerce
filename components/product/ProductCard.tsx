@@ -64,7 +64,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
             onHoverEnd={() => setIsHovered(false)}
             className="group block"
         >
-            <Link href={`/products/${product.id}`} className="block touch-manipulation">
+            <Link href={`/products/${product.slug ?? product.id}`} className="block touch-manipulation">
                 <div className="relative aspect-[3/4] overflow-hidden bg-gray-50 dark:bg-slate-900 rounded-xl md:rounded-2xl mb-2.5 md:mb-3 group">
                     <Image
                         src={product.image}

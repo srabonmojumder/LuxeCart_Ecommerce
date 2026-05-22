@@ -1,0 +1,39 @@
+# Local full-stack helper: MySQL + LuxeCart API.
+# Run the Next.js frontend separately with `npm run dev` (NEXT_PUBLIC_API_URL=http://localhost:4000/api).
+services:
+  mysql:
+    image: mysql:8
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: luxecart
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ppassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      PORT: 4000
+      NODE_ENV: production
+      DATABASE_URL: "mysql://root:password@mysql:3306/luxecart"
+      CORS_ORIGINS: "http://localhost:3000"
+      JWT_ACCESS_SECRET: "change-me-in-prod-access"
+      JWT_REFRESH_SECRET: "change-me-in-prod-refresh"
+      JWT_ACCESS_EXPIRES: "15m"
+      JWT_REFRESH_EXPIRES: "7d"
+    ports:
+      - "4000:4000"
+
+volumes:
+  mysql_data:

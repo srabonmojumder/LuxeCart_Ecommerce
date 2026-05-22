@@ -1,7 +1,11 @@
+'use client';
+
 import Link from 'next/link';
 import { Facebook, Instagram, Twitter, Youtube, Mail, MapPin, Phone, Send } from 'lucide-react';
+import { useSettings } from '@/lib/hooks';
 
 export default function Footer() {
+    const { settings } = useSettings();
     return (
         <footer className="relative bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-t border-slate-200/50 dark:border-slate-800/50">
             {/* Gradient Accent Line */}
@@ -23,38 +27,43 @@ export default function Footer() {
 
                         {/* Contact Info */}
                         <div className="space-y-3 mb-8">
-                            <div className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400">
-                                <MapPin className="w-4 h-4 mt-0.5 text-accent flex-shrink-0" />
-                                <span>123 Design Street, Creative City, CC 12345</span>
-                            </div>
+                            {(settings?.address || '123 Design Street, Creative City, CC 12345') && (
+                                <div className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400">
+                                    <MapPin className="w-4 h-4 mt-0.5 text-accent flex-shrink-0" />
+                                    <span>{settings?.address || '123 Design Street, Creative City, CC 12345'}</span>
+                                </div>
+                            )}
                             <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
                                 <Phone className="w-4 h-4 text-accent flex-shrink-0" />
-                                <span>+1 (555) 123-4567</span>
+                                <span>{settings?.supportPhone || '+1 (555) 123-4567'}</span>
                             </div>
                             <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
                                 <Mail className="w-4 h-4 text-accent flex-shrink-0" />
-                                <span>hello@luxecart.com</span>
+                                <span>{settings?.supportEmail || 'hello@luxecart.com'}</span>
                             </div>
                         </div>
 
                         {/* Social Media */}
                         <div className="flex gap-3">
                             <a
-                                href="#"
+                                href={settings?.instagram || '#'}
+                                target="_blank" rel="noopener noreferrer"
                                 className="group w-11 h-11 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center hover:from-accent hover:to-accent/80 transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-110 border border-slate-200 dark:border-slate-700"
                                 aria-label="Instagram"
                             >
                                 <Instagram className="w-5 h-5 text-slate-700 dark:text-slate-300 group-hover:text-white transition-colors" />
                             </a>
                             <a
-                                href="#"
+                                href={settings?.facebook || '#'}
+                                target="_blank" rel="noopener noreferrer"
                                 className="group w-11 h-11 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center hover:from-accent hover:to-accent/80 transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-110 border border-slate-200 dark:border-slate-700"
                                 aria-label="Facebook"
                             >
                                 <Facebook className="w-5 h-5 text-slate-700 dark:text-slate-300 group-hover:text-white transition-colors" />
                             </a>
                             <a
-                                href="#"
+                                href={settings?.twitter || '#'}
+                                target="_blank" rel="noopener noreferrer"
                                 className="group w-11 h-11 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center hover:from-accent hover:to-accent/80 transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-110 border border-slate-200 dark:border-slate-700"
                                 aria-label="Twitter"
                             >
@@ -130,6 +139,15 @@ export default function Footer() {
                             Support
                         </h5>
                         <ul className="space-y-3">
+                            <li>
+                                <Link
+                                    href="/track"
+                                    className="text-slate-600 dark:text-slate-400 hover:text-accent dark:hover:text-accent transition-colors text-sm font-medium inline-flex items-center gap-2 group"
+                                >
+                                    <span className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-600 group-hover:bg-accent transition-colors"></span>
+                                    Track Order
+                                </Link>
+                            </li>
                             <li>
                                 <Link
                                     href="/contact"

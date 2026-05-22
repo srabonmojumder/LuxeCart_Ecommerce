@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'export',
-    trailingSlash: true,
+    // NOTE: 'output: export' removed so pages render dynamically from the Node
+    // API (SSR/ISR) with live products and SEO intact, instead of a static build.
     images: {
         unoptimized: true,
         remotePatterns: [
