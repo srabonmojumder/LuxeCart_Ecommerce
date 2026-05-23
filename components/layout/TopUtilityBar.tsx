@@ -14,7 +14,7 @@ export default function TopUtilityBar() {
     const languages = ['English', 'Spanish', 'French', 'German'];
 
     return (
-        <div className="bg-slate-900 text-slate-300 text-xs py-2 border-b border-slate-800">
+        <div className="relative z-[60] bg-slate-900 text-slate-300 text-xs py-2 border-b border-slate-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between">
                     {/* Left - Contact Info */}
