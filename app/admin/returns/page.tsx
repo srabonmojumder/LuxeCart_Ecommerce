@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useAdminReturns, type AdminReturn } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
+import Select from '@/components/ui/Select';
 
 const STATUSES: AdminReturn['status'][] = ['REQUESTED', 'APPROVED', 'REJECTED', 'RECEIVED', 'REFUNDED'];
 
@@ -49,18 +50,17 @@ function ReturnRow({ r, onChanged }: { r: AdminReturn; onChanged: () => void }) 
                 </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-2">
-                <select
+                <Select
                     value={status}
-                    onChange={(e) => setStatus(e.target.value as AdminReturn['status'])}
-                    className="px-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800 border border-primary/10 dark:border-slate-700 text-sm font-bold text-primary dark:text-white"
-                >
-                    {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
-                </select>
+                    onChange={(v) => setStatus(v as AdminReturn['status'])}
+                    options={STATUSES.map((s) => ({ value: s, label: s }))}
+                    className="px-3 py-2 rounded-[5px] bg-gray-50 dark:bg-slate-800 border border-primary/10 dark:border-slate-700 text-sm font-bold text-primary dark:text-white min-w-[150px]"
+                />
                 <input
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                     placeholder="Note to customer (optional)"
-                    className="flex-1 px-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800 border border-primary/10 dark:border-slate-700 text-sm text-gray-900 dark:text-white"
+                    className="flex-1 px-3 py-2 rounded-[5px] bg-gray-50 dark:bg-slate-800 border border-primary/10 dark:border-slate-700 text-sm text-gray-900 dark:text-white"
                 />
                 <button onClick={save} disabled={saving} className="px-5 py-2 rounded-lg bg-primary text-white dark:bg-accent text-xs font-black uppercase tracking-widest disabled:opacity-60">
                     {saving ? 'Saving…' : 'Update'}

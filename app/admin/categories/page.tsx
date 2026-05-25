@@ -56,7 +56,7 @@ export default function AdminCategoriesPage() {
 
             <form onSubmit={add} className="flex gap-3">
                 <input value={name} onChange={(e) => setName(e.target.value)} required placeholder="New category name"
-                    className="flex-1 px-4 py-3 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white" />
+                    className="flex-1 px-4 py-3 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white" />
                 <button disabled={adding} className="bg-primary dark:bg-accent text-white px-5 py-3 rounded-xl font-bold text-sm disabled:opacity-60">Add</button>
             </form>
 
@@ -67,7 +67,7 @@ export default function AdminCategoriesPage() {
                             {editingId === c.id ? (
                                 <>
                                     <input value={editName} onChange={(e) => setEditName(e.target.value)} autoFocus
-                                        className="flex-1 px-3 py-2 bg-gray-50 dark:bg-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white" />
+                                        className="flex-1 px-3 py-2 bg-gray-50 dark:bg-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white" />
                                     <button onClick={() => saveEdit(c.id)} className="px-3 py-2 bg-primary dark:bg-accent text-white rounded-lg text-xs font-bold">Save</button>
                                     <button onClick={() => setEditingId(null)} className="px-3 py-2 text-gray-400 text-xs font-bold">Cancel</button>
                                 </>

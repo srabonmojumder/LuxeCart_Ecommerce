@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { useSettings, type Settings } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
 
-const field = 'w-full px-4 py-3 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
+const field = 'w-full px-4 py-3 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
 const label = 'text-[10px] font-black uppercase tracking-widest text-gray-400';
 
 export default function AdminSettingsPage() {

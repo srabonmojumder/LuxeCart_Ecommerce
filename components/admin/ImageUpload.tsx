@@ -29,7 +29,7 @@ export default function ImageUpload({ value, onChange }: { value: string; onChan
         }
     };
 
-    const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
+    const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
 
     return (
         <div className="space-y-2">

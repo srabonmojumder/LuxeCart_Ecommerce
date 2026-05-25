@@ -7,6 +7,9 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { useAdminProducts, useCategories, type AdminProduct, type Category } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
 import ImageUpload from '@/components/admin/ImageUpload';
+import Select from '@/components/ui/Select';
+import { usePagination } from '@/lib/usePagination';
+import Pagination from '@/components/ui/Pagination';
 
 interface ProductFormState {
     id?: number;
@@ -35,14 +38,20 @@ export default function AdminProductsPage() {
     const [bulkBusy, setBulkBusy] = useState(false);
 
     const filtered = products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
+    const { page, setPage, totalPages, total, start, end, pageItems } = usePagination(filtered);
 
     const toggle = (id: number) => setSelected((prev) => {
         const next = new Set(prev);
         next.has(id) ? next.delete(id) : next.add(id);
         return next;
     });
-    const allShownSelected = filtered.length > 0 && filtered.every((p) => selected.has(p.id));
-    const toggleAll = () => setSelected(allShownSelected ? new Set() : new Set(filtered.map((p) => p.id)));
+    const allShownSelected = pageItems.length > 0 && pageItems.every((p) => selected.has(p.id));
+    const toggleAll = () => setSelected((prev) => {
+        const next = new Set(prev);
+        if (allShownSelected) pageItems.forEach((p) => next.delete(p.id));
+        else pageItems.forEach((p) => next.add(p.id));
+        return next;
+    });
 
     const bulk = async (action: 'activate' | 'deactivate' | 'feature' | 'unfeature' | 'delete') => {
         const ids = [...selected];
@@ -97,9 +106,9 @@ export default function AdminProductsPage() {
 
             <input
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                 placeholder="Search products…"
-                className="w-full md:max-w-sm px-4 py-2.5 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
+                className="w-full md:max-w-sm px-4 py-2.5 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
             />
 
             {selected.size > 0 && (
@@ -126,6 +135,7 @@ export default function AdminProductsPage() {
             )}
 
             {isLoading ? <p className="text-secondary dark:text-gray-400">Loading…</p> : (
+                <>
                 <div className="overflow-x-auto rounded-2xl border border-primary/5 dark:border-slate-800 bg-white dark:bg-slate-900">
                     <table className="w-full text-sm">
                         <thead className="bg-primary/5 dark:bg-slate-800/50 text-left">
@@ -144,7 +154,7 @@ export default function AdminProductsPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-primary/5 dark:divide-slate-800">
-                            {filtered.map((p) => (
+                            {pageItems.map((p) => (
                                 <tr key={p.id} className={`text-primary dark:text-white ${selected.has(p.id) ? 'bg-accent/5' : ''}`}>
                                     <td className="p-4">
                                         <button onClick={() => toggle(p.id)} className="align-middle" aria-label="Select row">
@@ -167,6 +177,8 @@ export default function AdminProductsPage() {
                         </tbody>
                     </table>
                 </div>
+                <Pagination page={page} totalPages={totalPages} onPageChange={setPage} total={total} start={start} end={end} />
+                </>
             )}
 
             {editing && (
@@ -222,7 +234,7 @@ function ProductModal({ state, categories, onClose, onSaved }: {
         }
     };
 
-    const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
+    const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={onClose}>
@@ -238,10 +250,14 @@ function ProductModal({ state, categories, onClose, onSaved }: {
                         <input className={field} type="number" step="0.01" placeholder="Price" required value={form.price} onChange={(e) => set('price', e.target.value)} />
                         <input className={field} type="number" placeholder="Discount %" value={form.discount} onChange={(e) => set('discount', e.target.value)} />
                         <input className={field} type="number" placeholder="Stock" value={form.stock} onChange={(e) => set('stock', e.target.value)} />
-                        <select className={field} required value={form.categoryId} onChange={(e) => set('categoryId', e.target.value)}>
-                            <option value="">Category…</option>
-                            {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                        </select>
+                        <Select
+                            className={field}
+                            required
+                            placeholder="Category…"
+                            value={form.categoryId}
+                            onChange={(v) => set('categoryId', v)}
+                            options={categories.map((c) => ({ value: String(c.id), label: c.name }))}
+                        />
                     </div>
                     <ImageUpload value={form.image} onChange={(url) => set('image', url)} />
                     <input className={field} placeholder="Tags (comma separated)" value={form.tags} onChange={(e) => set('tags', e.target.value)} />

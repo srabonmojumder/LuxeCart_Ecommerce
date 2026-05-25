@@ -6,12 +6,16 @@ import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useAdminCoupons } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
+import Select from '@/components/ui/Select';
+import { usePagination } from '@/lib/usePagination';
+import Pagination from '@/components/ui/Pagination';
 
-const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
+const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
 
 export default function AdminCouponsPage() {
     const isAdmin = useAuthStore((s) => s.status === 'authenticated' && s.user?.role === 'ADMIN');
     const { coupons, isLoading, mutate } = useAdminCoupons(isAdmin);
+    const { page, setPage, totalPages, total, start, end, pageItems } = usePagination(coupons);
     const [form, setForm] = useState({ code: '', type: 'PERCENT', value: '', minSubtotal: '0', maxUses: '' });
     const [saving, setSaving] = useState(false);
 
@@ -53,16 +57,22 @@ export default function AdminCouponsPage() {
 
             <form onSubmit={create} className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-5 grid sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
                 <input className={field} placeholder="CODE" required value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
-                <select className={field} value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}>
-                    <option value="PERCENT">Percent %</option>
-                    <option value="FIXED">Fixed $</option>
-                </select>
+                <Select
+                    className={field}
+                    value={form.type}
+                    onChange={(v) => setForm({ ...form, type: v })}
+                    options={[
+                        { value: 'PERCENT', label: 'Percent %' },
+                        { value: 'FIXED', label: 'Fixed $' },
+                    ]}
+                />
                 <input className={field} type="number" step="0.01" placeholder="Value" required value={form.value} onChange={(e) => setForm({ ...form, value: e.target.value })} />
                 <input className={field} type="number" step="0.01" placeholder="Min subtotal" value={form.minSubtotal} onChange={(e) => setForm({ ...form, minSubtotal: e.target.value })} />
                 <button type="submit" disabled={saving} className="flex items-center justify-center gap-2 bg-primary dark:bg-accent text-white px-4 py-3 rounded-xl font-bold text-sm disabled:opacity-60"><Plus className="w-4 h-4" /> Add</button>
             </form>
 
             {isLoading ? <p className="text-secondary dark:text-gray-400">Loading…</p> : coupons.length === 0 ? <p className="text-secondary dark:text-gray-400">No coupons yet.</p> : (
+                <>
                 <div className="overflow-x-auto rounded-2xl border border-primary/5 dark:border-slate-800 bg-white dark:bg-slate-900">
                     <table className="w-full text-sm">
                         <thead className="bg-primary/5 dark:bg-slate-800/50 text-left">
@@ -71,7 +81,7 @@ export default function AdminCouponsPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-primary/5 dark:divide-slate-800">
-                            {coupons.map((c) => (
+                            {pageItems.map((c) => (
                                 <tr key={c.id} className="text-primary dark:text-white">
                                     <td className="p-4 font-bold">{c.code}</td>
                                     <td className="p-4">{c.type === 'PERCENT' ? `${c.value}%` : `$${c.value}`}</td>
@@ -86,6 +96,8 @@ export default function AdminCouponsPage() {
                         </tbody>
                     </table>
                 </div>
+                <Pagination page={page} totalPages={totalPages} onPageChange={setPage} total={total} start={start} end={end} />
+                </>
             )}
         </div>
     );

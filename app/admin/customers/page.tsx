@@ -5,6 +5,8 @@ import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useAdminUsers } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
+import { usePagination } from '@/lib/usePagination';
+import Pagination from '@/components/ui/Pagination';
 
 const formatDate = (s: string) => {
     const d = new Date(s);
@@ -15,6 +17,7 @@ export default function AdminCustomersPage() {
     const me = useAuthStore((s) => s.user);
     const isAdmin = useAuthStore((s) => s.status === 'authenticated' && s.user?.role === 'ADMIN');
     const { users, isLoading, mutate } = useAdminUsers(isAdmin);
+    const { page, setPage, totalPages, total, start, end, pageItems } = usePagination(users);
 
     const setRole = async (id: number, role: 'CUSTOMER' | 'ADMIN') => {
         try {
@@ -42,6 +45,7 @@ export default function AdminCustomersPage() {
             <h1 className="text-3xl md:text-4xl font-black text-primary dark:text-white tracking-tighter">Customers</h1>
 
             {isLoading ? <p className="text-secondary dark:text-gray-400">Loading…</p> : (
+                <>
                 <div className="overflow-x-auto rounded-2xl border border-primary/5 dark:border-slate-800 bg-white dark:bg-slate-900">
                     <table className="w-full text-sm">
                         <thead className="bg-primary/5 dark:bg-slate-800/50 text-left">
@@ -55,7 +59,7 @@ export default function AdminCustomersPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-primary/5 dark:divide-slate-800">
-                            {users.map((u) => {
+                            {pageItems.map((u) => {
                                 const self = u.id === me?.id;
                                 return (
                                     <tr key={u.id} className="text-primary dark:text-white">
@@ -84,6 +88,8 @@ export default function AdminCustomersPage() {
                         </tbody>
                     </table>
                 </div>
+                <Pagination page={page} totalPages={totalPages} onPageChange={setPage} total={total} start={start} end={end} />
+                </>
             )}
         </div>
     );
