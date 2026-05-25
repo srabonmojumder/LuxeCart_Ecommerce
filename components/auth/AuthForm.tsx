@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Mail, Lock, User as UserIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { ApiError } from '@/lib/api';
+import GoogleSignInButton from './GoogleSignInButton';
 
 export default function AuthForm() {
     const [mode, setMode] = useState<'login' | 'register'>('login');
@@ -82,6 +84,14 @@ export default function AuthForm() {
                     />
                 </div>
 
+                {mode === 'login' && (
+                    <div className="text-right">
+                        <Link href="/forgot-password" className="text-xs font-bold text-accent hover:underline">
+                            Forgot password?
+                        </Link>
+                    </div>
+                )}
+
                 <button
                     type="submit"
                     disabled={loading}
@@ -90,6 +100,8 @@ export default function AuthForm() {
                     {loading ? 'Please wait…' : mode === 'login' ? 'Sign In' : 'Create Account'}
                 </button>
             </form>
+
+            <GoogleSignInButton />
 
             <p className="text-center text-sm text-secondary dark:text-gray-400 mt-6">
                 {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}{' '}

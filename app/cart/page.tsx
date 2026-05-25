@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, ArrowLeft, Truck, Shield, Tag, ChevronRight, Package } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { toast } from 'sonner';
+import RecommendedProducts from '@/components/product/RecommendedProducts';
 
 export default function CartPage() {
     const cart = useStore((state) => state.cart);
@@ -289,6 +290,9 @@ export default function CartPage() {
                         </motion.div>
                     </div>
                 </div>
+
+                {/* Recommendations */}
+                <RecommendedProducts excludeIds={cart.map((c) => c.id)} />
             </div>
 
             {/* Mobile Checkout Bar - Styled Clean */}

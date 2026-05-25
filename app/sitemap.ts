@@ -3,6 +3,7 @@ import { MetadataRoute } from 'next';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
 
 interface SlugProduct { slug?: string; id: number }
+interface SlugCategory { slug: string }
 
 async function fetchProducts(): Promise<SlugProduct[]> {
   try {
@@ -10,6 +11,17 @@ async function fetchProducts(): Promise<SlugProduct[]> {
     if (!res.ok) return [];
     const json = await res.json();
     return (json.data ?? []) as SlugProduct[];
+  } catch {
+    return [];
+  }
+}
+
+async function fetchCategories(): Promise<SlugCategory[]> {
+  try {
+    const res = await fetch(`${API_URL}/categories`, { cache: 'no-store' });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return (json.data ?? []) as SlugCategory[];
   } catch {
     return [];
   }
@@ -33,7 +45,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority,
   }));
 
-  const products = await fetchProducts();
+  const [products, categories] = await Promise.all([fetchProducts(), fetchCategories()]);
+
   const productPages = products.map((product) => ({
     url: `${baseUrl}/products/${product.slug ?? product.id}`,
     lastModified: new Date(),
@@ -41,5 +54,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...staticPages, ...productPages];
+  const categoryPages = categories.map((c) => ({
+    url: `${baseUrl}/products?category=${c.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
+
+  return [...staticPages, ...categoryPages, ...productPages];
 }

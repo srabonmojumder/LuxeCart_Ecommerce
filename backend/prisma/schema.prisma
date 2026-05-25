@@ -128,12 +128,14 @@ enum Role {
 }
 
 model User {
-  id           Int      @id @default(autoincrement())
-  email        String   @unique
-  passwordHash String
-  displayName  String?
-  photoURL     String?
-  role         Role     @default(CUSTOMER)
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  passwordHash  String? // null for Google-only accounts
+  displayName   String?
+  photoURL      String?
+  role          Role      @default(CUSTOMER)
+  emailVerified DateTime? // set when the user confirms their email
+  googleId      String?   @unique // Google OAuth subject id (social login)
 
   addresses     Address[]
   cart          Cart?
@@ -141,9 +143,30 @@ model User {
   reviews       Review[]
   wishlist      WishlistItem[]
   refreshTokens RefreshToken[]
+  authTokens    AuthToken[]
+  returns       ReturnRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum TokenPurpose {
+  EMAIL_VERIFY
+  PASSWORD_RESET
+}
+
+// Single-use tokens for email verification and password reset (hashed at rest).
+model AuthToken {
+  id        Int          @id @default(autoincrement())
+  userId    Int
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  purpose   TokenPurpose
+  tokenHash String       @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime     @default(now())
+
+  @@index([userId])
 }
 
 model RefreshToken {
@@ -177,12 +200,13 @@ model Address {
 // ----------------------------- Cart -----------------------------
 
 model Cart {
-  id        Int        @id @default(autoincrement())
-  userId    Int        @unique
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items     CartItem[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id             Int        @id @default(autoincrement())
+  userId         Int        @unique
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items          CartItem[]
+  reminderSentAt DateTime? // last abandoned-cart reminder, to avoid duplicates
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
 }
 
 model CartItem {
@@ -225,13 +249,39 @@ model Order {
   shippingAddress Json
   trackingNumber  String?
   carrier         String?
+  cancelReason    String?     @db.Text
   items           OrderItem[]
   payment         Payment?
   events          OrderEvent[]
+  returns         ReturnRequest[]
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 
   @@index([userId])
+}
+
+enum ReturnStatus {
+  REQUESTED
+  APPROVED
+  REJECTED
+  RECEIVED
+  REFUNDED
+}
+
+// Customer-initiated return/refund request against a delivered order.
+model ReturnRequest {
+  id        Int          @id @default(autoincrement())
+  orderId   Int
+  order     Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId    Int?
+  user      User?        @relation(fields: [userId], references: [id])
+  reason    String       @db.Text
+  status    ReturnStatus @default(REQUESTED)
+  adminNote String?      @db.Text
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([orderId])
 }
 
 model OrderEvent {

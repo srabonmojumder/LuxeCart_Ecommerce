@@ -98,3 +98,37 @@ export async function notifyOrderStatus(p: {
     }
   }
 }
+
+const RETURN_MESSAGE: Record<string, string> = {
+  REQUESTED: 'We received your return request and will review it shortly.',
+  APPROVED: 'Your return has been approved. Please ship the item(s) back to us.',
+  REJECTED: 'Unfortunately your return request was not approved.',
+  RECEIVED: 'We received your returned item(s) and are processing your refund.',
+  REFUNDED: 'Your refund has been processed. It may take a few days to appear.',
+};
+
+/** Fire-and-forget: notify the customer about a return/refund status change. */
+export async function notifyReturnStatus(p: {
+  to: string;
+  orderId: number;
+  status: string;
+  note?: string | null;
+}) {
+  const r = ref(p.orderId);
+  const message = RETURN_MESSAGE[p.status] ?? `Return status updated to ${p.status}.`;
+  const html =
+    `<h2>Return update for order ${r}</h2>` +
+    `<p><b>${p.status}</b> — ${message}</p>` +
+    (p.note ? `<p>${p.note}</p>` : '');
+
+  try {
+    await sendEmail({
+      to: p.to,
+      subject: `Return for order ${r} — ${p.status}`,
+      html,
+      text: `Return for order ${r} is now ${p.status}. ${message}`,
+    });
+  } catch (e) {
+    console.error('Return-status email failed:', e);
+  }
+}

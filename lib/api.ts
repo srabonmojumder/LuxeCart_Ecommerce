@@ -73,6 +73,30 @@ export async function apiFetch<T = unknown>(path: string, options: RequestOption
   return payload as T;
 }
 
+/** Upload a single file via multipart/form-data (with one refresh retry on 401). */
+export async function uploadFile<T = { url: string }>(path: string, file: File, fieldName = 'file', _retry = false): Promise<T> {
+  const token = getAccessToken();
+  const fd = new FormData();
+  fd.append(fieldName, file);
+
+  const res = await fetch(`${API_URL}${path}`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: fd,
+    credentials: 'include',
+  });
+
+  if (res.status === 401 && !_retry) {
+    const refreshed = await tryRefresh();
+    if (refreshed) return uploadFile<T>(path, file, fieldName, true);
+  }
+
+  const isJson = res.headers.get('content-type')?.includes('application/json');
+  const payload = isJson ? await res.json() : null;
+  if (!res.ok) throw new ApiError(res.status, payload?.error || res.statusText, payload?.details);
+  return payload as T;
+}
+
 export const api = {
   get: <T>(path: string, auth = false) => apiFetch<T>(path, { method: 'GET', auth }),
   post: <T>(path: string, body?: unknown, auth = false) => apiFetch<T>(path, { method: 'POST', body, auth }),

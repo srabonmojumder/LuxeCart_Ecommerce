@@ -81,6 +81,48 @@ export const listProducts = asyncHandler(async (req: Request, res: Response) => 
   });
 });
 
+const SOLD_STATUSES = ['PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED'] as const;
+
+/** GET /api/products/bestsellers?limit=8 — most-sold products, backfilled with popular ones. */
+export const getBestsellers = asyncHandler(async (req: Request, res: Response) => {
+  const limit = Math.min(12, Math.max(1, Number(req.query.limit) || 8));
+
+  // Rank by total quantity sold across non-cancelled orders.
+  const grouped = await prisma.orderItem.groupBy({
+    by: ['productId'],
+    where: { order: { status: { in: [...SOLD_STATUSES] } } },
+    _sum: { quantity: true },
+    orderBy: { _sum: { quantity: 'desc' } },
+    take: limit,
+  });
+
+  type ProductWithRelations = Prisma.ProductGetPayload<{ include: typeof includeRelations }>;
+  const rankedIds = grouped.map((g) => g.productId);
+  let products: ProductWithRelations[] = [];
+  if (rankedIds.length) {
+    const found = await prisma.product.findMany({
+      where: { id: { in: rankedIds }, isActive: true },
+      include: includeRelations,
+    });
+    const byId = new Map(found.map((p) => [p.id, p]));
+    products = rankedIds.map((id) => byId.get(id)).filter(Boolean) as ProductWithRelations[];
+  }
+
+  // Backfill with popular active products if we don't have enough sales yet.
+  if (products.length < limit) {
+    const have = new Set(products.map((p) => p.id));
+    const extra = await prisma.product.findMany({
+      where: { isActive: true, id: { notIn: [...have] } },
+      include: includeRelations,
+      orderBy: [{ reviewCount: 'desc' }, { ratingAvg: 'desc' }],
+      take: limit - products.length,
+    });
+    products = [...products, ...extra];
+  }
+
+  res.json({ data: products.map(serializeProduct) });
+});
+
 /** GET /api/products/:slug */
 export const getProduct = asyncHandler(async (req: Request, res: Response) => {
   const { slug } = req.params;

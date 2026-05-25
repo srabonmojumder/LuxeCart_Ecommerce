@@ -1,6 +1,9 @@
 import { Router } from 'express';
 import { requireAuth, requireAdmin } from '../middleware/auth.js';
 import {
+  adminAnalytics,
+  adminBulkProducts,
+  adminRunMaintenance,
   adminCreateCategory,
   adminCreateProduct,
   adminDeleteCategory,
@@ -10,13 +13,16 @@ import {
   adminListOrders,
   adminListProducts,
   adminListReviews,
+  adminListReturns,
   adminListUsers,
   adminStats,
   adminUpdateCategory,
   adminUpdateOrderStatus,
   adminUpdateProduct,
+  adminUpdateReturn,
   adminUpdateUserRole,
 } from '../controllers/admin.controller.js';
+import { uploadMiddleware, handleUpload } from '../controllers/uploads.controller.js';
 import { updateSettings } from '../controllers/settings.controller.js';
 import {
   adminCreateCoupon,
@@ -57,10 +63,18 @@ router.delete('/newsletter/:id', adminDeleteSubscriber);
 
 // Dashboard
 router.get('/stats', adminStats);
+router.get('/analytics', adminAnalytics);
+
+// Maintenance jobs (abandoned-cart reminders, low-stock digest)
+router.post('/maintenance/run', adminRunMaintenance);
+
+// Image uploads
+router.post('/uploads', uploadMiddleware, handleUpload);
 
 // Products
 router.get('/products', adminListProducts);
 router.post('/products', adminCreateProduct);
+router.post('/products/bulk', adminBulkProducts);
 router.patch('/products/:id', adminUpdateProduct);
 router.delete('/products/:id', adminDeleteProduct);
 
@@ -81,5 +95,9 @@ router.delete('/users/:id', adminDeleteUser);
 // Reviews moderation
 router.get('/reviews', adminListReviews);
 router.delete('/reviews/:id', adminDeleteReview);
+
+// Returns / refunds
+router.get('/returns', adminListReturns);
+router.patch('/returns/:id', adminUpdateReturn);
 
 export default router;

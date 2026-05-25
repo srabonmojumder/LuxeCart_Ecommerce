@@ -5,12 +5,13 @@ import Link from 'next/link';
 import { useOrder } from '@/lib/hooks';
 import { useAuthStore } from '@/store/useAuthStore';
 import OrderTrackingView from '@/components/order/OrderTrackingView';
+import OrderActions from '@/components/order/OrderActions';
 
 export default function OrderTrackingPage() {
     const params = useParams();
     const id = params.id as string;
     const authStatus = useAuthStore((s) => s.status);
-    const { order, isLoading, error } = useOrder(authStatus === 'authenticated' ? id : null);
+    const { order, isLoading, error, mutate } = useOrder(authStatus === 'authenticated' ? id : null);
 
     if (authStatus === 'loading' || (authStatus === 'authenticated' && isLoading)) {
         return <div className="min-h-[50vh] flex items-center justify-center"><div className="w-10 h-10 border-2 border-accent border-t-transparent rounded-full animate-spin" /></div>;
@@ -45,7 +46,10 @@ export default function OrderTrackingPage() {
     return (
         <div className="max-w-3xl mx-auto px-4 md:px-8 py-8 pb-24">
             <Link href="/account" className="text-[10px] font-black tracking-widest text-accent uppercase hover:underline">← Your Orders</Link>
-            <div className="mt-3"><OrderTrackingView order={order} /></div>
+            <div className="mt-3 space-y-8">
+                <OrderTrackingView order={order} />
+                <OrderActions order={order} onChanged={() => mutate()} />
+            </div>
         </div>
     );
 }

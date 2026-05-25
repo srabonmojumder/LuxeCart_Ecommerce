@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Pencil, Trash2, X } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, CheckSquare, Square } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useAdminProducts, useCategories, type AdminProduct, type Category } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 interface ProductFormState {
     id?: number;
@@ -30,8 +31,35 @@ export default function AdminProductsPage() {
     const { categories } = useCategories();
     const [editing, setEditing] = useState<ProductFormState | null>(null);
     const [search, setSearch] = useState('');
+    const [selected, setSelected] = useState<Set<number>>(new Set());
+    const [bulkBusy, setBulkBusy] = useState(false);
 
     const filtered = products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
+
+    const toggle = (id: number) => setSelected((prev) => {
+        const next = new Set(prev);
+        next.has(id) ? next.delete(id) : next.add(id);
+        return next;
+    });
+    const allShownSelected = filtered.length > 0 && filtered.every((p) => selected.has(p.id));
+    const toggleAll = () => setSelected(allShownSelected ? new Set() : new Set(filtered.map((p) => p.id)));
+
+    const bulk = async (action: 'activate' | 'deactivate' | 'feature' | 'unfeature' | 'delete') => {
+        const ids = [...selected];
+        if (!ids.length) return;
+        if (action === 'delete' && !confirm(`Deactivate ${ids.length} product(s)?`)) return;
+        setBulkBusy(true);
+        try {
+            const res = await api.post<{ count: number }>('/admin/products/bulk', { ids, action }, true);
+            toast.success(`Updated ${res.count} product(s)`);
+            setSelected(new Set());
+            mutate();
+        } catch (e) {
+            toast.error(e instanceof ApiError ? e.message : 'Bulk action failed');
+        } finally {
+            setBulkBusy(false);
+        }
+    };
 
     const openNew = () => setEditing({ ...emptyProduct, categoryId: String(categories[0]?.id ?? '') });
     const openEdit = (p: AdminProduct) => setEditing({
@@ -74,11 +102,39 @@ export default function AdminProductsPage() {
                 className="w-full md:max-w-sm px-4 py-2.5 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
             />
 
+            {selected.size > 0 && (
+                <div className="flex flex-wrap items-center gap-2 p-3 rounded-2xl bg-accent/5 border border-accent/20">
+                    <span className="text-sm font-bold text-primary dark:text-white mr-2">{selected.size} selected</span>
+                    {([
+                        ['activate', 'Activate'],
+                        ['deactivate', 'Deactivate'],
+                        ['feature', 'Feature'],
+                        ['unfeature', 'Unfeature'],
+                        ['delete', 'Delete'],
+                    ] as const).map(([action, label]) => (
+                        <button
+                            key={action}
+                            onClick={() => bulk(action)}
+                            disabled={bulkBusy}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest disabled:opacity-60 ${action === 'delete' ? 'bg-hot/10 text-hot' : 'bg-primary text-white dark:bg-slate-800'}`}
+                        >
+                            {label}
+                        </button>
+                    ))}
+                    <button onClick={() => setSelected(new Set())} className="px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest text-secondary dark:text-gray-400">Clear</button>
+                </div>
+            )}
+
             {isLoading ? <p className="text-secondary dark:text-gray-400">Loading…</p> : (
                 <div className="overflow-x-auto rounded-2xl border border-primary/5 dark:border-slate-800 bg-white dark:bg-slate-900">
                     <table className="w-full text-sm">
                         <thead className="bg-primary/5 dark:bg-slate-800/50 text-left">
                             <tr className="text-[10px] uppercase tracking-wider text-gray-400">
+                                <th className="p-4 w-10">
+                                    <button onClick={toggleAll} className="text-primary dark:text-white align-middle" aria-label="Select all">
+                                        {allShownSelected ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
+                                    </button>
+                                </th>
                                 <th className="p-4">Name</th>
                                 <th className="p-4">Category</th>
                                 <th className="p-4">Price</th>
@@ -89,7 +145,12 @@ export default function AdminProductsPage() {
                         </thead>
                         <tbody className="divide-y divide-primary/5 dark:divide-slate-800">
                             {filtered.map((p) => (
-                                <tr key={p.id} className="text-primary dark:text-white">
+                                <tr key={p.id} className={`text-primary dark:text-white ${selected.has(p.id) ? 'bg-accent/5' : ''}`}>
+                                    <td className="p-4">
+                                        <button onClick={() => toggle(p.id)} className="align-middle" aria-label="Select row">
+                                            {selected.has(p.id) ? <CheckSquare className="w-4 h-4 text-accent" /> : <Square className="w-4 h-4 text-gray-400" />}
+                                        </button>
+                                    </td>
                                     <td className="p-4 font-semibold max-w-[220px] truncate">{p.name}</td>
                                     <td className="p-4 text-gray-500 dark:text-gray-400">{p.category?.name ?? '—'}</td>
                                     <td className="p-4">${Number(p.price).toFixed(2)}</td>
@@ -133,6 +194,10 @@ function ProductModal({ state, categories, onClose, onSaved }: {
 
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!form.image) {
+            toast.error('Please add a product image');
+            return;
+        }
         setSaving(true);
         const payload: Record<string, unknown> = {
             name: form.name,
@@ -178,7 +243,7 @@ function ProductModal({ state, categories, onClose, onSaved }: {
                             {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
                     </div>
-                    <input className={field} placeholder="Image URL (e.g. /photo-xxxx.webp)" required value={form.image} onChange={(e) => set('image', e.target.value)} />
+                    <ImageUpload value={form.image} onChange={(url) => set('image', url)} />
                     <input className={field} placeholder="Tags (comma separated)" value={form.tags} onChange={(e) => set('tags', e.target.value)} />
                     <label className="flex items-center gap-2.5 cursor-pointer py-1">
                         <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} className="w-4 h-4 accent-accent" />

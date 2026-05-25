@@ -5,6 +5,8 @@ const schema = z.object({
   PORT: z.coerce.number().default(4000),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   CORS_ORIGINS: z.string().default('http://localhost:3000'),
+  // Public URL of the storefront — used to build links in emails (verify, reset, etc.).
+  APP_URL: z.string().default('http://localhost:3000'),
   DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
   JWT_ACCESS_SECRET: z.string().default('dev-access-secret'),
   JWT_REFRESH_SECRET: z.string().default('dev-refresh-secret'),
@@ -12,6 +14,12 @@ const schema = z.object({
   JWT_REFRESH_EXPIRES: z.string().default('7d'),
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
+  // Google OAuth (social login) — optional. Set the same client id on the frontend.
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  // Background maintenance jobs (abandoned-cart reminders, low-stock digest).
+  ENABLE_SCHEDULER: z.coerce.boolean().default(false),
+  ABANDONED_CART_HOURS: z.coerce.number().min(1).default(4),
+  LOW_STOCK_THRESHOLD: z.coerce.number().int().min(1).default(5),
   // Email (SMTP) — optional; if unset, emails are logged to the console.
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.coerce.number().default(587),

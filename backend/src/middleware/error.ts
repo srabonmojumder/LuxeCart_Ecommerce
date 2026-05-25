@@ -34,6 +34,13 @@ export function errorHandler(
     res.status(err.status).json({ error: err.message, details: err.details });
     return;
   }
+  // multer upload errors (e.g. file too large) — surface a clean 400.
+  if (err && typeof err === 'object' && (err as { name?: string }).name === 'MulterError') {
+    const code = (err as { code?: string }).code;
+    const message = code === 'LIMIT_FILE_SIZE' ? 'File is too large (max 5 MB)' : 'File upload failed';
+    res.status(400).json({ error: message });
+    return;
+  }
   console.error('Unhandled error:', err);
   res.status(500).json({ error: 'Internal server error' });
 }

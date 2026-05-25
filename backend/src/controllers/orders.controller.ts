@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { prisma } from '../lib/prisma.js';
 import { asyncHandler, HttpError } from '../middleware/error.js';
 import { isStripeConfigured } from '../lib/stripe.js';
-import { notifyOrderPlaced } from '../lib/notify.js';
+import { notifyOrderPlaced, notifyOrderStatus, notifyReturnStatus } from '../lib/notify.js';
 import { getSettings } from '../lib/settings.js';
 import { evaluateCoupon } from '../lib/coupon.js';
 
@@ -33,7 +33,11 @@ const orderInclude = {
   items: { include: { product: true } },
   payment: true,
   events: { orderBy: { createdAt: 'asc' } },
+  returns: { orderBy: { createdAt: 'desc' } },
 } as const;
+
+// Statuses a customer can still cancel themselves (before it ships).
+const CANCELLABLE: string[] = ['PENDING', 'PAID', 'PROCESSING'];
 
 function serializeOrder(order: any) {
   return {
@@ -48,6 +52,15 @@ function serializeOrder(order: any) {
     shippingAddress: order.shippingAddress,
     trackingNumber: order.trackingNumber ?? null,
     carrier: order.carrier ?? null,
+    cancelReason: order.cancelReason ?? null,
+    canCancel: CANCELLABLE.includes(order.status),
+    returns: (order.returns ?? []).map((r: any) => ({
+      id: r.id,
+      status: r.status,
+      reason: r.reason,
+      adminNote: r.adminNote ?? null,
+      createdAt: r.createdAt,
+    })),
     createdAt: order.createdAt,
     payment: order.payment
       ? { status: order.payment.status, provider: order.payment.provider }
@@ -279,4 +292,85 @@ export const trackOrder = asyncHandler(async (req: Request, res: Response) => {
     throw new HttpError(404, 'No order found with that number and email');
   }
   res.json({ data: serializeOrder(order) });
+});
+
+const cancelSchema = z.object({ reason: z.string().max(500).optional() });
+
+/** POST /api/orders/:id/cancel — customer cancels their own (not-yet-shipped) order. */
+export const cancelOrder = asyncHandler(async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const parsed = cancelSchema.safeParse(req.body ?? {});
+  if (!parsed.success) throw new HttpError(400, 'Invalid input');
+
+  const order = await prisma.order.findUnique({ where: { id }, include: { items: true } });
+  if (!order || order.userId !== req.user!.sub) throw new HttpError(404, 'Order not found');
+  if (!CANCELLABLE.includes(order.status)) {
+    throw new HttpError(409, `This order is ${order.status.toLowerCase()} and can no longer be cancelled.`);
+  }
+
+  const updated = await prisma.$transaction(async (tx) => {
+    // Return the reserved stock to inventory.
+    for (const it of order.items) {
+      await tx.product.update({
+        where: { id: it.productId },
+        data: { stock: { increment: it.quantity }, inStock: true },
+      });
+    }
+    return tx.order.update({
+      where: { id },
+      data: {
+        status: 'CANCELLED',
+        cancelReason: parsed.data.reason ?? null,
+        events: { create: { status: 'CANCELLED', note: parsed.data.reason || 'Cancelled by customer' } },
+      },
+      include: orderInclude,
+    });
+  });
+
+  const sa = updated.shippingAddress as Record<string, string> | null;
+  const to = updated.email;
+  if (to) {
+    void notifyOrderStatus({
+      to,
+      phone: sa?.phone ?? null,
+      name: sa?.fullName ?? null,
+      orderId: updated.id,
+      status: 'CANCELLED',
+      note: parsed.data.reason,
+    });
+  }
+
+  res.json({ data: serializeOrder(updated) });
+});
+
+const returnSchema = z.object({ reason: z.string().min(5, 'Please describe the reason').max(1000) });
+
+/** POST /api/orders/:id/return — customer requests a return/refund on a delivered order. */
+export const requestReturn = asyncHandler(async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const parsed = returnSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, 'Invalid input', parsed.error.flatten().fieldErrors);
+
+  const order = await prisma.order.findUnique({ where: { id }, include: { returns: true } });
+  if (!order || order.userId !== req.user!.sub) throw new HttpError(404, 'Order not found');
+  if (order.status !== 'DELIVERED') {
+    throw new HttpError(409, 'Only delivered orders are eligible for a return.');
+  }
+  const openReturn = order.returns.find((r) => !['REJECTED', 'REFUNDED'].includes(r.status));
+  if (openReturn) throw new HttpError(409, 'A return request is already open for this order.');
+
+  await prisma.returnRequest.create({
+    data: { orderId: id, userId: req.user!.sub, reason: parsed.data.reason },
+  });
+
+  if (order.email) {
+    void notifyReturnStatus({
+      to: order.email,
+      orderId: order.id,
+      status: 'REQUESTED',
+    });
+  }
+
+  const fresh = await prisma.order.findUnique({ where: { id }, include: orderInclude });
+  res.status(201).json({ data: serializeOrder(fresh) });
 });

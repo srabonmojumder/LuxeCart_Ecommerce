@@ -4,9 +4,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
     LayoutDashboard,
+    BarChart3,
     Package,
     Tag,
     ClipboardList,
+    RotateCcw,
     Users,
     Star,
     Ticket,
@@ -21,9 +23,11 @@ import { useAuthStore } from '@/store/useAuthStore';
 
 const nav = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
+    { href: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
     { href: '/admin/products', label: 'Products', icon: Package },
     { href: '/admin/categories', label: 'Categories', icon: Tag },
     { href: '/admin/orders', label: 'Orders', icon: ClipboardList },
+    { href: '/admin/returns', label: 'Returns', icon: RotateCcw },
     { href: '/admin/customers', label: 'Customers', icon: Users },
     { href: '/admin/reviews', label: 'Reviews', icon: Star },
     { href: '/admin/coupons', label: 'Coupons', icon: Ticket },

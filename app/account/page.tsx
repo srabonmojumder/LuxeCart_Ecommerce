@@ -9,6 +9,8 @@ import LoyaltyBadge from '@/components/loyalty/LoyaltyBadge';
 import AuthForm from '@/components/auth/AuthForm';
 import AddressBook from '@/components/account/AddressBook';
 import ProfileForm from '@/components/account/ProfileForm';
+import SecurityForm from '@/components/account/SecurityForm';
+import EmailVerifyBanner from '@/components/account/EmailVerifyBanner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useOrders } from '@/lib/hooks';
 import { toast } from 'sonner';
@@ -74,6 +76,8 @@ export default function AccountPage() {
     return (
         <div className="pt-5 md:pt-5 pb-48 bg-white dark:bg-slate-950">
             <div className="max-w-[1440px] mx-auto px-4 md:px-12">
+
+                <EmailVerifyBanner />
 
                 <header className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-8">
                     <div className="space-y-6">
@@ -233,6 +237,7 @@ export default function AccountPage() {
                                     <div className="border-b-2 border-primary dark:border-white pb-8">
                                         <h2 className="text-4xl font-black text-primary dark:text-white tracking-tighter uppercase">System Control</h2>
                                     </div>
+                                    <SecurityForm />
                                     <div className="space-y-8">
                                         {[
                                             { title: 'Information Dispatch', desc: 'Receive periodic archival updates and event notifications.', icon: Bell },

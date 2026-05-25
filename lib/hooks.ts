@@ -86,6 +86,14 @@ export interface OrderEvent {
     createdAt: string;
 }
 
+export interface OrderReturn {
+    id: number;
+    status: 'REQUESTED' | 'APPROVED' | 'REJECTED' | 'RECEIVED' | 'REFUNDED';
+    reason: string;
+    adminNote: string | null;
+    createdAt: string;
+}
+
 export interface Order {
     id: number;
     status: string;
@@ -98,6 +106,9 @@ export interface Order {
     shippingAddress: Record<string, unknown>;
     trackingNumber: string | null;
     carrier: string | null;
+    cancelReason: string | null;
+    canCancel: boolean;
+    returns: OrderReturn[];
     createdAt: string;
     payment: { status: string; provider: string } | null;
     events: OrderEvent[];
@@ -115,11 +126,11 @@ export function useOrders(enabled: boolean) {
 
 /** A single order by id (requires auth). */
 export function useOrder(id: string | number | null | undefined) {
-    const { data, isLoading, error } = useSWR<{ data: Order }>(
+    const { data, isLoading, error, mutate } = useSWR<{ data: Order }>(
         id ? `/orders/${id}` : null,
         authFetcher
     );
-    return { order: data?.data, isLoading, error };
+    return { order: data?.data, isLoading, error, mutate };
 }
 
 export interface Address {
@@ -286,6 +297,12 @@ export function useFeaturedProducts() {
     return { products: data?.data ?? [], isLoading };
 }
 
+/** Best-selling products (by units sold, backfilled with popular ones). */
+export function useBestsellers(limit = 8) {
+    const { data, isLoading } = useSWR<{ data: Product[] }>(`/products/bestsellers?limit=${limit}`, fetcher);
+    return { products: data?.data ?? [], isLoading };
+}
+
 export interface AdminCoupon {
     id: number;
     code: string;
@@ -326,4 +343,42 @@ export function useSubscribers(enabled: boolean) {
         authFetcher
     );
     return { subscribers: data?.data ?? [], isLoading, mutate };
+}
+
+export interface AdminAnalytics {
+    days: number;
+    series: { date: string; revenue: number; orders: number }[];
+    topProducts: { name: string; qty: number; revenue: number }[];
+    totalRevenue: number;
+    totalOrders: number;
+    avgOrderValue: number;
+    statusBreakdown: { status: string; count: number }[];
+}
+
+export function useAdminAnalytics(enabled: boolean, days = 30) {
+    const { data, isLoading, mutate } = useSWR<{ data: AdminAnalytics }>(
+        enabled ? `/admin/analytics?days=${days}` : null,
+        authFetcher
+    );
+    return { analytics: data?.data, isLoading, mutate };
+}
+
+export interface AdminReturn {
+    id: number;
+    status: 'REQUESTED' | 'APPROVED' | 'REJECTED' | 'RECEIVED' | 'REFUNDED';
+    reason: string;
+    adminNote: string | null;
+    createdAt: string;
+    orderId: number;
+    orderTotal: number;
+    orderStatus: string | null;
+    customer: string;
+}
+
+export function useAdminReturns(enabled: boolean) {
+    const { data, isLoading, mutate } = useSWR<{ data: AdminReturn[] }>(
+        enabled ? '/admin/returns' : null,
+        authFetcher
+    );
+    return { returns: data?.data ?? [], isLoading, mutate };
 }

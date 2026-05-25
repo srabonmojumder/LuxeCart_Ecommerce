@@ -3,7 +3,8 @@ import { z } from 'zod';
 import { prisma } from '../lib/prisma.js';
 import { asyncHandler, HttpError } from '../middleware/error.js';
 import { slugify } from '../utils/slug.js';
-import { notifyOrderStatus } from '../lib/notify.js';
+import { notifyOrderStatus, notifyReturnStatus } from '../lib/notify.js';
+import { runMaintenance } from '../lib/maintenance.js';
 
 /** Generate a slug unique across products (optionally ignoring one id on update). */
 async function uniqueProductSlug(name: string, ignoreId?: number): Promise<string> {
@@ -107,6 +108,29 @@ export const adminDeleteProduct = asyncHandler(async (req: Request, res: Respons
   if (!existing) throw new HttpError(404, 'Product not found');
   await prisma.product.update({ where: { id }, data: { isActive: false } });
   res.json({ success: true });
+});
+
+const bulkSchema = z.object({
+  ids: z.array(z.number().int().positive()).min(1),
+  action: z.enum(['activate', 'deactivate', 'feature', 'unfeature', 'delete']),
+});
+
+/** POST /api/admin/products/bulk — apply one action to many products at once. */
+export const adminBulkProducts = asyncHandler(async (req: Request, res: Response) => {
+  const parsed = bulkSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, 'Invalid input', parsed.error.flatten().fieldErrors);
+  const { ids, action } = parsed.data;
+
+  const dataByAction: Record<typeof action, { isActive?: boolean; featured?: boolean }> = {
+    activate: { isActive: true },
+    deactivate: { isActive: false },
+    feature: { featured: true },
+    unfeature: { featured: false },
+    delete: { isActive: false }, // soft delete to preserve order history
+  };
+
+  const result = await prisma.product.updateMany({ where: { id: { in: ids } }, data: dataByAction[action] });
+  res.json({ success: true, count: result.count });
 });
 
 // ---------------- Categories ----------------
@@ -262,6 +286,73 @@ export const adminStats = asyncHandler(async (_req: Request, res: Response) => {
   });
 });
 
+/** GET /api/admin/analytics?days=30 — time-series revenue/orders + top products + status mix. */
+export const adminAnalytics = asyncHandler(async (req: Request, res: Response) => {
+  const days = Math.min(365, Math.max(7, Number(req.query.days) || 30));
+  const now = new Date();
+  // UTC midnight, (days-1) days ago, so the window includes today.
+  const since = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - (days - 1)));
+
+  const [orders, statusGroups] = await Promise.all([
+    prisma.order.findMany({
+      where: { createdAt: { gte: since }, status: { in: [...REVENUE_STATUSES] } },
+      select: {
+        createdAt: true,
+        total: true,
+        items: { select: { productId: true, name: true, price: true, quantity: true } },
+      },
+    }),
+    prisma.order.groupBy({ by: ['status'], _count: { _all: true } }),
+  ]);
+
+  // Build one bucket per day (UTC) so the chart has no gaps.
+  const buckets = new Map<string, { date: string; revenue: number; orders: number }>();
+  for (let i = 0; i < days; i++) {
+    const d = new Date(since);
+    d.setUTCDate(since.getUTCDate() + i);
+    const key = d.toISOString().slice(0, 10);
+    buckets.set(key, { date: key, revenue: 0, orders: 0 });
+  }
+
+  const productTotals = new Map<number, { name: string; qty: number; revenue: number }>();
+  let totalRevenue = 0;
+  for (const o of orders) {
+    const key = o.createdAt.toISOString().slice(0, 10);
+    const bucket = buckets.get(key);
+    if (bucket) {
+      bucket.revenue += Number(o.total);
+      bucket.orders += 1;
+    }
+    totalRevenue += Number(o.total);
+    for (const it of o.items) {
+      const e = productTotals.get(it.productId) ?? { name: it.name, qty: 0, revenue: 0 };
+      e.qty += it.quantity;
+      e.revenue += Number(it.price) * it.quantity;
+      productTotals.set(it.productId, e);
+    }
+  }
+
+  const topProducts = [...productTotals.values()].sort((a, b) => b.revenue - a.revenue).slice(0, 8);
+
+  res.json({
+    data: {
+      days,
+      series: [...buckets.values()],
+      topProducts,
+      totalRevenue,
+      totalOrders: orders.length,
+      avgOrderValue: orders.length ? totalRevenue / orders.length : 0,
+      statusBreakdown: statusGroups.map((g) => ({ status: g.status, count: g._count._all })),
+    },
+  });
+});
+
+/** POST /api/admin/maintenance/run — manually trigger abandoned-cart + low-stock jobs. */
+export const adminRunMaintenance = asyncHandler(async (_req: Request, res: Response) => {
+  const summary = await runMaintenance();
+  res.json({ data: summary });
+});
+
 // ---------------- Users ----------------
 
 /** GET /api/admin/users */
@@ -353,4 +444,77 @@ export const adminDeleteReview = asyncHandler(async (req: Request, res: Response
   });
 
   res.json({ success: true });
+});
+
+// ---------------- Returns / refunds ----------------
+
+/** GET /api/admin/returns — all customer return requests. */
+export const adminListReturns = asyncHandler(async (_req: Request, res: Response) => {
+  const returns = await prisma.returnRequest.findMany({
+    orderBy: { createdAt: 'desc' },
+    include: {
+      order: { select: { id: true, total: true, status: true, email: true } },
+      user: { select: { email: true, displayName: true } },
+    },
+  });
+  res.json({
+    data: returns.map((r) => ({
+      id: r.id,
+      status: r.status,
+      reason: r.reason,
+      adminNote: r.adminNote,
+      createdAt: r.createdAt,
+      orderId: r.orderId,
+      orderTotal: Number(r.order?.total ?? 0),
+      orderStatus: r.order?.status ?? null,
+      customer: r.user?.email ?? r.order?.email ?? '—',
+    })),
+  });
+});
+
+const returnStatusSchema = z.object({
+  status: z.enum(['REQUESTED', 'APPROVED', 'REJECTED', 'RECEIVED', 'REFUNDED']),
+  adminNote: z.string().max(1000).optional(),
+});
+
+/** PATCH /api/admin/returns/:id — move a return through its workflow. */
+export const adminUpdateReturn = asyncHandler(async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const parsed = returnStatusSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, 'Invalid input', parsed.error.flatten().fieldErrors);
+
+  const existing = await prisma.returnRequest.findUnique({ where: { id }, include: { order: true } });
+  if (!existing) throw new HttpError(404, 'Return request not found');
+
+  const { status, adminNote } = parsed.data;
+  const updated = await prisma.returnRequest.update({
+    where: { id },
+    data: { status, ...(adminNote !== undefined ? { adminNote } : {}) },
+  });
+
+  // Once refunded, flag the order and restore the items to inventory.
+  if (status === 'REFUNDED' && existing.order.status !== 'REFUNDED') {
+    const items = await prisma.orderItem.findMany({ where: { orderId: existing.orderId } });
+    await prisma.$transaction([
+      prisma.order.update({
+        where: { id: existing.orderId },
+        data: {
+          status: 'REFUNDED',
+          events: { create: { status: 'REFUNDED', note: 'Refund processed for return' } },
+        },
+      }),
+      ...items.map((it) =>
+        prisma.product.update({
+          where: { id: it.productId },
+          data: { stock: { increment: it.quantity }, inStock: true },
+        })
+      ),
+    ]);
+  }
+
+  // Notify the customer of the new return status.
+  const to = existing.order.email;
+  if (to) void notifyReturnStatus({ to, orderId: existing.orderId, status, note: adminNote });
+
+  res.json({ data: updated });
 });

@@ -9,6 +9,7 @@ export interface AuthUser {
     displayName: string | null;
     role: 'CUSTOMER' | 'ADMIN';
     photoURL: string | null;
+    emailVerified: boolean;
 }
 
 interface AuthResponse {
@@ -21,6 +22,7 @@ interface AuthState {
     status: 'loading' | 'authenticated' | 'guest';
     login: (email: string, password: string) => Promise<void>;
     register: (email: string, password: string, displayName: string) => Promise<void>;
+    googleLogin: (credential: string) => Promise<void>;
     logout: () => Promise<void>;
     loadSession: () => Promise<void>;
     setUser: (user: AuthUser) => void;
@@ -40,6 +42,13 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     register: async (email, password, displayName) => {
         const data = await api.post<AuthResponse>('/auth/register', { email, password, displayName });
+        setAccessToken(data.accessToken);
+        set({ user: data.user, status: 'authenticated' });
+        await useStore.getState().syncGuestStateToServer();
+    },
+
+    googleLogin: async (credential) => {
+        const data = await api.post<AuthResponse>('/auth/google', { credential });
         setAccessToken(data.accessToken);
         set({ user: data.user, status: 'authenticated' });
         await useStore.getState().syncGuestStateToServer();
