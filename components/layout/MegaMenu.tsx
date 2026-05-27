@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronDown, ChevronRight, Sparkles, Zap, Tag } from 'lucide-react';
+import { ChevronDown, ChevronRight, Tag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCategories } from '@/lib/hooks';
 
@@ -21,8 +21,6 @@ const fallbackCategoryLinks = [
 interface MenuItem {
     label: string;
     href: string;
-    icon?: React.ComponentType<{ className?: string }>;
-    featured?: boolean;
     submenu?: {
         title: string;
         links: { label: string; href: string; badge?: string }[];
@@ -32,139 +30,69 @@ interface MenuItem {
     promoDiscount?: string;
 }
 
-const menuItems: MenuItem[] = [
-    {
-        label: 'All Categories',
-        href: '/categories',
-        icon: ChevronDown,
-        submenu: [
-            {
-                title: 'Shop by Category',
-                links: fallbackCategoryLinks,
-            },
-            {
-                title: 'Featured',
-                links: [
-                    { label: 'New Arrivals', href: '/products?filter=new', badge: 'New' },
-                    { label: 'Best Sellers', href: '/products?filter=bestseller' },
-                    { label: 'Flash Deals', href: '/products?filter=sale', badge: 'Hot' },
-                    { label: 'Trending Now', href: '/products?filter=trending' },
-                ],
-            },
-        ],
-        promoImage: '/photo-1441986300917-64674bd600d8.webp',
-        promoTitle: 'Summer Collection',
-        promoDiscount: '50% OFF',
-    },
-    {
-        label: 'Electronics',
-        href: '/products?category=electronics',
-        submenu: [
-            {
-                title: 'Computers',
-                links: [
-                    { label: 'Laptops', href: '/products?category=electronics&sub=laptops' },
-                    { label: 'Desktops', href: '/products?category=electronics&sub=desktops' },
-                    { label: 'Monitors', href: '/products?category=electronics&sub=monitors' },
-                    { label: 'Accessories', href: '/products?category=electronics&sub=accessories' },
-                ],
-            },
-            {
-                title: 'Mobile',
-                links: [
-                    { label: 'Smartphones', href: '/products?category=electronics&sub=smartphones' },
-                    { label: 'Tablets', href: '/products?category=electronics&sub=tablets' },
-                    { label: 'Phone Cases', href: '/products?category=electronics&sub=cases' },
-                    { label: 'Chargers', href: '/products?category=electronics&sub=chargers' },
-                ],
-            },
-            {
-                title: 'Audio',
-                links: [
-                    { label: 'Headphones', href: '/products?category=electronics&sub=headphones', badge: 'Popular' },
-                    { label: 'Speakers', href: '/products?category=electronics&sub=speakers' },
-                    { label: 'Earbuds', href: '/products?category=electronics&sub=earbuds' },
-                ],
-            },
-        ],
-        promoImage: '/photo-1505740420928-5e560c06d30e.webp',
-        promoTitle: 'Tech Deals',
-        promoDiscount: 'Up to 40% OFF',
-    },
-    {
-        label: 'Fashion',
-        href: '/products?category=fashion',
-        submenu: [
-            {
-                title: 'Women',
-                links: [
-                    { label: 'Dresses', href: '/products?category=fashion&sub=dresses' },
-                    { label: 'Tops', href: '/products?category=fashion&sub=tops' },
-                    { label: 'Bottoms', href: '/products?category=fashion&sub=bottoms' },
-                    { label: 'Accessories', href: '/products?category=fashion&sub=accessories' },
-                ],
-            },
-            {
-                title: 'Men',
-                links: [
-                    { label: 'Shirts', href: '/products?category=fashion&sub=shirts' },
-                    { label: 'Pants', href: '/products?category=fashion&sub=pants' },
-                    { label: 'Jackets', href: '/products?category=fashion&sub=jackets' },
-                    { label: 'Shoes', href: '/products?category=fashion&sub=shoes' },
-                ],
-            },
-        ],
-        promoImage: '/photo-1445205170230-053b83016050.webp',
-        promoTitle: 'New Season',
-        promoDiscount: '30% OFF',
-    },
-    {
-        label: 'Home & Living',
-        href: '/products?category=home',
-        submenu: [
-            {
-                title: 'Furniture',
-                links: [
-                    { label: 'Living Room', href: '/products?category=home&sub=living' },
-                    { label: 'Bedroom', href: '/products?category=home&sub=bedroom' },
-                    { label: 'Office', href: '/products?category=home&sub=office' },
-                ],
-            },
-            {
-                title: 'Decor',
-                links: [
-                    { label: 'Wall Art', href: '/products?category=home&sub=wallart' },
-                    { label: 'Lighting', href: '/products?category=home&sub=lighting' },
-                    { label: 'Plants', href: '/products?category=home&sub=plants', badge: 'New' },
-                ],
-            },
-        ],
-    },
-    {
-        label: 'Flash Sale',
-        href: '/products?filter=sale',
-        icon: Zap,
-        featured: true,
-    },
-];
-
 export default function MegaMenu() {
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const { categories } = useCategories();
 
-    // Inject live categories into the "Shop by Category" section.
-    const items = useMemo(() => {
-        const clone = menuItems.map(m => ({
-            ...m,
-            submenu: m.submenu?.map(s => ({ ...s, links: [...s.links] })),
-        }));
-        if (categories.length && clone[0].submenu) {
-            clone[0].submenu[0] = {
-                title: 'Shop by Category',
-                links: categories.map(c => ({ label: c.name, href: `/products?category=${c.slug}` })),
-            };
-        }
-        return clone;
+    // Inject live categories into Shop's "Top Categories" section.
+    const items: MenuItem[] = useMemo(() => {
+        const topCategoryLinks = categories.length
+            ? categories.slice(0, 7).map((c) => ({ label: c.name, href: `/products?category=${c.slug}` }))
+            : fallbackCategoryLinks;
+
+        return [
+            { label: 'Home', href: '/' },
+            {
+                label: 'Shop',
+                href: '/products',
+                submenu: [
+                    {
+                        title: 'Browse',
+                        links: [
+                            { label: 'All Products', href: '/products' },
+                            { label: 'New Arrivals', href: '/products?filter=new', badge: 'New' },
+                            { label: 'Best Sellers', href: '/products?filter=bestseller' },
+                            { label: 'On Sale', href: '/products?filter=sale', badge: 'Hot' },
+                            { label: 'Trending Now', href: '/products?filter=trending' },
+                        ],
+                    },
+                    {
+                        title: 'Top Categories',
+                        links: topCategoryLinks,
+                    },
+                ],
+                promoImage: '/photo-1505740420928-5e560c06d30e.webp',
+                promoTitle: 'Tech Deals',
+                promoDiscount: 'Up to 40% OFF',
+            },
+            { label: 'Categories', href: '/categories' },
+            {
+                label: 'Pages',
+                href: '/about',
+                submenu: [
+                    {
+                        title: 'Company',
+                        links: [
+                            { label: 'About Us', href: '/about' },
+                            { label: 'Contact', href: '/contact' },
+                            { label: 'Stores', href: '/stores' },
+                        ],
+                    },
+                    {
+                        title: 'Help & Support',
+                        links: [
+                            { label: 'Track Order', href: '/track' },
+                            { label: 'FAQ', href: '/faq' },
+                            { label: 'My Account', href: '/account' },
+                            { label: 'Wishlist', href: '/wishlist' },
+                        ],
+                    },
+                ],
+                promoImage: '/photo-1441986300917-64674bd600d8.webp',
+                promoTitle: 'Customer Support',
+                promoDiscount: 'Here 24/7',
+            },
+        ];
     }, [categories]);
 
     return (
@@ -180,14 +108,14 @@ export default function MegaMenu() {
                         >
                             <Link
                                 href={item.href}
-                                className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium transition-colors ${item.featured
-                                    ? 'text-hot hover:text-hot/80'
-                                    : 'text-slate-700 dark:text-slate-300 hover:text-accent dark:hover:text-accent-400'
-                                    } ${activeMenu === item.label ? 'text-accent dark:text-accent-400' : ''}`}
+                                className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium transition-colors text-slate-700 dark:text-slate-300 hover:text-accent dark:hover:text-accent-400 ${activeMenu === item.label ? 'text-accent dark:text-accent-400' : ''}`}
                             >
-                                {item.icon && <item.icon className="w-4 h-4" />}
                                 {item.label}
-                                {item.featured && <Sparkles className="w-3 h-3" />}
+                                {item.submenu && (
+                                    <ChevronDown
+                                        className={`w-3.5 h-3.5 transition-transform duration-200 ${activeMenu === item.label ? 'rotate-180' : ''}`}
+                                    />
+                                )}
                             </Link>
 
                             {/* Mega Menu Dropdown */}

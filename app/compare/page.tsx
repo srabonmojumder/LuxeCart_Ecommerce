@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { X, Check } from 'lucide-react';
+import { X, Check, Scale, ArrowRight } from 'lucide-react';
 import { useCompareStore } from '@/store/useCompareStore';
 
 export default function ComparePage() {
@@ -13,141 +13,158 @@ export default function ComparePage() {
 
     if (compareProducts.length === 0) {
         return (
-            <div className="pt-20 min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-                <div className="text-center">
-                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                        No Products to Compare
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-400 mb-8">
-                        Start adding products to compare their features
-                    </p>
-                    <Link href="/products">
-                        <button className="btn-primary">Browse Products</button>
+            <div className="max-w-2xl mx-auto px-4 md:px-8 py-16 md:py-24 pb-24">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-3xl p-10 md:p-14 text-center space-y-5"
+                >
+                    <div className="w-16 h-16 rounded-2xl bg-accent/10 text-accent flex items-center justify-center mx-auto">
+                        <Scale className="w-8 h-8" />
+                    </div>
+                    <div className="space-y-2">
+                        <h1 className="text-3xl md:text-4xl font-black text-primary dark:text-white tracking-tighter">
+                            Nothing to Compare
+                        </h1>
+                        <p className="text-secondary dark:text-gray-400">
+                            Add products from the shop to compare features side by side.
+                        </p>
+                    </div>
+                    <Link
+                        href="/products"
+                        className="inline-flex items-center gap-2 bg-primary dark:bg-accent text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-accent dark:hover:bg-accent-600 transition-colors"
+                    >
+                        Browse Products
+                        <ArrowRight className="w-4 h-4" />
                     </Link>
-                </div>
+                </motion.div>
             </div>
         );
     }
 
-    return (
-        <div className="pt-20 min-h-screen bg-gray-50 dark:bg-gray-900">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="flex justify-between items-center mb-8">
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-4xl font-bold text-gray-900 dark:text-white"
-                    >
-                        Compare Products
-                    </motion.h1>
-                    <button onClick={clearCompare} className="text-red-600 hover:text-red-700 font-medium">
-                        Clear All
-                    </button>
+    const rows: { label: string; render: (p: (typeof compareProducts)[number]) => React.ReactNode }[] = [
+        {
+            label: 'Price',
+            render: (p) => (
+                <div className="text-xl font-black text-accent">${p.price.toFixed(2)}</div>
+            ),
+        },
+        {
+            label: 'Category',
+            render: (p) => <span className="text-sm text-secondary dark:text-gray-400">{p.category}</span>,
+        },
+        {
+            label: 'Rating',
+            render: (p) => (
+                <div className="flex items-center justify-center gap-1 text-sm">
+                    <span className="font-bold text-amber-500">★ {p.rating}</span>
+                    <span className="text-gray-400">/ 5</span>
                 </div>
+            ),
+        },
+        {
+            label: 'Reviews',
+            render: (p) => <span className="text-sm text-secondary dark:text-gray-400">{p.reviews}</span>,
+        },
+        {
+            label: 'Availability',
+            render: (p) => (
+                p.inStock ? (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-black uppercase tracking-widest">
+                        <Check className="w-3 h-3" /> In Stock
+                    </span>
+                ) : (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-hot/10 text-hot text-[10px] font-black uppercase tracking-widest">
+                        <X className="w-3 h-3" /> Out
+                    </span>
+                )
+            ),
+        },
+        {
+            label: 'Discount',
+            render: (p) => (
+                p.discount ? (
+                    <span className="text-sm font-black text-hot">-{p.discount}%</span>
+                ) : (
+                    <span className="text-sm text-gray-400">—</span>
+                )
+            ),
+        },
+    ];
 
-                <div className="overflow-x-auto">
-                    <table className="w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg">
-                        <thead>
-                            <tr className="border-b border-gray-200 dark:border-gray-700">
-                                <th className="p-4 text-left font-semibold text-gray-900 dark:text-white">
-                                    Feature
-                                </th>
-                                {compareProducts.map((product) => (
-                                    <th key={product.id} className="p-4 min-w-[200px]">
-                                        <div className="relative">
-                                            <button
-                                                onClick={() => removeFromCompare(product.id)}
-                                                className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
-                                            >
-                                                <X className="w-4 h-4" />
-                                            </button>
-                                            <div className="relative h-48 mb-3 rounded-lg overflow-hidden">
-                                                <Image src={product.image} alt={product.name} fill className="object-cover" />
-                                            </div>
-                                            <Link
-                                                href={`/products/${product.id}`}
-                                                className="font-semibold text-gray-900 dark:text-white hover:text-purple-600"
-                                            >
-                                                {product.name}
-                                            </Link>
-                                        </div>
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr className="border-b border-gray-200 dark:border-gray-700">
-                                <td className="p-4 font-medium text-gray-900 dark:text-white">Price</td>
-                                {compareProducts.map((product) => (
-                                    <td key={product.id} className="p-4 text-center">
-                                        <div className="text-2xl font-bold text-purple-600">
-                                            ${product.price.toFixed(2)}
-                                        </div>
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="border-b border-gray-200 dark:border-gray-700">
-                                <td className="p-4 font-medium text-gray-900 dark:text-white">Category</td>
-                                {compareProducts.map((product) => (
-                                    <td key={product.id} className="p-4 text-center text-gray-600 dark:text-gray-400">
-                                        {product.category}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="border-b border-gray-200 dark:border-gray-700">
-                                <td className="p-4 font-medium text-gray-900 dark:text-white">Rating</td>
-                                {compareProducts.map((product) => (
-                                    <td key={product.id} className="p-4 text-center">
-                                        <div className="flex items-center justify-center gap-1">
-                                            <span className="text-yellow-400 font-bold">{product.rating}</span>
-                                            <span className="text-gray-500">/ 5.0</span>
-                                        </div>
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="border-b border-gray-200 dark:border-gray-700">
-                                <td className="p-4 font-medium text-gray-900 dark:text-white">Reviews</td>
-                                {compareProducts.map((product) => (
-                                    <td key={product.id} className="p-4 text-center text-gray-600 dark:text-gray-400">
-                                        {product.reviews} reviews
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="border-b border-gray-200 dark:border-gray-700">
-                                <td className="p-4 font-medium text-gray-900 dark:text-white">Availability</td>
-                                {compareProducts.map((product) => (
-                                    <td key={product.id} className="p-4">
-                                        <div className="flex justify-center">
-                                            {product.inStock ? (
-                                                <span className="flex items-center gap-2 text-green-600">
-                                                    <Check className="w-5 h-5" />
-                                                    In Stock
-                                                </span>
-                                            ) : (
-                                                <span className="flex items-center gap-2 text-red-600">
-                                                    <X className="w-5 h-5" />
-                                                    Out of Stock
-                                                </span>
-                                            )}
-                                        </div>
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr>
-                                <td className="p-4 font-medium text-gray-900 dark:text-white">Discount</td>
-                                {compareProducts.map((product) => (
-                                    <td key={product.id} className="p-4 text-center">
-                                        {product.discount ? (
-                                            <span className="text-red-600 font-bold">-{product.discount}%</span>
-                                        ) : (
-                                            <span className="text-gray-400">No discount</span>
-                                        )}
-                                    </td>
-                                ))}
-                            </tr>
-                        </tbody>
-                    </table>
+    return (
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 pb-24 space-y-8">
+            {/* Header */}
+            <div className="flex flex-wrap items-end justify-between gap-3">
+                <div className="space-y-1.5">
+                    <span className="text-accent font-black tracking-[0.3em] text-xs uppercase">Compare</span>
+                    <motion.h1
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-3xl md:text-5xl font-black text-primary dark:text-white tracking-tighter"
+                    >
+                        Side by Side
+                    </motion.h1>
+                    <p className="text-secondary dark:text-gray-400 text-sm">
+                        {compareProducts.length} product{compareProducts.length === 1 ? '' : 's'} selected
+                    </p>
                 </div>
+                <button
+                    onClick={clearCompare}
+                    className="px-4 py-2 rounded-xl bg-hot/10 text-hot text-xs font-black uppercase tracking-widest hover:bg-hot/20 transition-colors"
+                >
+                    Clear All
+                </button>
+            </div>
+
+            {/* Comparison grid */}
+            <div className="overflow-x-auto rounded-2xl border border-primary/5 dark:border-slate-800 bg-white dark:bg-slate-900">
+                <table className="w-full">
+                    {/* Product header */}
+                    <thead className="bg-primary/5 dark:bg-slate-800/50">
+                        <tr>
+                            <th className="p-4 text-left text-[10px] uppercase tracking-widest text-gray-400 w-32">Feature</th>
+                            {compareProducts.map((product) => (
+                                <th key={product.id} className="p-4 min-w-[220px]">
+                                    <div className="relative space-y-3">
+                                        <button
+                                            onClick={() => removeFromCompare(product.id)}
+                                            className="absolute -top-1 -right-1 w-7 h-7 rounded-full bg-hot/10 text-hot hover:bg-hot hover:text-white flex items-center justify-center transition-colors z-10"
+                                            aria-label={`Remove ${product.name}`}
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </button>
+                                        <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-50 dark:bg-slate-800">
+                                            <Image src={product.image} alt={product.name} fill className="object-cover" />
+                                        </div>
+                                        <Link
+                                            href={`/products/${product.id}`}
+                                            className="block font-bold text-primary dark:text-white hover:text-accent dark:hover:text-accent-400 transition-colors text-sm truncate"
+                                        >
+                                            {product.name}
+                                        </Link>
+                                    </div>
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+
+                    {/* Feature rows */}
+                    <tbody className="divide-y divide-primary/5 dark:divide-slate-800">
+                        {rows.map((row) => (
+                            <tr key={row.label}>
+                                <td className="p-4 text-[10px] font-black uppercase tracking-widest text-gray-400 align-middle">
+                                    {row.label}
+                                </td>
+                                {compareProducts.map((p) => (
+                                    <td key={p.id} className="p-4 text-center align-middle">
+                                        {row.render(p)}
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
