@@ -13,6 +13,7 @@ import {
     Star,
     Ticket,
     Image as ImageIcon,
+    BookOpen,
     Mail,
     Settings as SettingsIcon,
     Store,
@@ -32,6 +33,7 @@ const nav = [
     { href: '/admin/reviews', label: 'Reviews', icon: Star },
     { href: '/admin/coupons', label: 'Coupons', icon: Ticket },
     { href: '/admin/banners', label: 'Banners', icon: ImageIcon },
+    { href: '/admin/blog', label: 'Blog', icon: BookOpen },
     { href: '/admin/newsletter', label: 'Newsletter', icon: Mail },
     { href: '/admin/settings', label: 'Settings', icon: SettingsIcon },
 ];

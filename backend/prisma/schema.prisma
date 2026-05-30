@@ -390,3 +390,22 @@ model NewsletterSubscriber {
   email     String   @unique
   createdAt DateTime @default(now())
 }
+
+// Blog / News posts — managed in /admin/blog, surfaced at /blog and /blog/[slug].
+model Post {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  title       String
+  excerpt     String?  @db.Text
+  content     String   @db.LongText // body (markdown or HTML)
+  image       String
+  author      String   @default("Admin")
+  tags        Json? // simple string[] e.g. ["design", "tips"]
+  published   Boolean  @default(true)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([published, publishedAt])
+}

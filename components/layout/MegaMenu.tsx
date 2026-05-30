@@ -66,6 +66,7 @@ export default function MegaMenu() {
                 promoDiscount: 'Up to 40% OFF',
             },
             { label: 'Categories', href: '/categories' },
+            { label: 'Blog', href: '/blog' },
             {
                 label: 'Pages',
                 href: '/about',

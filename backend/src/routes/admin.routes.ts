@@ -37,6 +37,12 @@ import {
   adminUpdateBanner,
 } from '../controllers/banners.controller.js';
 import { adminDeleteSubscriber, adminListSubscribers } from '../controllers/newsletter.controller.js';
+import {
+  adminCreatePost,
+  adminDeletePost,
+  adminListPosts,
+  adminUpdatePost,
+} from '../controllers/blog.controller.js';
 
 const router = Router();
 
@@ -60,6 +66,12 @@ router.delete('/banners/:id', adminDeleteBanner);
 // Newsletter
 router.get('/newsletter', adminListSubscribers);
 router.delete('/newsletter/:id', adminDeleteSubscriber);
+
+// Blog posts
+router.get('/blog', adminListPosts);
+router.post('/blog', adminCreatePost);
+router.patch('/blog/:id', adminUpdatePost);
+router.delete('/blog/:id', adminDeletePost);
 
 // Dashboard
 router.get('/stats', adminStats);

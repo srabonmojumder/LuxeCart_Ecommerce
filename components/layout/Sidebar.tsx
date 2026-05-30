@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { X, ChevronRight, ShoppingBag, Heart, User, Search, Home, Grid, Tag, Mail, HelpCircle } from 'lucide-react';
+import { X, ChevronRight, ShoppingBag, Heart, User, Search, Home, Grid, Tag, Mail, HelpCircle, BookOpen } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 
 interface SidebarProps {
@@ -18,6 +18,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         { label: 'Home', href: '/', icon: Home },
         { label: 'Shop', href: '/products', icon: Grid },
         { label: 'Categories', href: '/categories', icon: Tag },
+        { label: 'Blog', href: '/blog', icon: BookOpen },
         { label: 'Contact', href: '/contact', icon: Mail },
         { label: 'FAQ', href: '/faq', icon: HelpCircle },
         { label: 'Wishlist', href: '/wishlist', icon: Heart, badge: wishlist.length },

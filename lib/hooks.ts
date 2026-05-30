@@ -44,6 +44,110 @@ export function useRelatedProducts(slug: string | undefined) {
     return { related: data?.data ?? [], isLoading };
 }
 
+/** Newest products (server-sorted by createdAt) — for the homepage New Arrivals grid. */
+export function useNewArrivals(limit = 8) {
+    const { data, isLoading } = useSWR<{ data: Product[] }>(`/products?sort=newest&limit=${limit}`, fetcher);
+    return { products: data?.data ?? [], isLoading };
+}
+
+export interface PublicStats {
+    products: number;
+    customers: number;
+    orders: number;
+    avgRating: number;
+    reviewCount: number;
+}
+
+/** Public storefront stats for the homepage counters. */
+export function usePublicStats() {
+    const { data, isLoading } = useSWR<{ data: PublicStats }>('/stats', fetcher);
+    return { stats: data?.data, isLoading };
+}
+
+export interface Testimonial {
+    id: number;
+    rating: number;
+    comment: string;
+    author: string;
+    avatar: string | null;
+    product: string;
+    productSlug: string;
+    productImage: string;
+    createdAt: string;
+}
+
+/** Recent positive reviews across products, for the homepage testimonials. */
+export function useTestimonials(limit = 8) {
+    const { data, isLoading } = useSWR<{ data: Testimonial[] }>(`/testimonials?limit=${limit}`, fetcher);
+    return { testimonials: data?.data ?? [], isLoading };
+}
+
+// ----------------------------- Blog -----------------------------
+
+export interface BlogPostSummary {
+    id: number;
+    slug: string;
+    title: string;
+    excerpt: string | null;
+    image: string;
+    author: string;
+    tags: string[];
+    publishedAt: string;
+}
+
+export interface BlogPost extends BlogPostSummary {
+    content: string;
+    published: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface BlogListPagination {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+}
+
+export interface BlogMeta {
+    recent: { id: number; slug: string; title: string; image: string; publishedAt: string }[];
+    archive: { month: string; year: number; posts: { slug: string; title: string }[] }[];
+    tags: { name: string; count: number }[];
+}
+
+/** Public blog list with search/tag/pagination. */
+export function usePosts(params: { page?: number; limit?: number; q?: string; tag?: string } = {}) {
+    const search = new URLSearchParams();
+    if (params.page) search.set('page', String(params.page));
+    if (params.limit) search.set('limit', String(params.limit));
+    if (params.q) search.set('q', params.q);
+    if (params.tag) search.set('tag', params.tag);
+    const qs = search.toString();
+    const { data, isLoading } = useSWR<{ data: BlogPostSummary[]; pagination: BlogListPagination }>(
+        `/blog${qs ? `?${qs}` : ''}`,
+        fetcher
+    );
+    return { posts: data?.data ?? [], pagination: data?.pagination, isLoading };
+}
+
+/** Sidebar data (recent posts, archive by month, tag cloud). */
+export function useBlogMeta() {
+    const { data, isLoading } = useSWR<{ data: BlogMeta }>('/blog/meta', fetcher);
+    return { meta: data?.data, isLoading };
+}
+
+/** Single published post by slug. */
+export function usePost(slug: string | undefined) {
+    const { data, error, isLoading } = useSWR<{ data: BlogPost }>(slug ? `/blog/${slug}` : null, fetcher);
+    return { post: data?.data, isLoading, error };
+}
+
+/** Admin list of all posts (drafts + published). */
+export function useAdminPosts(enabled: boolean) {
+    const { data, isLoading, mutate } = useSWR<{ data: BlogPost[] }>(enabled ? '/admin/blog' : null, authFetcher);
+    return { posts: data?.data ?? [], isLoading, mutate };
+}
+
 export function useCategories() {
     const { data, error, isLoading, mutate } = useSWR<{ data: Category[] }>('/categories', fetcher);
     return { categories: data?.data ?? [], isLoading, error, mutate };
