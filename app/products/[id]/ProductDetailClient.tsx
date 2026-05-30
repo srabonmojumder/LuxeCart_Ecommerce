@@ -5,12 +5,15 @@ import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Heart, Star, Truck, Shield, RotateCcw, Share2, Minus, Plus } from 'lucide-react';
+import { ShoppingCart, Heart, Star, Truck, Shield, RotateCcw, Share2, Minus, Plus, Bell } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { useProduct, useRelatedProducts } from '@/lib/hooks';
 import ProductCard from '@/components/product/ProductCard';
 import StickyMobileBar from '@/components/product/StickyMobileBar';
 import ReviewSection from '@/components/product/ReviewSection';
+import RecentlyViewedSection from '@/components/product/RecentlyViewedSection';
+import BackInStockModal from '@/components/ui/BackInStockModal';
+import { useRecentlyViewedStore } from '@/store/useRecentlyViewedStore';
 import { toast } from 'sonner';
 
 export default function ProductDetailPage() {
@@ -23,16 +26,34 @@ export default function ProductDetailPage() {
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('description');
     const [mounted, setMounted] = useState(false);
+    const [notifyOpen, setNotifyOpen] = useState(false);
+
+    // Mouse-position image zoom (premium magnifier on desktop main image).
+    const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
+    const [isZooming, setIsZooming] = useState(false);
+    const handleZoomMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        setZoomPos({ x, y });
+    };
 
     const addToCart = useStore((state) => state.addToCart);
     const addToWishlist = useStore((state) => state.addToWishlist);
     const removeFromWishlist = useStore((state) => state.removeFromWishlist);
     const isInWishlist = useStore((state) => state.isInWishlist);
+    const addToRecentlyViewed = useRecentlyViewedStore((s) => s.addToRecentlyViewed);
 
     // Prevent hydration mismatch by only checking wishlist after mount
     useEffect(() => {
         setMounted(true);
     }, []);
+
+    // Track this product as recently viewed (re-runs only when product id changes).
+    useEffect(() => {
+        if (product) addToRecentlyViewed(product);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [product?.id]);
 
     if (isLoading) {
         return (
@@ -137,22 +158,29 @@ export default function ProductDetailPage() {
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ duration: 0.3 }}
+                                    onMouseMove={handleZoomMove}
+                                    onMouseEnter={() => setIsZooming(true)}
+                                    onMouseLeave={() => setIsZooming(false)}
                                     className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 group cursor-zoom-in"
                                 >
                                     <Image
                                         src={images[selectedImage]}
                                         alt={`${product.name}`}
                                         fill
-                                        className="object-cover transition-transform duration-500 group-hover:scale-110"
                                         priority
                                         sizes="50vw"
+                                        style={{
+                                            transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
+                                            transform: isZooming ? 'scale(2.2)' : 'scale(1)',
+                                        }}
+                                        className="object-cover transition-transform duration-150 ease-out"
                                     />
 
-                                    {/* Overlay gradient */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                    {/* Subtle hint overlay (fades when zooming) */}
+                                    <div className={`absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent transition-opacity duration-300 ${isZooming ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'}`} />
 
-                                    {/* Image counter */}
-                                    <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm text-white text-sm px-3 py-1.5 rounded-full">
+                                    {/* Image counter — hidden while zooming so it doesn't block the view */}
+                                    <div className={`absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm text-white text-sm px-3 py-1.5 rounded-full transition-opacity duration-200 ${isZooming ? 'opacity-0' : 'opacity-100'}`}>
                                         {selectedImage + 1} / {images.length}
                                     </div>
                                 </motion.div>
@@ -367,17 +395,29 @@ export default function ProductDetailPage() {
 
                         {/* Action Buttons */}
                         <div className="flex gap-1.5 xs:gap-2 md:gap-3">
-                            <motion.button
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={handleAddToCart}
-                                disabled={!product.inStock}
-                                className="flex-1 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white font-semibold py-2.5 xs:py-3 md:py-4 px-3 xs:px-4 md:px-6 rounded-xl flex items-center justify-center gap-1.5 xs:gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-teal-500/20 transition-all text-sm xs:text-base"
-                            >
-                                <ShoppingCart className="w-4 h-4 xs:w-5 xs:h-5" />
-                                <span className="hidden xs:inline">Add to Cart</span>
-                                <span className="xs:hidden">Add</span>
-                            </motion.button>
+                            {product.inStock ? (
+                                <motion.button
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={handleAddToCart}
+                                    className="flex-1 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white font-semibold py-2.5 xs:py-3 md:py-4 px-3 xs:px-4 md:px-6 rounded-xl flex items-center justify-center gap-1.5 xs:gap-2 shadow-lg shadow-teal-500/20 transition-all text-sm xs:text-base"
+                                >
+                                    <ShoppingCart className="w-4 h-4 xs:w-5 xs:h-5" />
+                                    <span className="hidden xs:inline">Add to Cart</span>
+                                    <span className="xs:hidden">Add</span>
+                                </motion.button>
+                            ) : (
+                                <motion.button
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={() => setNotifyOpen(true)}
+                                    className="flex-1 bg-primary dark:bg-accent text-white font-semibold py-2.5 xs:py-3 md:py-4 px-3 xs:px-4 md:px-6 rounded-xl flex items-center justify-center gap-1.5 xs:gap-2 hover:opacity-90 transition-all text-sm xs:text-base"
+                                >
+                                    <Bell className="w-4 h-4 xs:w-5 xs:h-5" />
+                                    <span className="hidden xs:inline">Notify When Back in Stock</span>
+                                    <span className="xs:hidden">Notify Me</span>
+                                </motion.button>
+                            )}
 
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
@@ -496,6 +536,18 @@ export default function ProductDetailPage() {
                     </div>
                 )}
             </div>
+
+            {/* Recently Viewed (other products the user has browsed) */}
+            <RecentlyViewedSection excludeId={product.id} />
+
+            {/* Back-in-stock notify modal (only mounted when needed) */}
+            <BackInStockModal
+                isOpen={notifyOpen}
+                onClose={() => setNotifyOpen(false)}
+                productName={product.name}
+                productImage={product.image}
+                productSlug={product.slug ?? String(product.id)}
+            />
 
             {/* Enhanced Sticky Mobile Bar */}
             <StickyMobileBar product={product} />

@@ -3,8 +3,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, ArrowLeft, Truck, Shield, Tag, ChevronRight, Package } from 'lucide-react';
-import { useStore } from '@/store/useStore';
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, ArrowLeft, Truck, Shield, Tag, ChevronRight, Package, Heart } from 'lucide-react';
+import { useStore, type Product } from '@/store/useStore';
 import { toast } from 'sonner';
 import RecommendedProducts from '@/components/product/RecommendedProducts';
 
@@ -14,6 +14,15 @@ export default function CartPage() {
     const updateQuantity = useStore((state) => state.updateQuantity);
     const getTotalPrice = useStore((state) => state.getTotalPrice);
     const clearCart = useStore((state) => state.clearCart);
+    const addToWishlist = useStore((state) => state.addToWishlist);
+    const isInWishlist = useStore((state) => state.isInWishlist);
+
+    /** Move a cart line to the wishlist (idempotent on the wishlist side). */
+    const saveForLater = (item: Product) => {
+        if (!isInWishlist(item.id)) addToWishlist(item);
+        removeFromCart(item.id);
+        toast.success('Saved for later');
+    };
 
     const totalPrice = getTotalPrice();
     const shipping = totalPrice > 50 ? 0 : 10;
@@ -165,12 +174,23 @@ export default function CartPage() {
                                                             {item.name}
                                                         </Link>
                                                     </div>
-                                                    <button
-                                                        onClick={() => handleRemove(item.id)}
-                                                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/5 dark:bg-white/5 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center dark:text-white flex-shrink-0"
-                                                    >
-                                                        <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                                                    </button>
+                                                    <div className="flex items-center gap-2 flex-shrink-0">
+                                                        <button
+                                                            onClick={() => saveForLater(item)}
+                                                            title="Save for later (moves to wishlist)"
+                                                            aria-label="Save for later"
+                                                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/5 dark:bg-white/5 hover:bg-accent hover:text-white transition-all flex items-center justify-center dark:text-white"
+                                                        >
+                                                            <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleRemove(item.id)}
+                                                            aria-label="Remove from cart"
+                                                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/5 dark:bg-white/5 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center dark:text-white"
+                                                        >
+                                                            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                                                        </button>
+                                                    </div>
                                                 </div>
 
                                                 <div className="flex flex-wrap items-end justify-between mt-auto gap-4 pt-2 sm:pt-4">

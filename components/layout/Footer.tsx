@@ -159,7 +159,7 @@ export default function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href="#"
+                                    href="/shipping"
                                     className="text-slate-600 dark:text-slate-400 hover:text-accent dark:hover:text-accent transition-colors text-sm font-medium inline-flex items-center gap-2 group"
                                 >
                                     <span className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-600 group-hover:bg-accent transition-colors"></span>
@@ -168,7 +168,7 @@ export default function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href="#"
+                                    href="/track"
                                     className="text-slate-600 dark:text-slate-400 hover:text-accent dark:hover:text-accent transition-colors text-sm font-medium inline-flex items-center gap-2 group"
                                 >
                                     <span className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-600 group-hover:bg-accent transition-colors"></span>
@@ -177,7 +177,7 @@ export default function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href="#"
+                                    href="/faq"
                                     className="text-slate-600 dark:text-slate-400 hover:text-accent dark:hover:text-accent transition-colors text-sm font-medium inline-flex items-center gap-2 group"
                                 >
                                     <span className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-600 group-hover:bg-accent transition-colors"></span>
@@ -204,7 +204,7 @@ export default function Footer() {
                         <ul className="space-y-3">
                             <li>
                                 <Link
-                                    href="#"
+                                    href="/about"
                                     className="text-slate-600 dark:text-slate-400 hover:text-accent dark:hover:text-accent transition-colors text-sm font-medium inline-flex items-center gap-2 group"
                                 >
                                     <span className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-600 group-hover:bg-accent transition-colors"></span>
@@ -231,7 +231,7 @@ export default function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href="#"
+                                    href="/blog"
                                     className="text-slate-600 dark:text-slate-400 hover:text-accent dark:hover:text-accent transition-colors text-sm font-medium inline-flex items-center gap-2 group"
                                 >
                                     <span className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-600 group-hover:bg-accent transition-colors"></span>
@@ -299,10 +299,10 @@ export default function Footer() {
                                 © 2026 LuxeCart. All Rights Reserved.
                             </p>
                             <div className="flex gap-6 text-xs text-slate-500 dark:text-slate-500 font-semibold">
-                                <Link href="#" className="hover:text-accent transition-colors">Terms</Link>
-                                <Link href="#" className="hover:text-accent transition-colors">Privacy</Link>
-                                <Link href="#" className="hover:text-accent transition-colors">Cookies</Link>
-                                <Link href="#" className="hover:text-accent transition-colors">Accessibility</Link>
+                                <Link href="/terms" className="hover:text-accent transition-colors">Terms</Link>
+                                <Link href="/privacy" className="hover:text-accent transition-colors">Privacy</Link>
+                                <Link href="/refund-policy" className="hover:text-accent transition-colors">Refunds</Link>
+                                <Link href="/cookies" className="hover:text-accent transition-colors">Cookies</Link>
                             </div>
                         </div>
 

@@ -6,6 +6,11 @@ import Footer from '@/components/layout/Footer';
 import TopUtilityBar from '@/components/layout/TopUtilityBar';
 import MegaMenu from '@/components/layout/MegaMenu';
 import FloatingMobileNav from '@/components/ui/FloatingMobileNav';
+import FloatingCart from '@/components/cart/FloatingCart';
+import LiveChat from '@/components/chat/LiveChat';
+import NewsletterPopup from '@/components/ui/NewsletterPopup';
+import MobileComparisonSheet from '@/components/ui/MobileComparisonSheet';
+import CookieConsent from '@/components/ui/CookieConsent';
 
 /**
  * Renders the storefront chrome (navbar, mega menu, footer, mobile nav) around
@@ -29,6 +34,15 @@ export default function ConditionalChrome({ children }: { children: React.ReactN
             <main className="relative my-5">{children}</main>
             <Footer />
             <FloatingMobileNav />
+
+            {/* Always-on storefront widgets — each self-renders only when
+                relevant (FloatingCart hides when cart empty, NewsletterPopup
+                remembers dismissal, MobileComparisonSheet hides w/o items). */}
+            <FloatingCart />
+            <LiveChat />
+            <NewsletterPopup />
+            <MobileComparisonSheet />
+            <CookieConsent />
         </>
     );
 }

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Package, Settings, LogOut, ChevronRight, CreditCard, Bell, Home } from 'lucide-react';
+import { User, Package, Settings, LogOut, ChevronRight, CreditCard, Bell, Home, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { Shield } from 'lucide-react';
 import LoyaltyBadge from '@/components/loyalty/LoyaltyBadge';
@@ -12,7 +12,8 @@ import ProfileForm from '@/components/account/ProfileForm';
 import SecurityForm from '@/components/account/SecurityForm';
 import EmailVerifyBanner from '@/components/account/EmailVerifyBanner';
 import { useAuthStore } from '@/store/useAuthStore';
-import { useOrders } from '@/lib/hooks';
+import { useStore, type Product } from '@/store/useStore';
+import { useOrders, type Order } from '@/lib/hooks';
 import { toast } from 'sonner';
 
 const formatDate = (dateString: string) => {
@@ -36,6 +37,31 @@ export default function AccountPage() {
     const { user, status, logout } = useAuthStore();
     const isAuthed = status === 'authenticated';
     const { orders, isLoading: ordersLoading } = useOrders(isAuthed);
+    const addToCart = useStore((s) => s.addToCart);
+
+    /** Re-add every item from a past order to the cart (skips items missing image/slug). */
+    const orderAgain = (order: Order) => {
+        let added = 0;
+        for (const item of order.items) {
+            const product: Product = {
+                id: item.productId,
+                name: item.name,
+                slug: item.slug ?? undefined,
+                price: item.price,
+                image: item.image ?? '/home_accessories_hero.png',
+                category: '',
+                description: '',
+                rating: 0,
+                reviews: 0,
+                inStock: true,
+            };
+            for (let i = 0; i < item.quantity; i++) {
+                addToCart(product);
+                added++;
+            }
+        }
+        toast.success(added === 0 ? 'Nothing to re-add' : `${added} item${added === 1 ? '' : 's'} added to your cart`);
+    };
 
     const tabs = [
         { id: 'orders', label: 'History', icon: Package },
@@ -182,10 +208,17 @@ export default function AccountPage() {
                                                         <h3 className="text-3xl font-black text-primary dark:text-white tracking-tighter uppercase">Total: ${order.total.toFixed(2)}</h3>
                                                         <p className="text-[10px] font-black text-secondary dark:text-gray-400 uppercase tracking-[0.2em]">{order.items.reduce((n, it) => n + it.quantity, 0)} Units</p>
                                                     </div>
-                                                    <div className="flex items-center gap-4">
+                                                    <div className="flex flex-wrap items-center gap-3">
                                                         <div className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border-2 ${statusStyles(order.status)}`}>
                                                             {order.status}
                                                         </div>
+                                                        <button
+                                                            onClick={() => orderAgain(order)}
+                                                            title="Re-add all items to cart"
+                                                            className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-primary/15 dark:border-slate-700 text-primary dark:text-white text-[10px] font-black uppercase tracking-widest hover:bg-primary/5 dark:hover:bg-slate-800 transition-colors"
+                                                        >
+                                                            <RefreshCw className="w-3 h-3" /> Order Again
+                                                        </button>
                                                         <Link
                                                             href={`/orders/${order.id}`}
                                                             className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white dark:bg-accent text-[10px] font-black uppercase tracking-widest hover:opacity-90"

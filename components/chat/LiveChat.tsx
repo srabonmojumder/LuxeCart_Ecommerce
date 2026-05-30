@@ -1,164 +1,220 @@
 'use client';
 
-import { MessageCircle, X, Send } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { MessageCircle, X, Send, Headphones } from 'lucide-react';
+import { toast } from 'sonner';
+import { api, ApiError } from '@/lib/api';
+
+interface ChatLine {
+    id: number;
+    text: string;
+    from: 'user' | 'bot';
+}
+
+const STORAGE_EMAIL_KEY = 'luxecart-chat-email';
+
+const initialBot: ChatLine = {
+    id: 1,
+    from: 'bot',
+    text: "Hi! What's your email so we can reply to you?",
+};
+
+const quickReplies = ['Track my order', 'Return / refund', 'Product question', 'Payment issue'];
+
+function isEmail(s: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim());
+}
 
 export default function LiveChat() {
     const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState([
-        {
-            id: 1,
-            text: 'Hi! How can I help you today?',
-            isBot: true,
-            time: 'Just now',
-        },
-    ]);
+    const [messages, setMessages] = useState<ChatLine[]>([initialBot]);
     const [input, setInput] = useState('');
+    const [email, setEmail] = useState('');
+    const [sending, setSending] = useState(false);
+    const scrollRef = useRef<HTMLDivElement>(null);
 
-    const quickReplies = [
-        'Track my order',
-        'Product information',
-        'Return policy',
-        'Payment options',
-    ];
+    // Remember the email between opens (so returning users skip the prompt).
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem(STORAGE_EMAIL_KEY);
+            if (saved) {
+                setEmail(saved);
+                setMessages([
+                    { id: 1, from: 'bot', text: `Welcome back! Type your question and we'll reply to ${saved}.` },
+                ]);
+            }
+        } catch {
+            /* ignore */
+        }
+    }, []);
 
-    const handleSend = () => {
-        if (!input.trim()) return;
+    // Auto-scroll to newest message.
+    useEffect(() => {
+        scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
+    }, [messages, isOpen]);
 
-        const userMessage = {
-            id: messages.length + 1,
-            text: input,
-            isBot: false,
-            time: 'Just now',
-        };
+    const appendUser = (text: string) =>
+        setMessages((prev) => [...prev, { id: Date.now(), from: 'user', text }]);
+    const appendBot = (text: string) =>
+        setMessages((prev) => [...prev, { id: Date.now() + 1, from: 'bot', text }]);
 
-        setMessages([...messages, userMessage]);
+    const handleSubmit = async (e?: React.FormEvent) => {
+        e?.preventDefault();
+        const text = input.trim();
+        if (!text || sending) return;
+
+        // Capture email on the first turn (if we don't have one yet).
+        if (!email) {
+            if (!isEmail(text)) {
+                appendUser(text);
+                appendBot("That doesn't look like an email — could you double-check? (e.g. you@example.com)");
+                setInput('');
+                return;
+            }
+            setEmail(text);
+            try { localStorage.setItem(STORAGE_EMAIL_KEY, text); } catch { /* ignore */ }
+            appendUser(text);
+            appendBot('Thanks! Now tell us how we can help.');
+            setInput('');
+            return;
+        }
+
+        // Send the message — append optimistically, then POST.
+        appendUser(text);
         setInput('');
-
-        // Simulate bot response
-        setTimeout(() => {
-            const botResponse = {
-                id: messages.length + 2,
-                text: 'Thanks for your message! A support agent will be with you shortly.',
-                isBot: true,
-                time: 'Just now',
-            };
-            setMessages((prev) => [...prev, botResponse]);
-        }, 1000);
-    };
-
-    const handleQuickReply = (reply: string) => {
-        setInput(reply);
+        setSending(true);
+        try {
+            // Build a trimmed transcript (last 12 lines) for context in the email.
+            const history = messages.slice(-12).map((m) => ({ from: m.from, text: m.text }));
+            await api.post('/chat-message', { email, message: text, history });
+            appendBot(`Sent ✓ Our team will reply to ${email} within 24 hours. Add more details if you'd like.`);
+        } catch (err) {
+            appendBot('Sorry — couldn\'t send that. Please try again in a moment.');
+            toast.error(err instanceof ApiError ? err.message : 'Chat failed');
+        } finally {
+            setSending(false);
+        }
     };
 
     return (
         <>
-            {/* Chat Button */}
+            {/* Trigger — brand accent gradient + breathing online dot */}
             <motion.button
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setIsOpen(!isOpen)}
-                className="fixed bottom-6 left-6 z-40 bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-4 rounded-full shadow-2xl hover:shadow-blue-500/50 transition-all"
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                onClick={() => setIsOpen((v) => !v)}
+                aria-label={isOpen ? 'Close chat' : 'Open chat'}
+                className="fixed bottom-6 right-6 z-40 bg-gradient-to-br from-accent to-accent-700 text-white w-14 h-14 rounded-full shadow-xl shadow-accent/30 flex items-center justify-center"
             >
-                {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white animate-pulse" />
+                <AnimatePresence mode="wait" initial={false}>
+                    {isOpen ? (
+                        <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+                            <X className="w-5 h-5" />
+                        </motion.span>
+                    ) : (
+                        <motion.span key="msg" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
+                            <MessageCircle className="w-5 h-5" />
+                        </motion.span>
+                    )}
+                </AnimatePresence>
+                <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white animate-pulse" />
             </motion.button>
 
-            {/* Chat Window */}
+            {/* Chat panel */}
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                        initial={{ opacity: 0, y: 16, scale: 0.97 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                        className="fixed bottom-24 left-6 w-80 md:w-96 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl z-40 overflow-hidden"
+                        exit={{ opacity: 0, y: 16, scale: 0.97 }}
+                        transition={{ type: 'spring', stiffness: 280, damping: 24 }}
+                        className="fixed bottom-24 left-6 right-6 sm:left-auto sm:w-[380px] z-40 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-700 rounded-2xl shadow-2xl shadow-black/15 dark:shadow-black/50 overflow-hidden flex flex-col max-h-[70vh]"
                     >
                         {/* Header */}
-                        <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-4 text-white">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                                        <MessageCircle className="w-5 h-5" />
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold">Live Support</h3>
-                                        <p className="text-xs text-white/80">Online now</p>
-                                    </div>
+                        <div className="bg-gradient-to-br from-accent-900 via-accent-800 to-accent-950 text-white p-5 relative overflow-hidden">
+                            <div className="absolute -top-12 -right-12 w-32 h-32 bg-accent/40 rounded-full blur-2xl" />
+                            <div className="relative flex items-center gap-3">
+                                <div className="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center">
+                                    <Headphones className="w-5 h-5" />
                                 </div>
-                                <button
-                                    onClick={() => setIsOpen(false)}
-                                    className="hover:bg-white/20 p-1 rounded-full transition-colors"
-                                >
-                                    <X className="w-5 h-5" />
-                                </button>
+                                <div className="min-w-0">
+                                    <h3 className="font-black tracking-tight text-base">Live Support</h3>
+                                    <p className="text-[11px] text-white/70 flex items-center gap-1.5">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                        Online — replies within 24h
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
                         {/* Messages */}
-                        <div className="h-80 overflow-y-auto p-4 space-y-3">
-                            {messages.map((message) => (
-                                <div
-                                    key={message.id}
-                                    className={`flex ${message.isBot ? 'justify-start' : 'justify-end'}`}
+                        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/60 dark:bg-slate-900/40">
+                            {messages.map((m) => (
+                                <motion.div
+                                    key={m.id}
+                                    initial={{ opacity: 0, y: 6 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className={`flex ${m.from === 'bot' ? 'justify-start' : 'justify-end'}`}
                                 >
                                     <div
-                                        className={`max-w-[80%] rounded-2xl px-4 py-2 ${message.isBot
-                                            ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
-                                            : 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white'
+                                        className={`max-w-[82%] px-4 py-2.5 text-sm leading-relaxed ${m.from === 'bot'
+                                            ? 'bg-white dark:bg-slate-800 text-primary dark:text-white rounded-2xl rounded-bl-md border border-primary/5 dark:border-slate-700'
+                                            : 'bg-primary dark:bg-accent text-white rounded-2xl rounded-br-md'
                                             }`}
                                     >
-                                        <p className="text-sm">{message.text}</p>
-                                        <p
-                                            className={`text-xs mt-1 ${message.isBot
-                                                ? 'text-gray-500 dark:text-gray-400'
-                                                : 'text-white/70'
-                                                }`}
-                                        >
-                                            {message.time}
-                                        </p>
+                                        {m.text}
+                                    </div>
+                                </motion.div>
+                            ))}
+                            {sending && (
+                                <div className="flex justify-start">
+                                    <div className="px-4 py-2.5 rounded-2xl rounded-bl-md bg-white dark:bg-slate-800 border border-primary/5 dark:border-slate-700 flex items-center gap-1.5">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0ms' }} />
+                                        <span className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '150ms' }} />
+                                        <span className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '300ms' }} />
                                     </div>
                                 </div>
-                            ))}
+                            )}
                         </div>
 
-                        {/* Quick Replies */}
-                        <div className="px-4 pb-2">
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Quick replies:</p>
-                            <div className="flex flex-wrap gap-2">
-                                {quickReplies.map((reply) => (
+                        {/* Quick replies — only when we have email (otherwise it'd send before capture) */}
+                        {email && (
+                            <div className="px-4 py-3 border-t border-primary/5 dark:border-slate-800 flex flex-wrap gap-1.5">
+                                {quickReplies.map((q) => (
                                     <button
-                                        key={reply}
-                                        onClick={() => handleQuickReply(reply)}
-                                        className="text-xs px-3 py-1 bg-gray-100 dark:bg-gray-700 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-full transition-colors"
+                                        key={q}
+                                        onClick={() => setInput(q)}
+                                        disabled={sending}
+                                        className="text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border border-primary/10 dark:border-slate-700 text-secondary dark:text-gray-400 hover:border-accent hover:text-accent disabled:opacity-50 transition-colors"
                                     >
-                                        {reply}
+                                        {q}
                                     </button>
                                 ))}
                             </div>
-                        </div>
+                        )}
 
                         {/* Input */}
-                        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-                            <div className="flex gap-2">
-                                <input
-                                    type="text"
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                                    placeholder="Type your message..."
-                                    className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                                />
-                                <button
-                                    onClick={handleSend}
-                                    className="p-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full hover:from-blue-700 hover:to-cyan-700 transition-all"
-                                >
-                                    <Send className="w-5 h-5" />
-                                </button>
-                            </div>
-                        </div>
+                        <form onSubmit={handleSubmit} className="p-3 border-t border-primary/5 dark:border-slate-800 flex gap-2 bg-white dark:bg-slate-900">
+                            <input
+                                type={email ? 'text' : 'email'}
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                placeholder={email ? 'Type a message…' : 'Your email first…'}
+                                disabled={sending}
+                                className="flex-1 px-4 py-2.5 text-sm bg-gray-50 dark:bg-slate-800 rounded-full focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white placeholder:text-gray-400 disabled:opacity-60"
+                            />
+                            <button
+                                type="submit"
+                                disabled={sending || !input.trim()}
+                                aria-label="Send"
+                                className="w-10 h-10 rounded-full bg-primary dark:bg-accent text-white flex items-center justify-center hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity flex-shrink-0"
+                            >
+                                <Send className="w-4 h-4" />
+                            </button>
+                        </form>
                     </motion.div>
                 )}
             </AnimatePresence>

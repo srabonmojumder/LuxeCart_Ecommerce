@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-interface Slide {
+export interface Slide {
     id: number;
     title: string;
     subtitle: string;
@@ -21,7 +21,7 @@ interface Slide {
     bgColor: string;
 }
 
-const slides: Slide[] = [
+const fallbackSlides: Slide[] = [
     {
         id: 1,
         title: "Don't Miss The Opportunity",
@@ -34,7 +34,7 @@ const slides: Slide[] = [
         badge: 'Hot Deal',
         cta: 'Shop Now',
         link: '/products?category=electronics',
-        bgColor: 'from-slate-900 via-slate-800 to-slate-900',
+        bgColor: 'from-accent-900 via-accent-800 to-accent-950',
     },
     {
         id: 2,
@@ -48,7 +48,7 @@ const slides: Slide[] = [
         badge: 'New Arrival',
         cta: 'Explore Collection',
         link: '/products?category=fashion',
-        bgColor: 'from-teal-900 via-teal-800 to-emerald-900',
+        bgColor: 'from-slate-950 via-accent-900 to-slate-950',
     },
     {
         id: 3,
@@ -62,11 +62,20 @@ const slides: Slide[] = [
         badge: 'Limited Time',
         cta: 'View Deals',
         link: '/products?category=home',
-        bgColor: 'from-amber-900 via-orange-800 to-rose-900',
+        bgColor: 'from-accent-950 via-accent-800 to-accent-900',
     },
 ];
 
-export default function HeroCarousel() {
+interface HeroCarouselProps {
+    /** Pass dynamic banners (mapped to Slide). If empty/undefined, demo slides show. */
+    slides?: Slide[];
+}
+
+export default function HeroCarousel({ slides: slidesProp }: HeroCarouselProps = {}) {
+    const slides = useMemo(
+        () => (slidesProp && slidesProp.length > 0 ? slidesProp : fallbackSlides),
+        [slidesProp]
+    );
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isAutoPlaying, setIsAutoPlaying] = useState(true);
     const [direction, setDirection] = useState(0);
@@ -74,12 +83,12 @@ export default function HeroCarousel() {
     const nextSlide = useCallback(() => {
         setDirection(1);
         setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, []);
+    }, [slides.length]);
 
     const prevSlide = useCallback(() => {
         setDirection(-1);
         setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-    }, []);
+    }, [slides.length]);
 
     const goToSlide = (index: number) => {
         setDirection(index > currentSlide ? 1 : -1);
@@ -114,7 +123,7 @@ export default function HeroCarousel() {
     const slide = slides[currentSlide];
 
     return (
-        <section className="relative h-[500px] sm:h-[550px] md:h-[600px] lg:h-[650px] overflow-hidden">
+        <section className="relative h-[500px] sm:h-[550px] md:h-[600px] lg:h-[650px] overflow-hidden rounded-[2rem] md:rounded-[3rem] shadow-xl shadow-accent/10">
             {/* Background */}
             <AnimatePresence initial={false} custom={direction}>
                 <motion.div
@@ -128,10 +137,10 @@ export default function HeroCarousel() {
                         x: { type: 'spring', stiffness: 300, damping: 30 },
                         opacity: { duration: 0.2 },
                     }}
-                    className={`absolute inset-0 bg-gradient-to-r ${slide.bgColor}`}
+                    className={`absolute inset-0 bg-gradient-to-br ${slide.bgColor}`}
                 >
-                    {/* Background Image Overlay */}
-                    <div className="absolute inset-0 opacity-20">
+                    {/* Background Image Overlay (subtle) */}
+                    <div className="absolute inset-0 opacity-15">
                         <Image
                             src={slide.image}
                             alt=""
@@ -141,8 +150,15 @@ export default function HeroCarousel() {
                         />
                     </div>
 
-                    {/* Grid Pattern */}
-                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+                    {/* Decorative glow orbs */}
+                    <div className="absolute -top-32 -left-20 w-96 h-96 bg-accent/40 rounded-full blur-[120px]" />
+                    <div className="absolute -bottom-32 -right-20 w-96 h-96 bg-accent/25 rounded-full blur-[120px]" />
+
+                    {/* Subtle dot pattern */}
+                    <div
+                        className="absolute inset-0 opacity-[0.06]"
+                        style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '24px 24px' }}
+                    />
                 </motion.div>
             </AnimatePresence>
 
@@ -159,34 +175,35 @@ export default function HeroCarousel() {
                             transition={{ duration: 0.3 }}
                             className="text-center lg:text-left z-10"
                         >
-                            {/* Badge */}
+                            {/* Badge — refined glass pill */}
                             {slide.badge && (
                                 <motion.span
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: 0.1 }}
-                                    className="inline-block px-4 py-1.5 bg-orange-500 text-white text-xs font-bold rounded-full mb-4"
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 backdrop-blur-sm border border-white/20 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full mb-5"
                                 >
+                                    <span className="w-1.5 h-1.5 rounded-full bg-accent-300 animate-pulse" />
                                     {slide.badge}
                                 </motion.span>
                             )}
 
-                            {/* Subtitle */}
+                            {/* Subtitle (brand accent) */}
                             <motion.p
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.15 }}
-                                className="text-teal-400 font-medium text-sm sm:text-base mb-2"
+                                className="text-accent-300 font-black tracking-[0.3em] uppercase text-[10px] sm:text-xs mb-3"
                             >
                                 {slide.subtitle}
                             </motion.p>
 
-                            {/* Title */}
+                            {/* Title — premium editorial */}
                             <motion.h1
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.2 }}
-                                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight"
+                                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter text-white mb-5 leading-[1.05]"
                             >
                                 {slide.title}
                             </motion.h1>
@@ -196,30 +213,30 @@ export default function HeroCarousel() {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.25 }}
-                                className="text-slate-300 text-sm sm:text-base md:text-lg max-w-lg mx-auto lg:mx-0 mb-6"
+                                className="text-white/70 text-sm sm:text-base md:text-lg max-w-lg mx-auto lg:mx-0 mb-7 leading-relaxed"
                             >
                                 {slide.description}
                             </motion.p>
 
-                            {/* Price */}
+                            {/* Price block */}
                             <motion.div
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3 }}
-                                className="flex items-center gap-4 justify-center lg:justify-start mb-6"
+                                className="flex items-end gap-4 justify-center lg:justify-start mb-7"
                             >
-                                <span className="text-3xl sm:text-4xl font-bold text-white">
+                                <span className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-white tabular-nums leading-none">
                                     ${slide.salePrice.toFixed(2)}
                                 </span>
-                                <span className="text-lg sm:text-xl text-slate-400 line-through">
+                                <span className="text-lg sm:text-xl text-white/40 line-through font-bold tabular-nums">
                                     ${slide.originalPrice.toFixed(2)}
                                 </span>
-                                <span className="px-2 py-1 bg-red-500 text-white text-xs font-bold rounded">
-                                    -{slide.discount}%
+                                <span className="px-2.5 py-1 bg-hot text-white text-[10px] font-black uppercase tracking-widest rounded-md">
+                                    −{slide.discount}%
                                 </span>
                             </motion.div>
 
-                            {/* CTA Button */}
+                            {/* CTA — white pill on dark bg = premium */}
                             <motion.div
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -229,9 +246,9 @@ export default function HeroCarousel() {
                                     <motion.button
                                         whileHover={{ scale: 1.02, y: -2 }}
                                         whileTap={{ scale: 0.98 }}
-                                        className="inline-flex items-center gap-2 px-8 py-4 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-teal-500/30 transition-all"
+                                        className="inline-flex items-center gap-3 px-8 py-4 bg-white text-primary hover:bg-accent hover:text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-2xl transition-colors"
                                     >
-                                        <ShoppingBag className="w-5 h-5" />
+                                        <ShoppingBag className="w-4 h-4" />
                                         {slide.cta}
                                     </motion.button>
                                 </Link>
@@ -250,13 +267,13 @@ export default function HeroCarousel() {
                             className="hidden lg:block relative z-10"
                         >
                             <div className="relative w-full aspect-square max-w-lg mx-auto">
-                                {/* Glow Effect */}
-                                <div className="absolute inset-0 bg-teal-500/20 rounded-full blur-3xl" />
+                                {/* Accent glow */}
+                                <div className="absolute inset-0 bg-accent/30 rounded-full blur-3xl" />
 
-                                {/* Main Image */}
+                                {/* Main Image — float */}
                                 <motion.div
-                                    animate={{ y: [0, -10, 0] }}
-                                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                                    animate={{ y: [0, -12, 0] }}
+                                    transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
                                     className="relative w-full h-full"
                                 >
                                     <Image
@@ -268,16 +285,15 @@ export default function HeroCarousel() {
                                     />
                                 </motion.div>
 
-                                {/* Discount Badge */}
+                                {/* Discount Stamp — clean, no gaudy rotation */}
                                 <motion.div
-                                    animate={{ rotate: [0, 5, -5, 0] }}
-                                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                                    className="absolute top-4 right-4 w-20 h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center shadow-lg"
+                                    initial={{ scale: 0, rotate: -12 }}
+                                    animate={{ scale: 1, rotate: -8 }}
+                                    transition={{ type: 'spring', stiffness: 280, damping: 18 }}
+                                    className="absolute top-4 right-4 w-20 h-20 bg-white text-primary rounded-2xl flex flex-col items-center justify-center shadow-2xl ring-1 ring-black/5"
                                 >
-                                    <div className="text-center">
-                                        <span className="text-xl font-bold text-white">{slide.discount}%</span>
-                                        <span className="block text-[10px] text-white/90">OFF</span>
-                                    </div>
+                                    <span className="text-2xl font-black tracking-tighter leading-none">{slide.discount}%</span>
+                                    <span className="text-[9px] font-black tracking-[0.2em] text-accent mt-0.5">OFF</span>
                                 </motion.div>
                             </div>
                         </motion.div>
@@ -309,30 +325,30 @@ export default function HeroCarousel() {
                 <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-white group-hover:translate-x-0.5 transition-transform" />
             </button>
 
-            {/* Dot Navigation */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+            {/* Dot Navigation — accent active */}
+            <div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
                 {slides.map((_, index) => (
                     <button
                         key={index}
                         onClick={() => goToSlide(index)}
                         className={`transition-all duration-300 rounded-full ${
                             currentSlide === index
-                                ? 'w-8 h-2 bg-teal-500'
-                                : 'w-2 h-2 bg-white/50 hover:bg-white/70'
+                                ? 'w-8 h-2 bg-accent-300'
+                                : 'w-2 h-2 bg-white/40 hover:bg-white/60'
                         }`}
                         aria-label={`Go to slide ${index + 1}`}
                     />
                 ))}
             </div>
 
-            {/* Progress Bar */}
+            {/* Progress Bar — accent gradient */}
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10">
                 <motion.div
                     key={currentSlide}
                     initial={{ width: '0%' }}
                     animate={{ width: '100%' }}
                     transition={{ duration: 6, ease: 'linear' }}
-                    className="h-full bg-gradient-to-r from-teal-500 to-emerald-500"
+                    className="h-full bg-gradient-to-r from-accent-300 via-accent to-accent-300"
                 />
             </div>
         </section>

@@ -9,6 +9,7 @@ import { useStore } from '@/store/useStore';
 import { useCompareStore } from '@/store/useCompareStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import QuickViewModal from '@/components/product/QuickViewModal';
 
 interface ProductCardProps {
     product: Product;
@@ -20,6 +21,16 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
     const [isHovered, setIsHovered] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
     const [hasMounted, setHasMounted] = useState(false);
+    const [quickViewOpen, setQuickViewOpen] = useState(false);
+
+    const handleQuickView = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // Parent-controlled override stays supported (e.g. FlashSaleSection),
+        // but in the common case we manage the modal locally.
+        if (onQuickView) onQuickView(product);
+        else setQuickViewOpen(true);
+    };
 
     const addToCart = useStore((state) => state.addToCart);
     const addToWishlist = useStore((state) => state.addToWishlist);
@@ -111,7 +122,15 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                     {/* Secondary Actions (Desktop) */}
                     <div className="absolute top-3 right-3 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 hidden md:flex flex-col gap-2">
                         <button
+                            onClick={handleQuickView}
+                            aria-label="Quick view"
+                            className="w-9 h-9 rounded-full flex items-center justify-center shadow-lg transition-colors bg-white dark:bg-slate-800 text-primary dark:text-white hover:bg-accent hover:text-white"
+                        >
+                            <Eye className="w-4 h-4" />
+                        </button>
+                        <button
                             onClick={handleToggleWishlist}
+                            aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
                             className={`w-9 h-9 rounded-full flex items-center justify-center shadow-lg transition-colors ${inWishlist ? 'bg-accent text-white' : 'bg-white dark:bg-slate-800 text-primary dark:text-white hover:bg-accent hover:text-white'}`}
                         >
                             <Heart className={`w-4 h-4 ${inWishlist ? 'fill-current' : ''}`} />
@@ -141,6 +160,11 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                     </div>
                 </div>
             </Link>
+
+            {/* Local quick-view modal (parent override via `onQuickView` skips this) */}
+            {!onQuickView && (
+                <QuickViewModal product={product} isOpen={quickViewOpen} onClose={() => setQuickViewOpen(false)} />
+            )}
         </motion.div>
     );
 }

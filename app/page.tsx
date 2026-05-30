@@ -21,7 +21,9 @@ import {
 import { toast } from 'sonner';
 import ProductCard from '@/components/product/ProductCard';
 import ProductGridSkeleton from '@/components/product/ProductGridSkeleton';
+import RecentlyViewedSection from '@/components/product/RecentlyViewedSection';
 import AnimatedCounter from '@/components/ui/AnimatedCounter';
+import HeroCarousel from '@/components/ui/HeroCarousel';
 import FlashSaleSection from '@/components/sections/FlashSaleSection';
 import {
     useProducts,
@@ -236,6 +238,11 @@ export default function Home() {
                         </div>
                     </div>
                 </div>
+            </section>
+
+            {/* Deals Carousel — rotating curated slides for visual variety */}
+            <section className="mt-12 mx-4 md:mx-8">
+                <HeroCarousel />
             </section>
 
             {/* Category Navigation (dynamic) */}
@@ -523,6 +530,9 @@ export default function Home() {
                     </div>
                 </section>
             )}
+
+            {/* Recently Viewed — only renders if user has browsed products */}
+            <RecentlyViewedSection />
 
             {/* Newsletter */}
             <section className="py-24 md:py-40">

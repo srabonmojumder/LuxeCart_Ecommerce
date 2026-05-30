@@ -4,35 +4,43 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Bell, CheckCircle, Mail } from 'lucide-react';
 import { toast } from 'sonner';
+import { api, ApiError } from '@/lib/api';
 
 interface NotifyModalProps {
     isOpen: boolean;
     onClose: () => void;
     productName: string;
     productImage?: string;
+    /** Required to POST the notify request to the backend. */
+    productSlug?: string;
 }
 
-export default function BackInStockModal({ isOpen, onClose, productName, productImage }: NotifyModalProps) {
+export default function BackInStockModal({ isOpen, onClose, productName, productImage, productSlug }: NotifyModalProps) {
     const [email, setEmail] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!productSlug) {
+            toast.error('Product reference missing');
+            return;
+        }
         setIsLoading(true);
-
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        setIsLoading(false);
-        setIsSubmitted(true);
-        toast.success('You will be notified when this item is back in stock!');
-
-        setTimeout(() => {
-            onClose();
-            setIsSubmitted(false);
-            setEmail('');
-        }, 2000);
+        try {
+            await api.post('/notify-back-in-stock', { productSlug, email });
+            setIsSubmitted(true);
+            toast.success("You'll be notified when this item is back in stock!");
+            setTimeout(() => {
+                onClose();
+                setIsSubmitted(false);
+                setEmail('');
+            }, 2000);
+        } catch (err) {
+            toast.error(err instanceof ApiError ? err.message : 'Could not subscribe — try again.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

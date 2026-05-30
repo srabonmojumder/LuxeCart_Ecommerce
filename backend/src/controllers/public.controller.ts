@@ -1,6 +1,10 @@
 import type { Request, Response } from 'express';
+import { z } from 'zod';
 import { prisma } from '../lib/prisma.js';
-import { asyncHandler } from '../middleware/error.js';
+import { asyncHandler, HttpError } from '../middleware/error.js';
+import { env } from '../lib/env.js';
+import { getSettings } from '../lib/settings.js';
+import { sendEmail, emailConfigured } from '../lib/mailer.js';
 
 /** GET /api/stats — public storefront stats for the homepage counters. */
 export const getPublicStats = asyncHandler(async (_req: Request, res: Response) => {
@@ -20,6 +24,117 @@ export const getPublicStats = asyncHandler(async (_req: Request, res: Response) 
       reviewCount: ratingAgg._count,
     },
   });
+});
+
+const notifyBackInStockSchema = z.object({
+  productSlug: z.string().min(1),
+  email: z.string().trim().toLowerCase().email(),
+});
+
+const escape = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/**
+ * POST /api/notify-back-in-stock — record a customer's interest in being
+ * pinged when a product comes back in stock. v1 just emails the support
+ * inbox; a future iteration can persist these for batch send when stock
+ * is replenished.
+ */
+export const notifyBackInStock = asyncHandler(async (req: Request, res: Response) => {
+  const parsed = notifyBackInStockSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, 'Valid email and product required');
+  const { productSlug, email } = parsed.data;
+
+  const product = await prisma.product.findUnique({
+    where: { slug: productSlug },
+    select: { name: true, slug: true, image: true, inStock: true, stock: true },
+  });
+  if (!product) throw new HttpError(404, 'Product not found');
+
+  const settings = await getSettings();
+  const supportEmail = settings?.supportEmail || env.SMTP_USER;
+  if (!supportEmail) throw new HttpError(500, 'Notification destination is not configured');
+
+  await sendEmail({
+    to: supportEmail,
+    subject: `[Back-in-stock request] ${product.name}`,
+    html: `
+      <div style="font-family: Inter, Arial, sans-serif; color: #1f2937; max-width: 540px; margin: 0 auto;">
+        <h2 style="margin: 0 0 8px; color: #685BC7;">Back-in-stock request</h2>
+        <p style="color: #6b7280; font-size: 13px; margin: 0 0 20px;">A customer wants to be notified when this item is back in stock.</p>
+        <table style="width:100%; border-collapse: collapse; font-size: 14px;">
+          <tr><td style="padding:6px 0; color:#6b7280; width:90px;">Customer</td><td><b>${escape(email)}</b></td></tr>
+          <tr><td style="padding:6px 0; color:#6b7280;">Product</td><td><b>${escape(product.name)}</b></td></tr>
+          <tr><td style="padding:6px 0; color:#6b7280;">Slug</td><td>${escape(product.slug)}</td></tr>
+          <tr><td style="padding:6px 0; color:#6b7280;">Current stock</td><td>${product.stock}</td></tr>
+        </table>
+        <p style="margin-top:18px; color:#9ca3af; font-size:12px;">Reply directly to <a href="mailto:${escape(email)}">${escape(email)}</a> when the product is restocked.</p>
+      </div>
+    `,
+    text: `${email} wants to be notified when "${product.name}" (${product.slug}) is back in stock.`,
+  });
+
+  res.status(200).json({ success: true, mock: !emailConfigured });
+});
+
+const chatSchema = z.object({
+  email: z.string().trim().toLowerCase().email(),
+  name: z.string().trim().max(120).optional(),
+  message: z.string().trim().min(1).max(2000),
+  history: z
+    .array(z.object({ from: z.enum(['user', 'bot']), text: z.string().max(2000) }))
+    .max(20)
+    .optional(),
+});
+
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/**
+ * POST /api/chat-message — public; forwards a live-chat message (and the
+ * preceding transcript, if any) to the store's support inbox. Rate-limited
+ * upstream at the route layer.
+ */
+export const chatMessage = asyncHandler(async (req: Request, res: Response) => {
+  const parsed = chatSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, 'Valid email and message required');
+  const { email, name, message, history } = parsed.data;
+
+  const settings = await getSettings();
+  const supportEmail = settings?.supportEmail || env.SMTP_USER;
+  if (!supportEmail) throw new HttpError(500, 'Support inbox is not configured');
+
+  const transcriptHtml =
+    history && history.length > 0
+      ? `<div style="margin-top:18px; padding:12px 16px; background:#f9fafb; border-radius:8px; font-size:13px; color:#6b7280;">
+          <p style="margin:0 0 8px; font-weight:700; color:#1f2937;">Conversation so far</p>
+          ${history
+            .map(
+              (h) =>
+                `<p style="margin:6px 0;"><b style="color:${h.from === 'user' ? '#685BC7' : '#6b7280'};">${h.from === 'user' ? 'Customer' : 'Bot'}:</b> ${escapeHtml(h.text)}</p>`
+            )
+            .join('')}
+        </div>`
+      : '';
+
+  await sendEmail({
+    to: supportEmail,
+    subject: `[Live Chat] ${email}${name ? ` (${name})` : ''}`,
+    html: `
+      <div style="font-family: Inter, Arial, sans-serif; color: #1f2937; max-width: 560px; margin: 0 auto;">
+        <h2 style="margin: 0 0 8px; color: #685BC7;">New chat message</h2>
+        <p style="margin: 0 0 20px; color: #6b7280; font-size: 13px;">Sent from the LuxeCart live-chat widget</p>
+        <table style="width:100%; border-collapse:collapse; font-size:14px;">
+          <tr><td style="padding:8px 0; color:#6b7280; width:90px;">From</td><td><b>${name ? `${escapeHtml(name)} ` : ''}&lt;${escapeHtml(email)}&gt;</b></td></tr>
+        </table>
+        <div style="margin-top:20px; padding:16px 20px; background:#f9fafb; border-left:3px solid #685BC7; border-radius:4px; white-space:pre-wrap; line-height:1.6;">${escapeHtml(message)}</div>
+        ${transcriptHtml}
+        <p style="margin-top:24px; color:#9ca3af; font-size:12px;">Reply directly to <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>.</p>
+      </div>
+    `,
+    text: `New chat from ${name ? `${name} <${email}>` : email}\n\n${message}`,
+  });
+
+  res.status(200).json({ success: true, mock: !emailConfigured });
 });
 
 /** GET /api/testimonials?limit=8 — recent positive reviews across products. */
