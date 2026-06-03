@@ -99,8 +99,8 @@ export default function AdminProductsPage() {
     return (
         <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
-                <h1 className="text-3xl md:text-4xl font-black text-primary dark:text-white tracking-tighter">Products</h1>
-                <button onClick={openNew} className="flex items-center gap-2 bg-primary dark:bg-accent text-white px-4 py-2.5 rounded-xl font-bold text-sm">
+                <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tighter">Products</h1>
+                <button onClick={openNew} className="flex items-center gap-2 bg-[#46AEE8] text-white px-4 py-2.5 rounded-xl font-bold text-sm">
                     <Plus className="w-4 h-4" /> New Product
                 </button>
             </div>
@@ -109,12 +109,12 @@ export default function AdminProductsPage() {
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                 placeholder="Search products…"
-                className="w-full md:max-w-sm px-4 py-2.5 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
+                className="w-full md:max-w-sm px-4 py-2.5 bg-white border border-primary/10 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-[#46AEE8] text-gray-900"
             />
 
             {selected.size > 0 && (
-                <div className="flex flex-wrap items-center gap-2 p-3 rounded-2xl bg-accent/5 border border-accent/20">
-                    <span className="text-sm font-bold text-primary dark:text-white mr-2">{selected.size} selected</span>
+                <div className="flex flex-wrap items-center gap-2 p-3 rounded-2xl bg-[#46AEE8]/5 border border-[#46AEE8]/20">
+                    <span className="text-sm font-bold text-primary mr-2">{selected.size} selected</span>
                     {([
                         ['activate', 'Activate'],
                         ['deactivate', 'Deactivate'],
@@ -126,23 +126,23 @@ export default function AdminProductsPage() {
                             key={action}
                             onClick={() => bulk(action)}
                             disabled={bulkBusy}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest disabled:opacity-60 ${action === 'delete' ? 'bg-hot/10 text-hot' : 'bg-primary text-white dark:bg-slate-800'}`}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest disabled:opacity-60 ${action === 'delete' ? 'bg-hot/10 text-hot' : 'bg-[#46AEE8] text-white'}`}
                         >
                             {label}
                         </button>
                     ))}
-                    <button onClick={() => setSelected(new Set())} className="px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest text-secondary dark:text-gray-400">Clear</button>
+                    <button onClick={() => setSelected(new Set())} className="px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest text-secondary">Clear</button>
                 </div>
             )}
 
             {isLoading ? <TableSkeleton rows={8} cols={7} /> : (
                 <>
-                <div className="overflow-x-auto rounded-2xl border border-primary/5 dark:border-slate-800 bg-white dark:bg-slate-900">
+                <div className="overflow-x-auto rounded-2xl border border-primary/5 bg-white">
                     <table className="w-full text-sm">
-                        <thead className="bg-primary/5 dark:bg-slate-800/50 text-left">
+                        <thead className="bg-primary/5 text-left">
                             <tr className="text-[10px] uppercase tracking-wider text-gray-400">
                                 <th className="p-4 w-10">
-                                    <button onClick={toggleAll} className="text-primary dark:text-white align-middle" aria-label="Select all">
+                                    <button onClick={toggleAll} className="text-primary align-middle" aria-label="Select all">
                                         {allShownSelected ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
                                     </button>
                                 </th>
@@ -154,22 +154,22 @@ export default function AdminProductsPage() {
                                 <th className="p-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-primary/5 dark:divide-slate-800">
+                        <tbody className="divide-y divide-primary/5">
                             {pageItems.map((p) => (
-                                <tr key={p.id} className={`text-primary dark:text-white ${selected.has(p.id) ? 'bg-accent/5' : ''}`}>
+                                <tr key={p.id} className={`text-primary ${selected.has(p.id) ? 'bg-[#46AEE8]/5' : ''}`}>
                                     <td className="p-4">
                                         <button onClick={() => toggle(p.id)} className="align-middle" aria-label="Select row">
-                                            {selected.has(p.id) ? <CheckSquare className="w-4 h-4 text-accent" /> : <Square className="w-4 h-4 text-gray-400" />}
+                                            {selected.has(p.id) ? <CheckSquare className="w-4 h-4 text-[#46AEE8]" /> : <Square className="w-4 h-4 text-gray-400" />}
                                         </button>
                                     </td>
                                     <td className="p-4 font-semibold max-w-[220px] truncate">{p.name}</td>
-                                    <td className="p-4 text-gray-500 dark:text-gray-400">{p.category?.name ?? '—'}</td>
+                                    <td className="p-4 text-gray-500">{p.category?.name ?? '—'}</td>
                                     <td className="p-4">${Number(p.price).toFixed(2)}</td>
                                     <td className="p-4">{p.stock}</td>
                                     <td className="p-4">{p.isActive ? '✓' : '—'}</td>
                                     <td className="p-4">
                                         <div className="flex justify-end gap-2">
-                                            <button onClick={() => openEdit(p)} className="p-2 rounded-lg hover:bg-primary/10 dark:hover:bg-slate-800"><Pencil className="w-4 h-4" /></button>
+                                            <button onClick={() => openEdit(p)} className="p-2 rounded-lg hover:bg-primary/10"><Pencil className="w-4 h-4" /></button>
                                             <button onClick={() => remove(p.id)} className="p-2 rounded-lg hover:bg-hot/10 text-hot"><Trash2 className="w-4 h-4" /></button>
                                         </div>
                                     </td>
@@ -235,14 +235,14 @@ function ProductModal({ state, categories, onClose, onSaved }: {
         }
     };
 
-    const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
+    const field = 'w-full px-4 py-3 bg-gray-50 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-[#46AEE8] text-gray-900';
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={onClose}>
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-white rounded-3xl p-6 md:p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl font-black text-primary dark:text-white uppercase tracking-tight">{isEdit ? 'Edit' : 'New'} Product</h3>
-                    <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full"><X className="w-5 h-5" /></button>
+                    <h3 className="text-xl font-black text-primary uppercase tracking-tight">{isEdit ? 'Edit' : 'New'} Product</h3>
+                    <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full"><X className="w-5 h-5" /></button>
                 </div>
                 <form onSubmit={submit} className="space-y-4">
                     <input className={field} placeholder="Name" required value={form.name} onChange={(e) => set('name', e.target.value)} />
@@ -263,10 +263,10 @@ function ProductModal({ state, categories, onClose, onSaved }: {
                     <ImageUpload value={form.image} onChange={(url) => set('image', url)} />
                     <input className={field} placeholder="Tags (comma separated)" value={form.tags} onChange={(e) => set('tags', e.target.value)} />
                     <label className="flex items-center gap-2.5 cursor-pointer py-1">
-                        <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} className="w-4 h-4 accent-accent" />
-                        <span className="text-sm font-medium text-primary dark:text-white">Featured (show on homepage)</span>
+                        <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} className="w-4 h-4 accent-[#46AEE8]" />
+                        <span className="text-sm font-medium text-primary">Featured (show on homepage)</span>
                     </label>
-                    <button type="submit" disabled={saving} className="w-full bg-primary dark:bg-accent text-white py-3.5 rounded-xl font-bold uppercase tracking-wider text-sm disabled:opacity-60">
+                    <button type="submit" disabled={saving} className="w-full bg-[#46AEE8] text-white py-3.5 rounded-xl font-bold uppercase tracking-wider text-sm disabled:opacity-60">
                         {saving ? 'Saving…' : isEdit ? 'Update Product' : 'Create Product'}
                     </button>
                 </form>

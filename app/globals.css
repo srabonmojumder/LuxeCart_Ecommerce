@@ -850,3 +850,24 @@ a:focus-visible {
     color: black;
   }
 }
+/* Hide scrollbars (used by the admin sidebar rail and mobile menus). */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide every scrollbar inside the admin dashboard (content stays scrollable). */
+.admin-scope,
+.admin-scope * {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.admin-scope::-webkit-scrollbar,
+.admin-scope *::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}

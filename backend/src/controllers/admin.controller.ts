@@ -347,6 +347,122 @@ export const adminAnalytics = asyncHandler(async (req: Request, res: Response) =
   });
 });
 
+/**
+ * GET /api/admin/dashboard — single payload powering the redesigned dashboard.
+ * Every figure is computed from live DB data (no static placeholders):
+ *  - stat tiles, sales-goal gauge, revenue-by-month chart, growth %, customer count,
+ *    orders-by-hour heatmap, review-rating distribution, and a recent-orders table.
+ */
+export const adminDashboard = asyncHandler(async (_req: Request, res: Response) => {
+  const now = new Date();
+  const Y = now.getUTCFullYear();
+  const Mo = now.getUTCMonth();
+  const startOfThisMonth = new Date(Date.UTC(Y, Mo, 1));
+  const startOfPrevMonth = new Date(Date.UTC(Y, Mo - 1, 1));
+  const since12 = new Date(Date.UTC(Y, Mo - 11, 1));
+  const since30 = new Date(now.getTime() - 30 * 864e5);
+  const since60 = new Date(now.getTime() - 60 * 864e5);
+
+  const [
+    availableProducts, pendingOrders, totalOrders, totalCustomers,
+    revenueAgg, reviewAgg,
+    monthlyRaw, heatRaw, ratingRaw,
+    newThisMonth, newPrevMonth, last30Agg, prev30Agg, recent,
+  ] = await Promise.all([
+    prisma.product.count({ where: { isActive: true } }),
+    prisma.order.count({ where: { status: 'PENDING' } }),
+    prisma.order.count(),
+    prisma.user.count(),
+    prisma.order.aggregate({ _sum: { total: true }, where: { status: { in: [...REVENUE_STATUSES] } } }),
+    prisma.review.aggregate({ _avg: { rating: true }, _count: true }),
+    prisma.$queryRaw<{ ym: string; rev: string | null; cnt: bigint }[]>`
+      SELECT DATE_FORMAT(createdAt, '%Y-%m') AS ym, SUM(total) AS rev, COUNT(*) AS cnt
+      FROM \`Order\`
+      WHERE status IN ('PAID','PROCESSING','SHIPPED','DELIVERED') AND createdAt >= ${since12}
+      GROUP BY ym ORDER BY ym`,
+    prisma.$queryRaw<{ wd: number; hr: number; c: bigint }[]>`
+      SELECT (DAYOFWEEK(createdAt) - 1) AS wd, HOUR(createdAt) AS hr, COUNT(*) AS c
+      FROM \`Order\` GROUP BY wd, hr`,
+    prisma.$queryRaw<{ rating: number; c: bigint }[]>`
+      SELECT rating, COUNT(*) AS c FROM \`Review\` GROUP BY rating`,
+    prisma.user.count({ where: { createdAt: { gte: startOfThisMonth } } }),
+    prisma.user.count({ where: { createdAt: { gte: startOfPrevMonth, lt: startOfThisMonth } } }),
+    prisma.order.aggregate({ _sum: { total: true }, where: { status: { in: [...REVENUE_STATUSES] }, createdAt: { gte: since30 } } }),
+    prisma.order.aggregate({ _sum: { total: true }, where: { status: { in: [...REVENUE_STATUSES] }, createdAt: { gte: since60, lt: since30 } } }),
+    prisma.order.findMany({
+      take: 6, orderBy: { createdAt: 'desc' },
+      select: {
+        id: true, total: true, status: true, createdAt: true, email: true, shippingAddress: true,
+        user: { select: { displayName: true, email: true } },
+      },
+    }),
+  ]);
+
+  // --- monthly revenue (last 7 months, gap-filled) ---
+  const monthMap = new Map<string, number>();
+  for (const r of monthlyRaw) monthMap.set(r.ym, Number(r.rev ?? 0));
+  const monthly: { ym: string; month: string; revenue: number }[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(Date.UTC(Y, Mo - i, 1));
+    const ym = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+    monthly.push({ ym, month: d.toLocaleDateString('en-US', { month: 'short' }), revenue: monthMap.get(ym) ?? 0 });
+  }
+  // Sales goal = your best calendar month in the trailing year; the gauge shows
+  // how close the last 30 days are to beating that record.
+  const last30Revenue = Number(last30Agg._sum.total ?? 0);
+  const prev30Revenue = Number(prev30Agg._sum.total ?? 0);
+  const bestMonthRevenue = Math.max(0, ...[...monthMap.values()], 0);
+  const salesGoal = bestMonthRevenue || last30Revenue || 1;
+  const salesGoalPct = Math.min(100, Math.round((last30Revenue / salesGoal) * 100));
+  const growthRatePct = prev30Revenue > 0
+    ? Math.round(((last30Revenue - prev30Revenue) / prev30Revenue) * 100)
+    : (last30Revenue > 0 ? 100 : 0);
+  const customerVolumeChangePct = newPrevMonth > 0
+    ? Math.round(((newThisMonth - newPrevMonth) / newPrevMonth) * 100)
+    : (newThisMonth > 0 ? 100 : 0);
+
+  // --- orders-by-hour heatmap ---
+  const heatmap = heatRaw.map((h) => ({ day: Number(h.wd), hour: Number(h.hr), count: Number(h.c) }));
+  const heatmapMax = heatmap.reduce((m, c) => Math.max(m, c.count), 0);
+
+  // --- review rating distribution ---
+  const ratingMap = new Map<number, number>();
+  for (const r of ratingRaw) ratingMap.set(Number(r.rating), Number(r.c));
+  const distribution = [5, 4, 3, 2, 1].map((stars) => ({ stars, count: ratingMap.get(stars) ?? 0 }));
+
+  // --- recent orders / shipping list ---
+  const recentOrders = recent.map((o) => {
+    const addr = (o.shippingAddress ?? {}) as Record<string, unknown>;
+    return {
+      id: o.id,
+      customer: o.user?.displayName || o.user?.email || o.email || 'Guest',
+      country: typeof addr.country === 'string' ? addr.country : '—',
+      total: Number(o.total),
+      status: o.status,
+      createdAt: o.createdAt,
+    };
+  });
+
+  res.json({
+    data: {
+      availableProducts,
+      pendingOrders,
+      numberOfSales: totalOrders,
+      totalSales: Number(revenueAgg._sum.total ?? 0),
+      salesGoal,
+      salesGoalPct,
+      growthRatePct,
+      customerVolumeChangePct,
+      totalCustomers,
+      monthly,
+      heatmap,
+      heatmapMax,
+      reviews: { avg: reviewAgg._avg.rating ?? 0, total: reviewAgg._count, distribution },
+      recentOrders,
+    },
+  });
+});
+
 /** POST /api/admin/maintenance/run — manually trigger abandoned-cart + low-stock jobs. */
 export const adminRunMaintenance = asyncHandler(async (_req: Request, res: Response) => {
   const summary = await runMaintenance();

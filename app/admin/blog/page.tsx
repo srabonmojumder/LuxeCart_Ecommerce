@@ -12,7 +12,7 @@ import { usePagination } from '@/lib/usePagination';
 import Pagination from '@/components/ui/Pagination';
 import { TableSkeleton } from '@/components/ui/Skeleton';
 
-const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
+const field = 'w-full px-4 py-3 bg-gray-50 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-[#46AEE8] text-gray-900';
 const label = 'text-[10px] font-black uppercase tracking-widest text-gray-400';
 
 interface PostFormState {
@@ -79,8 +79,8 @@ export default function AdminBlogPage() {
     return (
         <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
-                <h1 className="text-3xl md:text-4xl font-black text-primary dark:text-white tracking-tighter">Blog Posts</h1>
-                <button onClick={openNew} className="flex items-center gap-2 bg-primary dark:bg-accent text-white px-4 py-2.5 rounded-xl font-bold text-sm">
+                <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tighter">Blog Posts</h1>
+                <button onClick={openNew} className="flex items-center gap-2 bg-[#46AEE8] text-white px-4 py-2.5 rounded-xl font-bold text-sm">
                     <Plus className="w-4 h-4" /> New Post
                 </button>
             </div>
@@ -89,16 +89,16 @@ export default function AdminBlogPage() {
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                 placeholder="Search posts…"
-                className="w-full md:max-w-sm px-4 py-2.5 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
+                className="w-full md:max-w-sm px-4 py-2.5 bg-white border border-primary/10 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-[#46AEE8] text-gray-900"
             />
 
             {isLoading ? <TableSkeleton rows={6} cols={6} /> : filtered.length === 0 ? (
-                <p className="text-secondary dark:text-gray-400">{search ? 'No posts match.' : 'No posts yet — click "New Post" to write your first.'}</p>
+                <p className="text-secondary">{search ? 'No posts match.' : 'No posts yet — click "New Post" to write your first.'}</p>
             ) : (
                 <>
-                    <div className="overflow-x-auto rounded-2xl border border-primary/5 dark:border-slate-800 bg-white dark:bg-slate-900">
+                    <div className="overflow-x-auto rounded-2xl border border-primary/5 bg-white">
                         <table className="w-full text-sm">
-                            <thead className="bg-primary/5 dark:bg-slate-800/50 text-left">
+                            <thead className="bg-primary/5 text-left">
                                 <tr className="text-[10px] uppercase tracking-wider text-gray-400">
                                     <th className="p-4">Title</th>
                                     <th className="p-4">Author</th>
@@ -107,26 +107,26 @@ export default function AdminBlogPage() {
                                     <th className="p-4 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-primary/5 dark:divide-slate-800">
+                            <tbody className="divide-y divide-primary/5">
                                 {pageItems.map((p) => (
-                                    <tr key={p.id} className="text-primary dark:text-white">
+                                    <tr key={p.id} className="text-primary">
                                         <td className="p-4 font-semibold max-w-[320px] truncate">{p.title}</td>
-                                        <td className="p-4 text-gray-500 dark:text-gray-400">{p.author}</td>
-                                        <td className="p-4 text-gray-500 dark:text-gray-400">{formatDate(p.publishedAt)}</td>
+                                        <td className="p-4 text-gray-500">{p.author}</td>
+                                        <td className="p-4 text-gray-500">{formatDate(p.publishedAt)}</td>
                                         <td className="p-4">
                                             <button
                                                 onClick={() => togglePublish(p)}
-                                                className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${p.published ? 'bg-emerald-500/10 text-emerald-600' : 'bg-gray-100 dark:bg-slate-800 text-gray-400'}`}
+                                                className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${p.published ? 'bg-emerald-500/10 text-emerald-600' : 'bg-gray-100 text-gray-400'}`}
                                             >
                                                 {p.published ? 'Live' : 'Draft'}
                                             </button>
                                         </td>
                                         <td className="p-4">
                                             <div className="flex justify-end gap-2">
-                                                <button onClick={() => togglePublish(p)} className="p-2 rounded-lg hover:bg-primary/10 dark:hover:bg-slate-800" title={p.published ? 'Unpublish' : 'Publish'}>
+                                                <button onClick={() => togglePublish(p)} className="p-2 rounded-lg hover:bg-primary/10" title={p.published ? 'Unpublish' : 'Publish'}>
                                                     {p.published ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                                 </button>
-                                                <button onClick={() => openEdit(p)} className="p-2 rounded-lg hover:bg-primary/10 dark:hover:bg-slate-800"><Pencil className="w-4 h-4" /></button>
+                                                <button onClick={() => openEdit(p)} className="p-2 rounded-lg hover:bg-primary/10"><Pencil className="w-4 h-4" /></button>
                                                 <button onClick={() => remove(p.id)} className="p-2 rounded-lg hover:bg-hot/10 text-hot"><Trash2 className="w-4 h-4" /></button>
                                             </div>
                                         </td>
@@ -191,10 +191,10 @@ function PostModal({ state, onClose, onSaved }: {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={onClose}>
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 w-full max-w-2xl max-h-[92vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-white rounded-3xl p-6 md:p-8 w-full max-w-2xl max-h-[92vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl font-black text-primary dark:text-white uppercase tracking-tight">{isEdit ? 'Edit' : 'New'} Post</h3>
-                    <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full"><X className="w-5 h-5" /></button>
+                    <h3 className="text-xl font-black text-primary uppercase tracking-tight">{isEdit ? 'Edit' : 'New'} Post</h3>
+                    <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full"><X className="w-5 h-5" /></button>
                 </div>
                 <form onSubmit={submit} className="space-y-4">
                     <div className="space-y-1.5">
@@ -247,7 +247,7 @@ function PostModal({ state, onClose, onSaved }: {
                         </div>
                     </div>
 
-                    <button type="submit" disabled={saving} className="w-full bg-primary dark:bg-accent text-white py-3.5 rounded-xl font-bold uppercase tracking-wider text-sm disabled:opacity-60">
+                    <button type="submit" disabled={saving} className="w-full bg-[#46AEE8] text-white py-3.5 rounded-xl font-bold uppercase tracking-wider text-sm disabled:opacity-60">
                         {saving ? 'Saving…' : isEdit ? 'Update Post' : 'Publish Post'}
                     </button>
                 </form>

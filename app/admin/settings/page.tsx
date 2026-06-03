@@ -6,7 +6,7 @@ import { useSettings, type Settings } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
 import { FormSkeleton } from '@/components/ui/Skeleton';
 
-const field = 'w-full px-4 py-3 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
+const field = 'w-full px-4 py-3 bg-white border border-primary/10 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-[#46AEE8] text-gray-900';
 const label = 'text-[10px] font-black uppercase tracking-widest text-gray-400';
 
 export default function AdminSettingsPage() {
@@ -52,7 +52,7 @@ export default function AdminSettingsPage() {
 
     return (
         <div className="space-y-6 max-w-2xl">
-            <h1 className="text-3xl md:text-4xl font-black text-primary dark:text-white tracking-tighter">Store Settings</h1>
+            <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tighter">Store Settings</h1>
             <form onSubmit={save} className="space-y-5">
                 <div className="space-y-1.5"><label className={label}>Store Name</label><input className={field} value={form.storeName} onChange={(e) => set('storeName', e.target.value)} /></div>
                 <div className="grid sm:grid-cols-2 gap-4">
@@ -75,7 +75,7 @@ export default function AdminSettingsPage() {
                     <div className="space-y-1.5"><label className={label}>Currency Code</label><input className={field} value={form.currencyCode} onChange={(e) => set('currencyCode', e.target.value)} /></div>
                     <div className="space-y-1.5"><label className={label}>Currency Symbol</label><input className={field} value={form.currencySymbol} onChange={(e) => set('currencySymbol', e.target.value)} /></div>
                 </div>
-                <button type="submit" disabled={saving} className="px-10 py-3.5 bg-primary dark:bg-accent text-white rounded-xl font-bold uppercase tracking-wider text-sm disabled:opacity-60">
+                <button type="submit" disabled={saving} className="px-10 py-3.5 bg-[#46AEE8] text-white rounded-xl font-bold uppercase tracking-wider text-sm disabled:opacity-60">
                     {saving ? 'Saving…' : 'Save Settings'}
                 </button>
             </form>

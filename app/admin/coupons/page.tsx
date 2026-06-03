@@ -11,7 +11,7 @@ import { usePagination } from '@/lib/usePagination';
 import Pagination from '@/components/ui/Pagination';
 import { TableSkeleton } from '@/components/ui/Skeleton';
 
-const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
+const field = 'w-full px-4 py-3 bg-gray-50 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-[#46AEE8] text-gray-900';
 
 export default function AdminCouponsPage() {
     const isAdmin = useAuthStore((s) => s.status === 'authenticated' && s.user?.role === 'ADMIN');
@@ -54,9 +54,9 @@ export default function AdminCouponsPage() {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl md:text-4xl font-black text-primary dark:text-white tracking-tighter">Coupons</h1>
+            <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tighter">Coupons</h1>
 
-            <form onSubmit={create} className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-5 grid sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
+            <form onSubmit={create} className="bg-white border border-primary/5 rounded-2xl p-5 grid sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
                 <input className={field} placeholder="CODE" required value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
                 <Select
                     className={field}
@@ -69,27 +69,27 @@ export default function AdminCouponsPage() {
                 />
                 <input className={field} type="number" step="0.01" placeholder="Value" required value={form.value} onChange={(e) => setForm({ ...form, value: e.target.value })} />
                 <input className={field} type="number" step="0.01" placeholder="Min subtotal" value={form.minSubtotal} onChange={(e) => setForm({ ...form, minSubtotal: e.target.value })} />
-                <button type="submit" disabled={saving} className="flex items-center justify-center gap-2 bg-primary dark:bg-accent text-white px-4 py-3 rounded-xl font-bold text-sm disabled:opacity-60"><Plus className="w-4 h-4" /> Add</button>
+                <button type="submit" disabled={saving} className="flex items-center justify-center gap-2 bg-[#46AEE8] text-white px-4 py-3 rounded-xl font-bold text-sm disabled:opacity-60"><Plus className="w-4 h-4" /> Add</button>
             </form>
 
-            {isLoading ? <TableSkeleton rows={6} cols={6} /> : coupons.length === 0 ? <p className="text-secondary dark:text-gray-400">No coupons yet.</p> : (
+            {isLoading ? <TableSkeleton rows={6} cols={6} /> : coupons.length === 0 ? <p className="text-secondary">No coupons yet.</p> : (
                 <>
-                <div className="overflow-x-auto rounded-2xl border border-primary/5 dark:border-slate-800 bg-white dark:bg-slate-900">
+                <div className="overflow-x-auto rounded-2xl border border-primary/5 bg-white">
                     <table className="w-full text-sm">
-                        <thead className="bg-primary/5 dark:bg-slate-800/50 text-left">
+                        <thead className="bg-primary/5 text-left">
                             <tr className="text-[10px] uppercase tracking-wider text-gray-400">
                                 <th className="p-4">Code</th><th className="p-4">Discount</th><th className="p-4">Min</th><th className="p-4">Used</th><th className="p-4">Active</th><th className="p-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-primary/5 dark:divide-slate-800">
+                        <tbody className="divide-y divide-primary/5">
                             {pageItems.map((c) => (
-                                <tr key={c.id} className="text-primary dark:text-white">
+                                <tr key={c.id} className="text-primary">
                                     <td className="p-4 font-bold">{c.code}</td>
                                     <td className="p-4">{c.type === 'PERCENT' ? `${c.value}%` : `$${c.value}`}</td>
                                     <td className="p-4">${c.minSubtotal}</td>
                                     <td className="p-4">{c.usedCount}{c.maxUses ? ` / ${c.maxUses}` : ''}</td>
                                     <td className="p-4">
-                                        <button onClick={() => toggle(c.id, c.active)} className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${c.active ? 'bg-new/10 text-new' : 'bg-gray-100 dark:bg-slate-800 text-gray-400'}`}>{c.active ? 'Active' : 'Off'}</button>
+                                        <button onClick={() => toggle(c.id, c.active)} className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${c.active ? 'bg-new/10 text-new' : 'bg-gray-100 text-gray-400'}`}>{c.active ? 'Active' : 'Off'}</button>
                                     </td>
                                     <td className="p-4 text-right"><button onClick={() => remove(c.id)} className="p-2 rounded-lg hover:bg-hot/10 text-hot"><Trash2 className="w-4 h-4" /></button></td>
                                 </tr>

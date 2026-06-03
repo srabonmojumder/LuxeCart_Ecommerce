@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { requireAuth, requireAdmin } from '../middleware/auth.js';
 import {
   adminAnalytics,
+  adminDashboard,
   adminBulkProducts,
   adminRunMaintenance,
   adminCreateCategory,
@@ -76,6 +77,7 @@ router.delete('/blog/:id', adminDeletePost);
 // Dashboard
 router.get('/stats', adminStats);
 router.get('/analytics', adminAnalytics);
+router.get('/dashboard', adminDashboard);
 
 // Maintenance jobs (abandoned-cart reminders, low-stock digest)
 router.post('/maintenance/run', adminRunMaintenance);

@@ -467,6 +467,31 @@ export function useAdminAnalytics(enabled: boolean, days = 30) {
     return { analytics: data?.data, isLoading, mutate };
 }
 
+export interface AdminDashboard {
+    availableProducts: number;
+    pendingOrders: number;
+    numberOfSales: number;
+    totalSales: number;
+    salesGoal: number;
+    salesGoalPct: number;
+    growthRatePct: number;
+    customerVolumeChangePct: number;
+    totalCustomers: number;
+    monthly: { ym: string; month: string; revenue: number }[];
+    heatmap: { day: number; hour: number; count: number }[];
+    heatmapMax: number;
+    reviews: { avg: number; total: number; distribution: { stars: number; count: number }[] };
+    recentOrders: { id: number; customer: string; country: string; total: number; status: string; createdAt: string }[];
+}
+
+export function useAdminDashboard(enabled: boolean) {
+    const { data, isLoading, mutate } = useSWR<{ data: AdminDashboard }>(
+        enabled ? '/admin/dashboard' : null,
+        authFetcher
+    );
+    return { dashboard: data?.data, isLoading, mutate };
+}
+
 export interface AdminReturn {
     id: number;
     status: 'REQUESTED' | 'APPROVED' | 'REJECTED' | 'RECEIVED' | 'REFUNDED';
