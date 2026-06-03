@@ -18,7 +18,7 @@ import CookieConsent from '@/components/ui/CookieConsent';
  */
 export default function ConditionalChrome({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const isAdmin = pathname?.startsWith('/admin') || pathname === '/dashboard-preview';
+    const isAdmin = pathname?.startsWith('/admin');
 
     if (isAdmin) {
         return <main className="relative">{children}</main>;
