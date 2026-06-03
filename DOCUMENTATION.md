@@ -39,6 +39,37 @@ LuxeCart is split into two deployable apps in one repository:
 
 ---
 
+## 1a. Recent Updates (Latest Build)
+
+This build adds an admin-dashboard redesign, a unified sky-blue theme, dark mode,
+admin profile management, a multi-method payment system, and load-test tooling.
+
+### Admin dashboard (`/admin`)
+- **Redesigned shell** ([`components/admin/AdminShell.tsx`](components/admin/AdminShell.tsx)) — fixed top bar (brand, tabs, search, date + pending-orders badge, theme toggle, avatar → profile) + a **collapsible** icon sidebar with **Back-to-store / Logout pinned at the bottom**, and a mobile hamburger **drawer**. Only the content scrolls; all scrollbars are hidden.
+- **Live-data dashboard** ([`components/admin/DashboardView.tsx`](components/admin/DashboardView.tsx)) powered by one endpoint **`GET /api/admin/dashboard`** — stat tiles, a sales-goal gauge, an orders-by-hour heatmap, a growth ring, monthly-revenue bars, a recent-orders table, recent sales, and a review-rating distribution. **No static data** — every figure is computed from the DB.
+- **Dark / light mode** — toggle in the top bar (next-themes). Admin is re-skinned via a scoped `.dark .admin-scope` block in [`app/globals.css`](app/globals.css).
+- **Profile page** (`/admin/profile`) — edit name + photo (image upload) and change password. Uses existing `PATCH /account/profile`, `POST /auth/change-password`, `GET /auth/me`.
+- **Consistent UI** — all admin buttons/accents unified to sky-blue; Categories, Settings and Profile are full-width card layouts.
+
+### Theme
+- The **system accent is now sky-blue `#46AEE8`** (was purple). Changed in [`tailwind.config.ts`](tailwind.config.ts) (`accent` scale) and the `--color-accent-*` vars in [`app/globals.css`](app/globals.css); storefront + admin share it.
+
+### Storefront polish
+- **Skeleton loaders** across admin tables/cards/forms and the order/blog/account pages — reusable kit in [`components/ui/Skeleton.tsx`](components/ui/Skeleton.tsx).
+- **"What People Say"** testimonials are now a **two-row marquee** (one row scrolls left, one right; pauses on hover; uses real review data).
+
+### Payments — multiple methods
+Checkout has a **payment-method selector** driven by `GET /api/payments/methods` (see §11):
+- **Cash on Delivery** (always available) — order stays `PENDING`, paid on delivery.
+- **Card** — live via Stripe when keys are set, else auto-confirm in mock mode.
+- **SSLCommerz** (Bangladesh: cards + bKash/Nagad/bank) — optional; enabled by `SSLCOMMERZ_*` env vars.
+- Stripe currency is now **dynamic** (from admin Settings) instead of hardcoded USD.
+
+### Load-test tooling
+- `npm run seed:perf` / `npm run clean:perf` (in `backend/`) — append / remove large amounts of marked test data to gauge performance at scale (see §12).
+
+---
+
 ## 2. Tech Stack
 
 | Layer | Technology |
@@ -156,6 +187,9 @@ docker compose up            # MySQL + API; run the frontend separately with npm
 | `JWT_REFRESH_EXPIRES` | `7d` | refresh token TTL |
 | `STRIPE_SECRET_KEY` | `sk_test_…` | optional; omit/placeholder = mock mode |
 | `STRIPE_WEBHOOK_SECRET` | `whsec_…` | optional; required for live webhooks |
+| `SSLCOMMERZ_STORE_ID` | `…` | optional; enables SSLCommerz (bKash/Nagad/card) at checkout |
+| `SSLCOMMERZ_STORE_PASSWORD` | `…` | optional; SSLCommerz store password |
+| `SSLCOMMERZ_SANDBOX` | `true` | use sandbox endpoints (`false` for live) |
 
 ### Frontend (`.env.local`)
 
@@ -304,12 +338,19 @@ Base URL: `http://localhost:4000/api`. All bodies are JSON. **41 endpoints.**
 ### Payments
 | Method | Path | Auth | Description |
 |---|---|---|---|
-| POST | `/payments/create-intent` | user | `{ orderId }` → `{ clientSecret }` (503 if Stripe not configured) |
+| GET | `/payments/methods` | public | Enabled methods → `{ cod, card, stripeLive, sslcommerz }` (drives the checkout selector) |
+| POST | `/payments/create-intent` | user | `{ orderId }` → `{ clientSecret }` (Stripe; 503 in mock mode). Currency from Settings |
 | POST | `/payments/webhook` | Stripe sig | Marks order `PAID` on `payment_intent.succeeded` (raw body, signature-verified) |
+| POST | `/payments/sslcommerz/init` | public | `{ orderId }` → `{ url }` gateway redirect; 503 if not configured |
+| POST·GET | `/payments/sslcommerz/{success,fail,cancel,ipn}` | gateway | SSLCommerz callbacks; validate → mark `PAID` |
+
+> Order creation (`POST /orders`) accepts `paymentMethod: 'card' | 'cod' | 'sslcommerz'`. COD/SSLCommerz orders stay `PENDING`; card auto-confirms in mock mode.
 
 ### Admin  (all `admin`)
 | Method | Path | Description |
 |---|---|---|
+| GET | `/admin/dashboard` | Single dashboard payload (stat tiles, sales-goal gauge, orders-by-hour heatmap, monthly revenue, recent orders, review distribution) — all live data |
+| GET | `/admin/stats` · `/admin/analytics` | Summary counts · time-series analytics |
 | GET | `/admin/products` | All products (incl. inactive) |
 | POST | `/admin/products` | Create (`{ name, description, price, image, categoryId, discount?, stock?, tags?, colors?, sizes? }`) |
 | PATCH | `/admin/products/:id` | Update (partial) |
@@ -342,9 +383,13 @@ Base URL: `http://localhost:4000/api`. All bodies are JSON. **41 endpoints.**
 
 Sign in as an admin, then open **`/admin`** (a shortcut also appears in Account).
 
+- **Dashboard** — live stats, sales-goal gauge, orders-by-hour heatmap, monthly revenue, recent orders/sales, review ratings.
 - **Products** — create/edit (modal form), deactivate.
 - **Categories** — create, rename (inline), delete.
 - **Orders** — view all, change status via dropdown.
+- **Profile** (`/admin/profile`) — update name/photo, change password.
+- **Theme** — Sun/Moon toggle in the top bar switches dark / light.
+- The sidebar is collapsible (icon ⇄ labelled); on mobile it's a hamburger drawer.
 
 **Make a user an admin:** open Prisma Studio (`cd backend && npm run prisma:studio`), edit the `User` row, set `role = ADMIN`.
 
@@ -352,16 +397,33 @@ Sign in as an admin, then open **`/admin`** (a shortcut also appears in Account)
 
 ## 11. Payments
 
-Two modes, switched automatically:
+Checkout shows a **payment-method selector** built from `GET /payments/methods`. Each
+gateway is **optional** — it appears only when configured (otherwise it's hidden, like
+Stripe's mock mode). `POST /orders` takes `paymentMethod` and sets `payment.provider`.
 
-- **Mock mode (default)** — no real Stripe key. Orders are created and immediately marked `PAID` (`payment.provider = "mock"`). Good for demos/dev.
-- **Live mode** — set `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET` (backend) and `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (frontend). Flow:
-  1. Checkout creates the order (`PENDING`).
-  2. Frontend calls `POST /payments/create-intent` → `clientSecret`.
-  3. Stripe **PaymentElement** ([`components/checkout/StripePayment.tsx`](components/checkout/StripePayment.tsx)) collects the card and confirms.
-  4. Stripe calls `POST /payments/webhook` → order marked `PAID`.
+### Methods
+- **Cash on Delivery (`cod`)** — always available, no setup. Order is created `PENDING`
+  (`provider = "cod"`) and paid on delivery.
+- **Card (`card`)** — **Live** when `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET` (backend)
+  and `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (frontend) are set; otherwise **mock mode**
+  (order auto-marked `PAID`, `provider = "mock"`). A placeholder key like `sk_test_xxx`
+  counts as not configured.
+- **SSLCommerz (`sslcommerz`)** — Bangladesh aggregator (cards + bKash + Nagad + bank via
+  its hosted page). Enabled by `SSLCOMMERZ_STORE_ID` + `SSLCOMMERZ_STORE_PASSWORD`
+  ([`backend/src/lib/sslcommerz.ts`](backend/src/lib/sslcommerz.ts)).
 
-> A placeholder key like `sk_test_xxx` counts as "not configured" (stays in mock mode).
+### Card (Stripe live) flow
+1. Checkout creates the order (`PENDING`).
+2. Frontend calls `POST /payments/create-intent` → `clientSecret` (currency from Settings).
+3. Stripe **PaymentElement** ([`components/checkout/StripePayment.tsx`](components/checkout/StripePayment.tsx)) collects the card and confirms.
+4. Stripe calls `POST /payments/webhook` → order marked `PAID`.
+
+### SSLCommerz flow
+1. Order created `PENDING` → frontend calls `POST /payments/sslcommerz/init` → `{ url }`.
+2. Browser is redirected to the SSLCommerz hosted page (card / bKash / Nagad / bank).
+3. On success the gateway hits `…/success` + the `…/ipn` callback → transaction is validated → order marked `PAID`.
+
+> **bKash / Nagad** are offered through the SSLCommerz hosted page (the standard BD approach). Direct bKash/Nagad PGW APIs would be a separate integration (needs those specific merchant accounts).
 
 ---
 
@@ -377,6 +439,8 @@ Run inside `backend/`:
 | `npm run prisma:migrate` | Create/apply migrations (dev) |
 | `npm run prisma:studio` | Visual DB editor |
 | `npm run seed` | (Re)seed catalog + admin user |
+| `npm run seed:perf` | **Append** large marked test data (load testing). Tunable: `PERF_PRODUCTS=50000 …`. Markers: slug `perf-`, email `@loadtest.local`, order carrier `PERFSEED` |
+| `npm run clean:perf` | Remove **only** the perf test data (real data untouched) |
 | `npm run db:reset` | **Wipe**, migrate, reseed (dev only) |
 
 **Backup / restore (MySQL):**

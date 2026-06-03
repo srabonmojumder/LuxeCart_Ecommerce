@@ -51,6 +51,15 @@ See [`backend/README.md`](backend/README.md) for the full endpoint list.
 
 ## ✨ Features
 
+### 🆕 **Latest Build**
+- **Redesigned admin dashboard** — live-data widgets (sales gauge, orders-by-hour heatmap, monthly revenue, reviews) via `GET /api/admin/dashboard`, collapsible sidebar + mobile drawer, and a **dark / light** toggle
+- **Admin profile** page (name, photo upload, password) + full-width Categories/Settings
+- **Sky-blue theme** (`#46AEE8`) unified across storefront + admin
+- **Multiple payment methods** — Cash on Delivery, Card (Stripe), and **SSLCommerz** (bKash/Nagad/card) with a checkout method selector; dynamic currency
+- **Skeleton loaders** everywhere + **testimonials marquee** ("What People Say")
+- **Load-test tooling** — `npm run seed:perf` / `clean:perf`
+- 📖 Full details in [DOCUMENTATION.md](DOCUMENTATION.md) §1a · Banglish: [DOCUMENTATION_BANGLISH.md](DOCUMENTATION_BANGLISH.md) §1a
+
 ### 📱 **NEW: Mobile-First Excellence** 
 - **Quick Filters Bar** - One-tap product filtering (Sale, Trending, New, Popular)
 - **Floating Bottom Navigation** - Instagram/TikTok-inspired mobile nav with badges

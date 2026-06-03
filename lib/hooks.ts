@@ -82,6 +82,19 @@ export function useTestimonials(limit = 8) {
     return { testimonials: data?.data ?? [], isLoading };
 }
 
+export interface PaymentMethods {
+    cod: boolean;
+    card: boolean;
+    stripeLive: boolean;
+    sslcommerz: boolean;
+}
+
+/** Which payment methods the storefront should offer (depends on backend config). */
+export function usePaymentMethods() {
+    const { data } = useSWR<{ data: PaymentMethods }>('/payments/methods', fetcher);
+    return data?.data ?? { cod: true, card: true, stripeLive: false, sslcommerz: false };
+}
+
 // ----------------------------- Blog -----------------------------
 
 export interface BlogPostSummary {

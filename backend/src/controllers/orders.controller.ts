@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { prisma } from '../lib/prisma.js';
 import { asyncHandler, HttpError } from '../middleware/error.js';
 import { isStripeConfigured } from '../lib/stripe.js';
+import { isSslcommerzConfigured } from '../lib/sslcommerz.js';
 import { notifyOrderPlaced, notifyOrderStatus, notifyReturnStatus } from '../lib/notify.js';
 import { getSettings } from '../lib/settings.js';
 import { evaluateCoupon } from '../lib/coupon.js';
@@ -27,6 +28,7 @@ const createSchema = z.object({
   items: z
     .array(z.object({ productId: z.number().int().positive(), quantity: z.number().int().min(1) }))
     .optional(), // guest cart (logged-in users use their server cart)
+  paymentMethod: z.enum(['card', 'cod', 'sslcommerz']).optional(),
 });
 
 const orderInclude = {
@@ -166,15 +168,29 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
   const tax = +(taxable * taxRate).toFixed(2);
   const total = +(taxable + shipping + tax).toFixed(2);
 
-  // Without Stripe keys we simulate a successful payment so the flow completes.
-  const mockPaid = !isStripeConfigured;
+  // Decide how this order will be paid.
+  const method = parsed.data.paymentMethod ?? 'card';
+  if (method === 'sslcommerz' && !isSslcommerzConfigured) {
+    throw new HttpError(400, 'SSLCommerz is not available right now');
+  }
+  // Card with no real Stripe key auto-confirms (mock mode). COD and SSLCommerz
+  // stay PENDING until paid (on delivery, or via the gateway redirect/IPN).
+  const paid = method === 'card' && !isStripeConfigured;
+  const provider =
+    method === 'cod' ? 'cod'
+      : method === 'sslcommerz' ? 'sslcommerz'
+        : isStripeConfigured ? 'stripe' : 'mock';
+  const placedNote =
+    method === 'cod' ? 'Order placed · Cash on Delivery'
+      : method === 'sslcommerz' ? 'Order placed · SSLCommerz'
+        : 'Order placed';
 
   const order = await prisma.$transaction(async (tx) => {
     const created = await tx.order.create({
       data: {
         userId,
         email,
-        status: mockPaid ? 'PAID' : 'PENDING',
+        status: paid ? 'PAID' : 'PENDING',
         subtotal,
         discount,
         couponCode: appliedCoupon?.code ?? null,
@@ -196,15 +212,15 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
         },
         payment: {
           create: {
-            provider: mockPaid ? 'mock' : 'stripe',
-            status: mockPaid ? 'succeeded' : 'pending',
+            provider,
+            status: paid ? 'succeeded' : 'pending',
             amount: total,
           },
         },
         events: {
           create: [
-            { status: 'PENDING', note: 'Order placed' },
-            ...(mockPaid ? [{ status: 'PAID' as const, note: 'Payment confirmed' }] : []),
+            { status: 'PENDING', note: placedNote },
+            ...(paid ? [{ status: 'PAID' as const, note: 'Payment confirmed' }] : []),
           ],
         },
       },

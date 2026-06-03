@@ -14,6 +14,11 @@ const schema = z.object({
   JWT_REFRESH_EXPIRES: z.string().default('7d'),
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
+  // SSLCommerz (Bangladesh gateway — cards + bKash/Nagad/bank). Optional; when
+  // unset the storefront simply hides it (like Stripe's mock mode).
+  SSLCOMMERZ_STORE_ID: z.string().optional(),
+  SSLCOMMERZ_STORE_PASSWORD: z.string().optional(),
+  SSLCOMMERZ_SANDBOX: z.coerce.boolean().default(true),
   // Google OAuth (social login) — optional. Set the same client id on the frontend.
   GOOGLE_CLIENT_ID: z.string().optional(),
   // Background maintenance jobs (abandoned-cart reminders, low-stock digest).

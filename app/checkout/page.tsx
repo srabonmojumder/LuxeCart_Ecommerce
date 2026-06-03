@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CreditCard, Lock, ArrowLeft, Check, Mail, Truck, Calendar, ShieldCheck, User, MapPin } from 'lucide-react';
+import { CreditCard, Lock, ArrowLeft, Check, Mail, Truck, Calendar, ShieldCheck, User, MapPin, Banknote, Smartphone } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import StripePayment from '@/components/checkout/StripePayment';
 import { api, ApiError } from '@/lib/api';
-import { useAddresses, useSettings } from '@/lib/hooks';
+import { useAddresses, useSettings, usePaymentMethods } from '@/lib/hooks';
 
 const STRIPE_ENABLED = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 import Link from 'next/link';
@@ -25,6 +25,14 @@ export default function CheckoutPage() {
     const { addresses } = useAddresses(authStatus === 'authenticated');
     const { settings } = useSettings();
     const isGuest = authStatus !== 'authenticated';
+
+    const methods = usePaymentMethods();
+    const [paymentMethod, setPaymentMethod] = useState<'card' | 'cod' | 'sslcommerz'>('cod');
+    const paymentOptions = [
+        { value: 'cod' as const, label: 'Cash on Delivery', sub: 'Pay when delivered', icon: Banknote, show: methods.cod },
+        { value: 'card' as const, label: 'Card', sub: methods.stripeLive ? 'Credit / Debit' : 'Card (demo)', icon: CreditCard, show: methods.card },
+        { value: 'sslcommerz' as const, label: 'bKash / Nagad / Card', sub: 'via SSLCommerz', icon: Smartphone, show: methods.sslcommerz },
+    ].filter((o) => o.show);
 
     const [couponInput, setCouponInput] = useState('');
     const [coupon, setCoupon] = useState<{ code: string; discount: number } | null>(null);
@@ -140,18 +148,31 @@ export default function CheckoutPage() {
                       items: cart.map((i) => ({ productId: i.id, quantity: i.quantity })),
                       shippingAddress,
                       couponCode: coupon?.code,
+                      paymentMethod,
                   })
-                : await api.post<{ data: { id: number; status: string } }>('/orders', { shippingAddress, couponCode: coupon?.code }, true);
+                : await api.post<{ data: { id: number; status: string } }>('/orders', { shippingAddress, couponCode: coupon?.code, paymentMethod }, true);
+
+            // SSLCommerz: hand off to the hosted gateway (cards + bKash/Nagad).
+            if (paymentMethod === 'sslcommerz') {
+                const init = await api.post<{ url: string }>('/payments/sslcommerz/init', { orderId: res.data.id }, !stillGuest);
+                clearCart();
+                window.location.href = init.url;
+                return;
+            }
 
             clearCart();
 
-            if (!stillGuest && STRIPE_ENABLED && res.data.status === 'PENDING') {
-                setPendingOrderId(res.data.id); // collect card via Stripe modal
-            } else if (stillGuest) {
-                toast.success('Order placed!');
+            // Live card (Stripe): collect the card in the modal (logged-in only).
+            if (paymentMethod === 'card' && !stillGuest && STRIPE_ENABLED && res.data.status === 'PENDING') {
+                setPendingOrderId(res.data.id);
+                return;
+            }
+
+            // Cash on delivery, demo card, or guest → straight to confirmation.
+            toast.success(paymentMethod === 'cod' ? 'Order placed — pay on delivery!' : 'Order placed successfully!');
+            if (stillGuest) {
                 router.push(`/track?order=${res.data.id}&email=${encodeURIComponent(formData.email)}`);
             } else {
-                toast.success('Order placed successfully!');
                 router.push(`/order-success?order=${res.data.id}`);
             }
         } catch (err) {
@@ -373,8 +394,38 @@ export default function CheckoutPage() {
                             </div>
                         </section>
 
-                        {/* Section: Payment (manual inputs only in mock mode; Stripe collects card after order) */}
-                        {STRIPE_ENABLED ? (
+                        {/* Section: Payment method */}
+                        <section className="space-y-4 p-5 md:p-6 bg-primary/5 dark:bg-white/5 rounded-2xl border border-primary/10 dark:border-white/10">
+                            <div className="flex items-center gap-3">
+                                <Lock className="w-5 h-5 text-accent" />
+                                <h2 className="text-lg font-black text-primary dark:text-white tracking-tight">Payment Method</h2>
+                            </div>
+                            <div className="grid sm:grid-cols-3 gap-3">
+                                {paymentOptions.map((m) => {
+                                    const Icon = m.icon;
+                                    const active = paymentMethod === m.value;
+                                    return (
+                                        <button type="button" key={m.value} onClick={() => setPaymentMethod(m.value)}
+                                            className={`flex items-center gap-3 p-4 rounded-2xl border-2 text-left transition-all ${active ? 'border-accent bg-accent/5' : 'border-primary/10 dark:border-white/10 hover:border-accent/40'}`}>
+                                            <Icon className={`w-5 h-5 shrink-0 ${active ? 'text-accent' : 'text-gray-400'}`} />
+                                            <div className="min-w-0">
+                                                <p className="text-sm font-bold text-primary dark:text-white">{m.label}</p>
+                                                <p className="text-[11px] text-gray-400 truncate">{m.sub}</p>
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            {paymentMethod === 'cod' && (
+                                <p className="text-sm text-secondary dark:text-gray-400">💵 Pay with cash when your order is delivered — no online payment needed.</p>
+                            )}
+                            {paymentMethod === 'sslcommerz' && (
+                                <p className="text-sm text-secondary dark:text-gray-400">You&apos;ll be redirected to SSLCommerz to pay with card, bKash, Nagad or bank.</p>
+                            )}
+                        </section>
+
+                        {/* Card payment UI — shown only when Card is selected */}
+                        {paymentMethod === 'card' && (STRIPE_ENABLED ? (
                             <section className="space-y-3 p-5 md:p-6 bg-primary/5 dark:bg-white/5 rounded-2xl border border-primary/10 dark:border-white/10">
                                 <div className="flex items-center gap-3">
                                     <Lock className="w-5 h-5 text-accent" />
@@ -451,7 +502,7 @@ export default function CheckoutPage() {
                                 </div>
                             </div>
                         </section>
-                        )}
+                        ))}
                     </div>
 
                     {/* Summary Sidebar */}

@@ -43,6 +43,37 @@ Project ta **dui ta alada app** — kintu ekta-i repo te:
 
 ---
 
+## 1a. Notun Ki Add Hoyeche (Latest Build)
+
+Ei build e admin dashboard notun design, puro site e sky-blue theme, dark mode,
+admin profile, multiple payment method, ar load-test tool add kora hoyeche.
+
+### Admin dashboard (`/admin`)
+- **Notun shell** ([`components/admin/AdminShell.tsx`](components/admin/AdminShell.tsx)) — upore fixed top bar (brand, tabs, search, date + pending-orders badge, theme toggle, avatar → profile) + **collapse kora jay emon** icon sidebar (niche **Back-to-store / Logout pinned**), ar mobile e hamburger **drawer**. Shudhu content scroll kore; shob scrollbar hidden.
+- **Live-data dashboard** ([`components/admin/DashboardView.tsx`](components/admin/DashboardView.tsx)) — ekta endpoint **`GET /api/admin/dashboard`** diye chole: stat tiles, sales-goal gauge, orders-by-hour heatmap, growth ring, monthly revenue bars, recent orders table, recent sales, review-rating distribution. **Kono static data nei** — shob DB theke ase.
+- **Dark / light mode** — top bar e Sun/Moon toggle (next-themes). [`app/globals.css`](app/globals.css) e `.dark .admin-scope` block diye puro admin dark hoy.
+- **Profile page** (`/admin/profile`) — naam + chobi (upload) edit + password change. Existing `PATCH /account/profile`, `POST /auth/change-password`, `GET /auth/me` use kore.
+- **Consistent UI** — shob admin button/accent sky-blue; Categories, Settings, Profile full-width card layout.
+
+### Theme
+- **System accent ekhon sky-blue `#46AEE8`** (age purple chhilo). [`tailwind.config.ts`](tailwind.config.ts) (`accent` scale) ar [`app/globals.css`](app/globals.css) er `--color-accent-*` var e change — storefront + admin dui jaygai eki rong.
+
+### Storefront polish
+- **Skeleton loader** shob jaygai (admin table/card/form, order/blog/account page) — reusable kit [`components/ui/Skeleton.tsx`](components/ui/Skeleton.tsx).
+- **"What People Say"** testimonials ekhon **dui row er marquee** (ek row bame, ek row dane scroll; hover e pause; real review data).
+
+### Payments — onek method
+Checkout e **payment-method selector** (`GET /api/payments/methods` theke), detail §11 e:
+- **Cash on Delivery** (shob shomoy on) — order `PENDING` thake, delivery te taka.
+- **Card** — Stripe key dile live, na dile mock mode e auto-confirm.
+- **SSLCommerz** (Bangladesh: card + bKash/Nagad/bank) — optional; `SSLCOMMERZ_*` env dile chalu.
+- Stripe currency ekhon **dynamic** (Settings theke), hardcoded USD na.
+
+### Load-test tool
+- `npm run seed:perf` / `npm run clean:perf` (`backend/` e) — bishal test data add/remove kore performance dekhte (§12).
+
+---
+
 ## 2. Tech Stack
 
 | Layer | Ki use hoyeche |
@@ -162,6 +193,9 @@ docker compose up            # MySQL + API; frontend ta alada vabe npm run dev d
 | `JWT_REFRESH_EXPIRES` | `7d` | refresh token koto din thakbe |
 | `STRIPE_SECRET_KEY` | `sk_test_…` | optional; na dile mock mode |
 | `STRIPE_WEBHOOK_SECRET` | `whsec_…` | optional; live webhook er jonno lagbe |
+| `SSLCOMMERZ_STORE_ID` | `…` | optional; dile checkout e SSLCommerz (bKash/Nagad/card) ase |
+| `SSLCOMMERZ_STORE_PASSWORD` | `…` | optional; SSLCommerz store password |
+| `SSLCOMMERZ_SANDBOX` | `true` | sandbox endpoint (`false` dile live) |
 
 ### Frontend (`.env.local`)
 
@@ -310,8 +344,13 @@ Base URL: `http://localhost:4000/api`. Shob body JSON. **Mot 41 ta endpoint.**
 ### Payments
 | Method | Path | Auth | Ki kore |
 |---|---|---|---|
-| POST | `/payments/create-intent` | user | `{ orderId }` → `{ clientSecret }` (Stripe na thakle 503) |
-| POST | `/payments/webhook` | Stripe sig | `payment_intent.succeeded` ele order `PAID` kore (raw body, signature verify) |
+| GET | `/payments/methods` | public | Kon method on ache → `{ cod, card, stripeLive, sslcommerz }` (checkout selector ei diye chole) |
+| POST | `/payments/create-intent` | user | `{ orderId }` → `{ clientSecret }` (Stripe; mock e 503). Currency Settings theke |
+| POST | `/payments/webhook` | Stripe sig | `payment_intent.succeeded` ele order `PAID` kore |
+| POST | `/payments/sslcommerz/init` | public | `{ orderId }` → `{ url }` gateway redirect; configure na thakle 503 |
+| POST·GET | `/payments/sslcommerz/{success,fail,cancel,ipn}` | gateway | SSLCommerz callback; validate → `PAID` |
+
+> `POST /orders` ekhon `paymentMethod: 'card' | 'cod' | 'sslcommerz'` ney. COD/SSLCommerz order `PENDING` thake; card mock mode e auto-confirm.
 
 ### Admin  (shob `admin`)
 | Method | Path | Ki kore |
@@ -358,16 +397,33 @@ Admin diye login kore **`/admin`** e jao (Account er moddhe shortcut o ache).
 
 ## 11. Payments
 
-Dui ta mode, nije nije switch hoy:
+Checkout e **payment-method selector** ase (`GET /payments/methods` theke). Procheka
+gateway **optional** — configure thakle tobei dekhay (na thakle hidden, Stripe mock er moto).
+`POST /orders` e `paymentMethod` pathale `payment.provider` set hoy.
 
-- **Mock mode (default)** — real Stripe key nai. Order create hoye sathe sathe `PAID` hoye jaay (`payment.provider = "mock"`). Demo/dev er jonno bhalo.
-- **Live mode** — `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET` (backend) ar `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (frontend) set koro. Flow:
-  1. Checkout order create kore (`PENDING`).
-  2. Frontend `POST /payments/create-intent` call kore → `clientSecret`.
-  3. Stripe **PaymentElement** ([`components/checkout/StripePayment.tsx`](components/checkout/StripePayment.tsx)) card niye confirm kore.
-  4. Stripe `POST /payments/webhook` call kore → order `PAID` hoy.
+### Method gulo
+- **Cash on Delivery (`cod`)** — shob shomoy on, kono setup lage na. Order `PENDING` toiri hoy
+  (`provider = "cod"`), delivery te taka.
+- **Card (`card`)** — `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET` (backend) ar
+  `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (frontend) dile **live**; na dile **mock mode**
+  (order auto-`PAID`, `provider = "mock"`). `sk_test_xxx` er moto placeholder = configured na.
+- **SSLCommerz (`sslcommerz`)** — Bangladesh aggregator (card + bKash + Nagad + bank, hosted page e).
+  `SSLCOMMERZ_STORE_ID` + `SSLCOMMERZ_STORE_PASSWORD` dile chalu
+  ([`backend/src/lib/sslcommerz.ts`](backend/src/lib/sslcommerz.ts)).
 
-> `sk_test_xxx` er moto placeholder key "configured na" dhora hoy (mock mode-i thake).
+### Card (Stripe live) flow
+1. Checkout order create kore (`PENDING`).
+2. Frontend `POST /payments/create-intent` call kore → `clientSecret` (currency Settings theke).
+3. Stripe **PaymentElement** ([`components/checkout/StripePayment.tsx`](components/checkout/StripePayment.tsx)) card niye confirm kore.
+4. Stripe `POST /payments/webhook` call kore → order `PAID`.
+
+### SSLCommerz flow
+1. Order `PENDING` → frontend `POST /payments/sslcommerz/init` call kore → `{ url }`.
+2. Browser SSLCommerz hosted page e redirect hoy (card / bKash / Nagad / bank).
+3. Success e gateway `…/success` + `…/ipn` hit kore → transaction validate → order `PAID`.
+
+> **bKash / Nagad** SSLCommerz er hosted page er moddhei ase (BD te standard way). Direct
+> bKash/Nagad PGW API alada integration (oder nijossho merchant account lage) — pore add kora jabe.
 
 ---
 
@@ -383,6 +439,8 @@ Dui ta mode, nije nije switch hoy:
 | `npm run prisma:migrate` | Migration create/apply (dev) |
 | `npm run prisma:studio` | Visual database editor (GUI) |
 | `npm run seed` | Catalog + admin user (re)seed |
+| `npm run seed:perf` | **Add kore** bishal marked test data (load test). Tunable: `PERF_PRODUCTS=50000 …`. Marker: slug `perf-`, email `@loadtest.local`, order carrier `PERFSEED` |
+| `npm run clean:perf` | **Sudhu** perf test data delete kore (real data thake) |
 | `npm run db:reset` | **Sob mucche** diye migrate + reseed (sudhu dev) |
 
 > ⚠️ `db:reset` shob data delete kore (real order/customer soho) — sudhu development e use koro.
