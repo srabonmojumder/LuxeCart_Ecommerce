@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useTheme } from 'next-themes';
 import {
     LayoutDashboard, BarChart3, Package, Tag, ClipboardList, RotateCcw, Users, Star,
     Ticket, Image as ImageIcon, BookOpen, Mail, Settings as SettingsIcon, Store, LogOut,
-    Search, Bell, Droplet, X, Menu, PanelLeftClose, PanelLeftOpen,
+    Search, Bell, Droplet, X, Menu, PanelLeftClose, PanelLeftOpen, Sun, Moon, UserCircle,
 } from 'lucide-react';
 
 const SKY = '#46AEE8';
@@ -24,6 +25,7 @@ const nav = [
     { href: '/admin/blog', label: 'Blog', icon: BookOpen },
     { href: '/admin/newsletter', label: 'Newsletter', icon: Mail },
     { href: '/admin/settings', label: 'Settings', icon: SettingsIcon },
+    { href: '/admin/profile', label: 'Profile', icon: UserCircle },
 ];
 
 const tabs = [
@@ -51,6 +53,10 @@ interface Props {
 export default function AdminShell({ pathname, today, pendingOrders, userName, userPhoto, onLogout, children }: Props) {
     const [collapsed, setCollapsed] = useState(true);   // desktop icon-rail vs labelled
     const [mobileOpen, setMobileOpen] = useState(false); // mobile drawer
+    const { resolvedTheme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => { setMounted(true); }, []);
+    const isDark = mounted && resolvedTheme === 'dark';
 
     // Restore the desktop collapse preference.
     useEffect(() => {
@@ -133,19 +139,23 @@ export default function AdminShell({ pathname, today, pendingOrders, userName, u
                                 </span>
                             )}
                         </div>
-                        <Link href="/admin/settings" className="w-10 h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-700">
+                        <button onClick={() => setTheme(isDark ? 'light' : 'dark')} aria-label="Toggle theme"
+                            className="w-10 h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-700">
+                            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                        </button>
+                        <Link href="/admin/settings" title="Settings" className="w-10 h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-700">
                             <SettingsIcon className="w-5 h-5" />
                         </Link>
-                        <div className="w-10 h-10 rounded-full overflow-hidden border-2 flex items-center justify-center text-white font-black text-sm shrink-0" style={{ backgroundColor: SKY, borderColor: '#ffffff' }}>
+                        <Link href="/admin/profile" title="Profile" className="w-10 h-10 rounded-full overflow-hidden border-2 flex items-center justify-center text-white font-black text-sm shrink-0" style={{ backgroundColor: SKY, borderColor: '#ffffff' }}>
                             {userPhoto
                                 ? <img src={userPhoto} alt="" className="w-full h-full object-cover" />
                                 : initials(userName)}
-                        </div>
+                        </Link>
                     </div>
                 </header>
 
                 {/* ============== SIDEBAR RAIL (fixed) + SCROLLABLE CONTENT ============== */}
-                <div className="flex gap-1 sm:gap-6 px-2 sm:px-3 md:px-4 pb-3 md:pb-4 flex-1 min-h-0">
+                <div className="flex gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 pb-3 md:pb-4 flex-1 min-h-0">
                     {/* desktop rail (collapsible). Nav scrolls; Back-to-store + Logout stay pinned. */}
                     <aside className={`hidden md:flex flex-col shrink-0 transition-[width] duration-300 ${collapsed ? 'w-[60px]' : 'w-[210px]'}`}>
                         {/* scrollable nav */}

@@ -29,7 +29,7 @@ export default function ImageUpload({ value, onChange }: { value: string; onChan
         }
     };
 
-    const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
+    const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-[#46AEE8] text-gray-900 dark:text-white';
 
     return (
         <div className="space-y-2">
@@ -50,7 +50,7 @@ export default function ImageUpload({ value, onChange }: { value: string; onChan
                     <button
                         type="button"
                         onClick={pick}
-                        className="w-20 h-20 rounded-xl border-2 border-dashed border-primary/20 dark:border-slate-700 flex items-center justify-center text-gray-400 hover:border-accent hover:text-accent flex-shrink-0"
+                        className="w-20 h-20 rounded-xl border-2 border-dashed border-primary/20 dark:border-slate-700 flex items-center justify-center text-gray-400 hover:border-[#46AEE8] hover:text-[#46AEE8] flex-shrink-0"
                     >
                         {uploading ? <Loader2 className="w-6 h-6 animate-spin" /> : <Upload className="w-6 h-6" />}
                     </button>
@@ -61,7 +61,7 @@ export default function ImageUpload({ value, onChange }: { value: string; onChan
                         type="button"
                         onClick={pick}
                         disabled={uploading}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white dark:bg-accent text-xs font-black uppercase tracking-widest disabled:opacity-60"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#46AEE8] text-white text-xs font-black uppercase tracking-widest disabled:opacity-60"
                     >
                         {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                         {uploading ? 'Uploading…' : 'Upload image'}

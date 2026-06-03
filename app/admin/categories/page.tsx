@@ -1,11 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, Plus, Tag as TagIcon, Check, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { useCategories } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
 import { CardListSkeleton } from '@/components/ui/Skeleton';
+
+const SKY = '#46AEE8';
+const input = 'w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#46AEE8] text-slate-800';
 
 export default function AdminCategoriesPage() {
     const { categories, isLoading, mutate } = useCategories();
@@ -52,42 +55,52 @@ export default function AdminCategoriesPage() {
     };
 
     return (
-        <div className="space-y-6 max-w-2xl">
-            <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tighter">Categories</h1>
+        <div className="space-y-5">
+            <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">Categories</h1>
 
-            <form onSubmit={add} className="flex gap-3">
-                <input value={name} onChange={(e) => setName(e.target.value)} required placeholder="New category name"
-                    className="flex-1 px-4 py-3 bg-white border border-primary/10 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-[#46AEE8] text-gray-900" />
-                <button disabled={adding} className="bg-[#46AEE8] text-white px-5 py-3 rounded-xl font-bold text-sm disabled:opacity-60">Add</button>
-            </form>
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-5 md:p-6 space-y-5">
+                {/* add form */}
+                <form onSubmit={add} className="flex flex-col sm:flex-row gap-3">
+                    <input value={name} onChange={(e) => setName(e.target.value)} required placeholder="New category name" className={input} />
+                    <button disabled={adding} className="flex items-center justify-center gap-2 text-white px-6 py-3 rounded-xl font-bold text-sm disabled:opacity-60 shrink-0" style={{ backgroundColor: SKY }}>
+                        <Plus className="w-4 h-4" /> Add
+                    </button>
+                </form>
 
-            {isLoading ? <CardListSkeleton rows={6} /> : (
-                <ul className="space-y-3">
-                    {categories.map((c) => (
-                        <li key={c.id} className="flex items-center justify-between gap-3 p-4 bg-white border border-primary/5 rounded-xl">
-                            {editingId === c.id ? (
-                                <>
-                                    <input value={editName} onChange={(e) => setEditName(e.target.value)} autoFocus
-                                        className="flex-1 px-3 py-2 bg-gray-50 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-[#46AEE8] text-gray-900" />
-                                    <button onClick={() => saveEdit(c.id)} className="px-3 py-2 bg-[#46AEE8] text-white rounded-lg text-xs font-bold">Save</button>
-                                    <button onClick={() => setEditingId(null)} className="px-3 py-2 text-gray-400 text-xs font-bold">Cancel</button>
-                                </>
-                            ) : (
-                                <>
-                                    <div>
-                                        <span className="font-semibold text-primary">{c.name}</span>
-                                        <span className="ml-3 text-xs text-gray-400">{c.count} products</span>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <button onClick={() => { setEditingId(c.id); setEditName(c.name); }} className="p-2 rounded-lg hover:bg-primary/10"><Pencil className="w-4 h-4" /></button>
-                                        <button onClick={() => remove(c.id)} className="p-2 rounded-lg hover:bg-hot/10 text-hot"><Trash2 className="w-4 h-4" /></button>
-                                    </div>
-                                </>
-                            )}
-                        </li>
-                    ))}
-                </ul>
-            )}
+                {/* list */}
+                {isLoading ? <CardListSkeleton rows={6} /> : categories.length === 0 ? (
+                    <p className="text-sm text-slate-400 py-6 text-center">No categories yet.</p>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+                        {categories.map((c) => (
+                            <div key={c.id} className="flex items-center justify-between gap-3 p-3.5 bg-slate-50 rounded-2xl">
+                                {editingId === c.id ? (
+                                    <>
+                                        <input value={editName} onChange={(e) => setEditName(e.target.value)} autoFocus
+                                            className="flex-1 px-3 py-2 bg-white border border-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#46AEE8] text-slate-800" />
+                                        <button onClick={() => saveEdit(c.id)} title="Save" className="w-9 h-9 flex items-center justify-center text-white rounded-lg shrink-0" style={{ backgroundColor: SKY }}><Check className="w-4 h-4" /></button>
+                                        <button onClick={() => setEditingId(null)} title="Cancel" className="w-9 h-9 flex items-center justify-center text-slate-400 hover:bg-slate-200/60 rounded-lg shrink-0"><X className="w-4 h-4" /></button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <span className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${SKY}1a`, color: SKY }}><TagIcon className="w-4 h-4" /></span>
+                                            <div className="min-w-0">
+                                                <p className="font-bold text-slate-800 truncate">{c.name}</p>
+                                                <p className="text-xs text-slate-400">{c.count} products</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-1.5 shrink-0">
+                                            <button onClick={() => { setEditingId(c.id); setEditName(c.name); }} title="Edit" className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-slate-200/60 text-slate-500"><Pencil className="w-4 h-4" /></button>
+                                            <button onClick={() => remove(c.id)} title="Delete" className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-rose-50 text-rose-500"><Trash2 className="w-4 h-4" /></button>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

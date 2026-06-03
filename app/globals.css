@@ -871,3 +871,36 @@ a:focus-visible {
   width: 0;
   height: 0;
 }
+
+/* ===================== Admin dark mode =====================
+   Scoped re-skin of the admin dashboard. These rules are unlayered, so they
+   override Tailwind's layered utilities without !important. Light mode is
+   unchanged. */
+.dark .admin-scope { background-color: #0b1120; color: #cbd5e1; }
+.dark .admin-scope .bg-\[\#f3f5f7\] { background-color: #0f172a; }   /* panel */
+.dark .admin-scope .bg-white       { background-color: #1e293b; }   /* cards */
+.dark .admin-scope .bg-slate-50    { background-color: #0f172a; }   /* sub-cards */
+.dark .admin-scope .bg-slate-100   { background-color: #334155; }   /* tracks / empty heatmap */
+.dark .admin-scope .bg-gray-50     { background-color: #0f172a; }   /* inputs */
+.dark .admin-scope .bg-gray-100    { background-color: #334155; }
+.dark .admin-scope .bg-primary\/5  { background-color: rgba(255,255,255,0.05); }
+.dark .admin-scope .bg-emerald-50  { background-color: rgba(16,185,129,0.15); }
+
+.dark .admin-scope .text-slate-800,
+.dark .admin-scope .text-primary,
+.dark .admin-scope .text-gray-900  { color: #f1f5f9; }
+.dark .admin-scope .text-slate-700 { color: #e2e8f0; }
+.dark .admin-scope .text-slate-600 { color: #cbd5e1; }
+.dark .admin-scope .text-secondary { color: #94a3b8; }
+
+.dark .admin-scope .border-slate-100,
+.dark .admin-scope .border-slate-200,
+.dark .admin-scope .border-slate-200\/70,
+.dark .admin-scope .border-primary\/5,
+.dark .admin-scope .border-primary\/10 { border-color: rgba(255,255,255,0.08); }
+.dark .admin-scope .divide-primary\/5 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(255,255,255,0.08); }
+
+.dark .admin-scope input,
+.dark .admin-scope textarea        { color: #f1f5f9; }
+.dark .admin-scope input::placeholder,
+.dark .admin-scope textarea::placeholder { color: #64748b; }
