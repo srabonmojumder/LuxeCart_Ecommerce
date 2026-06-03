@@ -34,11 +34,45 @@ import {
     useCategories,
     usePublicStats,
     useTestimonials,
+    type Testimonial,
 } from '@/lib/hooks';
 import { api } from '@/lib/api';
 import { generateWebSiteSchema } from '@/lib/seo';
 
 const FALLBACK_CAT_IMAGE = '/home_accessories_hero.png';
+
+/** A single testimonial card — used inside the two marquee rows. */
+function TestimonialCard({ t }: { t: Testimonial }) {
+    return (
+        <div className="group relative overflow-hidden flex flex-col gap-5 w-[300px] sm:w-[360px] shrink-0 mr-5 bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-3xl p-7 hover:border-accent/40 hover:shadow-xl hover:shadow-accent/5 transition-all duration-300">
+            <Quote className="absolute -top-3 -right-3 w-24 h-24 rotate-180 text-accent/[0.06] dark:text-accent/10 pointer-events-none" />
+            <div className="relative flex gap-0.5">
+                {Array.from({ length: 5 }).map((_, s) => (
+                    <Star key={s} className={`w-4 h-4 ${s < t.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-200 dark:text-slate-700'}`} />
+                ))}
+            </div>
+            <p className="relative text-primary dark:text-gray-200 leading-relaxed text-[15px] flex-1 line-clamp-4">&ldquo;{t.comment}&rdquo;</p>
+            <div className="relative flex items-center gap-3 pt-5 border-t border-primary/5 dark:border-slate-800">
+                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-accent to-accent-700 p-[2px] flex-shrink-0">
+                    <div className="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden text-accent font-black text-sm">
+                        {t.avatar ? (
+                            <Image src={t.avatar} alt={t.author} width={44} height={44} className="object-cover w-full h-full" />
+                        ) : (
+                            t.author.charAt(0).toUpperCase()
+                        )}
+                    </div>
+                </div>
+                <div className="min-w-0 flex-1">
+                    <p className="font-bold text-primary dark:text-white text-sm truncate flex items-center gap-1.5">
+                        {t.author}
+                        <BadgeCheck className="w-3.5 h-3.5 text-accent flex-shrink-0" />
+                    </p>
+                    <p className="text-xs text-gray-400 truncate">on {t.product}</p>
+                </div>
+            </div>
+        </div>
+    );
+}
 
 /** Compact, on-brand countdown for the Limited Offer section. */
 function DealCountdown({ endDate }: { endDate: Date }) {
@@ -94,6 +128,9 @@ export default function Home() {
     const { categories } = useCategories();
     const { stats } = usePublicStats();
     const { testimonials } = useTestimonials(8);
+    const tMid = Math.ceil(testimonials.length / 2);
+    const tRowA = testimonials.slice(0, tMid);
+    const tRowB = testimonials.slice(tMid);
 
     const heroBanner = banners[0];
     const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -485,47 +522,21 @@ export default function Home() {
                             )}
                         </div>
 
-                        <div className="flex flex-wrap justify-center gap-5">
-                            {testimonials.slice(0, 6).map((t, i) => (
-                                <motion.div
-                                    key={t.id}
-                                    initial={{ opacity: 0, y: 24 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: (i % 3) * 0.1 }}
-                                    viewport={{ once: true }}
-                                    className="group relative overflow-hidden flex flex-col gap-5 basis-full sm:basis-[calc(50%-10px)] lg:basis-[calc(33.333%-14px)] bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-3xl p-7 hover:border-accent/40 hover:shadow-xl hover:shadow-accent/5 hover:-translate-y-1 transition-all duration-300"
-                                >
-                                    {/* Oversized decorative quote */}
-                                    <Quote className="absolute -top-3 -right-3 w-24 h-24 rotate-180 text-accent/[0.06] dark:text-accent/10 pointer-events-none" />
-
-                                    <div className="relative flex gap-0.5">
-                                        {Array.from({ length: 5 }).map((_, s) => (
-                                            <Star key={s} className={`w-4 h-4 ${s < t.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-200 dark:text-slate-700'}`} />
-                                        ))}
+                        <div className="space-y-5">
+                            {/* row 1 — scrolls left */}
+                            <div className="marquee-row overflow-hidden">
+                                <div className="flex w-max animate-marquee-left">
+                                    {[...tRowA, ...tRowA].map((t, i) => <TestimonialCard key={`a-${i}`} t={t} />)}
+                                </div>
+                            </div>
+                            {/* row 2 — scrolls right */}
+                            {tRowB.length > 0 && (
+                                <div className="marquee-row overflow-hidden">
+                                    <div className="flex w-max animate-marquee-right">
+                                        {[...tRowB, ...tRowB].map((t, i) => <TestimonialCard key={`b-${i}`} t={t} />)}
                                     </div>
-
-                                    <p className="relative text-primary dark:text-gray-200 leading-relaxed text-[15px] flex-1 line-clamp-5">&ldquo;{t.comment}&rdquo;</p>
-
-                                    <div className="relative flex items-center gap-3 pt-5 border-t border-primary/5 dark:border-slate-800">
-                                        <div className="w-11 h-11 rounded-full bg-gradient-to-br from-accent to-accent-700 p-[2px] flex-shrink-0">
-                                            <div className="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden text-accent font-black text-sm">
-                                                {t.avatar ? (
-                                                    <Image src={t.avatar} alt={t.author} width={44} height={44} className="object-cover w-full h-full" />
-                                                ) : (
-                                                    t.author.charAt(0).toUpperCase()
-                                                )}
-                                            </div>
-                                        </div>
-                                        <div className="min-w-0 flex-1">
-                                            <p className="font-bold text-primary dark:text-white text-sm truncate flex items-center gap-1.5">
-                                                {t.author}
-                                                <BadgeCheck className="w-3.5 h-3.5 text-accent flex-shrink-0" />
-                                            </p>
-                                            <p className="text-xs text-gray-400 truncate">on {t.product}</p>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </section>
