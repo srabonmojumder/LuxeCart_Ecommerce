@@ -5,6 +5,7 @@ import { Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useCategories } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
+import { CardListSkeleton } from '@/components/ui/Skeleton';
 
 export default function AdminCategoriesPage() {
     const { categories, isLoading, mutate } = useCategories();
@@ -60,7 +61,7 @@ export default function AdminCategoriesPage() {
                 <button disabled={adding} className="bg-primary dark:bg-accent text-white px-5 py-3 rounded-xl font-bold text-sm disabled:opacity-60">Add</button>
             </form>
 
-            {isLoading ? <p className="text-secondary dark:text-gray-400">Loading…</p> : (
+            {isLoading ? <CardListSkeleton rows={6} /> : (
                 <ul className="space-y-3">
                     {categories.map((c) => (
                         <li key={c.id} className="flex items-center justify-between gap-3 p-4 bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-xl">

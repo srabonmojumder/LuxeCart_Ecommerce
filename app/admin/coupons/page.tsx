@@ -9,6 +9,7 @@ import { api, ApiError } from '@/lib/api';
 import Select from '@/components/ui/Select';
 import { usePagination } from '@/lib/usePagination';
 import Pagination from '@/components/ui/Pagination';
+import { TableSkeleton } from '@/components/ui/Skeleton';
 
 const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
 
@@ -71,7 +72,7 @@ export default function AdminCouponsPage() {
                 <button type="submit" disabled={saving} className="flex items-center justify-center gap-2 bg-primary dark:bg-accent text-white px-4 py-3 rounded-xl font-bold text-sm disabled:opacity-60"><Plus className="w-4 h-4" /> Add</button>
             </form>
 
-            {isLoading ? <p className="text-secondary dark:text-gray-400">Loading…</p> : coupons.length === 0 ? <p className="text-secondary dark:text-gray-400">No coupons yet.</p> : (
+            {isLoading ? <TableSkeleton rows={6} cols={6} /> : coupons.length === 0 ? <p className="text-secondary dark:text-gray-400">No coupons yet.</p> : (
                 <>
                 <div className="overflow-x-auto rounded-2xl border border-primary/5 dark:border-slate-800 bg-white dark:bg-slate-900">
                     <table className="w-full text-sm">

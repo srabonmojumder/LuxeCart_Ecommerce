@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useAdminBanners } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
+import { CardGridSkeleton } from '@/components/ui/Skeleton';
 
 const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
 
@@ -62,7 +63,7 @@ export default function AdminBannersPage() {
                 <button type="submit" disabled={saving} className="flex items-center justify-center gap-2 bg-primary dark:bg-accent text-white px-4 py-3 rounded-xl font-bold text-sm disabled:opacity-60"><Plus className="w-4 h-4" /> Add Banner</button>
             </form>
 
-            {isLoading ? <p className="text-secondary dark:text-gray-400">Loading…</p> : banners.length === 0 ? <p className="text-secondary dark:text-gray-400">No banners yet.</p> : (
+            {isLoading ? <CardGridSkeleton count={4} className="grid sm:grid-cols-2 gap-4" /> : banners.length === 0 ? <p className="text-secondary dark:text-gray-400">No banners yet.</p> : (
                 <div className="grid sm:grid-cols-2 gap-4">
                     {banners.map((b) => (
                         <div key={b.id} className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl overflow-hidden">

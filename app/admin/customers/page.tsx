@@ -7,6 +7,7 @@ import { useAdminUsers } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
 import { usePagination } from '@/lib/usePagination';
 import Pagination from '@/components/ui/Pagination';
+import { TableSkeleton } from '@/components/ui/Skeleton';
 
 const formatDate = (s: string) => {
     const d = new Date(s);
@@ -44,7 +45,7 @@ export default function AdminCustomersPage() {
         <div className="space-y-6">
             <h1 className="text-3xl md:text-4xl font-black text-primary dark:text-white tracking-tighter">Customers</h1>
 
-            {isLoading ? <p className="text-secondary dark:text-gray-400">Loading…</p> : (
+            {isLoading ? <TableSkeleton rows={8} cols={6} /> : (
                 <>
                 <div className="overflow-x-auto rounded-2xl border border-primary/5 dark:border-slate-800 bg-white dark:bg-slate-900">
                     <table className="w-full text-sm">

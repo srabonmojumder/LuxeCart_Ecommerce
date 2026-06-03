@@ -13,6 +13,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "seed": "tsx prisma/seed.ts",
+    "seed:perf": "tsx scripts/seed-perf.ts",
+    "clean:perf": "tsx scripts/clean-perf.ts",
     "db:reset": "prisma migrate reset --force",
     "notify:test": "tsx scripts/send-test.ts",
     "set-admin": "tsx scripts/set-admin.ts",

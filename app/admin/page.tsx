@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { DollarSign, Package, ShoppingBag, Users, AlertTriangle, Clock } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useAdminStats } from '@/lib/hooks';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 const statusStyles = (status: string) => {
     const s = status.toUpperCase();
@@ -40,7 +41,11 @@ export default function AdminDashboard() {
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${c.tint}`}>
                                 <Icon className="w-5 h-5" />
                             </div>
-                            <p className="text-2xl md:text-3xl font-black text-primary dark:text-white">{isLoading ? '…' : c.value}</p>
+                            {isLoading ? (
+                                <Skeleton className="h-8 w-20" />
+                            ) : (
+                                <p className="text-2xl md:text-3xl font-black text-primary dark:text-white">{c.value}</p>
+                            )}
                             <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mt-1">{c.label}</p>
                         </div>
                     );
@@ -54,7 +59,16 @@ export default function AdminDashboard() {
                         <h2 className="font-black text-primary dark:text-white uppercase tracking-tight flex items-center gap-2"><Clock className="w-4 h-4" /> Recent Orders</h2>
                         <Link href="/admin/orders" className="text-xs font-bold text-accent hover:underline">View all</Link>
                     </div>
-                    {!stats || stats.recentOrders.length === 0 ? (
+                    {isLoading ? (
+                        <div className="space-y-3">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <div key={i} className="flex items-center justify-between">
+                                    <Skeleton className="h-4 w-40" />
+                                    <Skeleton className="h-5 w-16 rounded-full" />
+                                </div>
+                            ))}
+                        </div>
+                    ) : !stats || stats.recentOrders.length === 0 ? (
                         <p className="text-sm text-secondary dark:text-gray-400">No orders yet.</p>
                     ) : (
                         <div className="space-y-3">
@@ -77,7 +91,16 @@ export default function AdminDashboard() {
                 {/* Low stock */}
                 <div className="bg-white dark:bg-slate-900 rounded-2xl border border-primary/5 dark:border-slate-800 p-6">
                     <h2 className="font-black text-primary dark:text-white uppercase tracking-tight flex items-center gap-2 mb-4"><AlertTriangle className="w-4 h-4 text-amber-500" /> Low Stock</h2>
-                    {!stats || stats.lowStock.length === 0 ? (
+                    {isLoading ? (
+                        <div className="space-y-3">
+                            {Array.from({ length: 4 }).map((_, i) => (
+                                <div key={i} className="flex items-center justify-between">
+                                    <Skeleton className="h-4 w-32" />
+                                    <Skeleton className="h-4 w-12" />
+                                </div>
+                            ))}
+                        </div>
+                    ) : !stats || stats.lowStock.length === 0 ? (
                         <p className="text-sm text-secondary dark:text-gray-400">Everything is well stocked. 🎉</p>
                     ) : (
                         <div className="space-y-3">

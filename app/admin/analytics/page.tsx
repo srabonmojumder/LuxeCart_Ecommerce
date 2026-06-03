@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { TrendingUp, ShoppingBag, DollarSign, BarChart3 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useAdminAnalytics, useSettings, type AdminAnalytics } from '@/lib/hooks';
+import { StatCardsSkeleton, ChartSkeleton, BarListSkeleton } from '@/components/ui/Skeleton';
 
 const RANGES = [7, 30, 90] as const;
 
@@ -86,7 +87,14 @@ export default function AdminAnalyticsPage() {
             </div>
 
             {isLoading || !analytics ? (
-                <p className="text-secondary dark:text-gray-400">Loading…</p>
+                <>
+                    <StatCardsSkeleton count={3} className="grid grid-cols-1 sm:grid-cols-3 gap-4" />
+                    <ChartSkeleton />
+                    <div className="grid lg:grid-cols-2 gap-4">
+                        <BarListSkeleton rows={5} />
+                        <BarListSkeleton rows={5} />
+                    </div>
+                </>
             ) : (
                 <>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

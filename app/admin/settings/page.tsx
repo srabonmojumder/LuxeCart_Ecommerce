@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useSettings, type Settings } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
+import { FormSkeleton } from '@/components/ui/Skeleton';
 
 const field = 'w-full px-4 py-3 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
 const label = 'text-[10px] font-black uppercase tracking-widest text-gray-400';
@@ -17,7 +18,7 @@ export default function AdminSettingsPage() {
         if (settings && !form) setForm(settings);
     }, [settings, form]);
 
-    if (!form) return <p className="text-secondary dark:text-gray-400">Loading…</p>;
+    if (!form) return <FormSkeleton fields={10} />;
 
     const set = (k: keyof Settings, v: string | number) => setForm({ ...form, [k]: v });
 

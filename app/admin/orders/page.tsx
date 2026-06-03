@@ -9,6 +9,7 @@ import { api, ApiError } from '@/lib/api';
 import Select from '@/components/ui/Select';
 import { usePagination } from '@/lib/usePagination';
 import Pagination from '@/components/ui/Pagination';
+import { CardListSkeleton } from '@/components/ui/Skeleton';
 
 const ORDER_STATUSES = ['PENDING', 'PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'REFUNDED'];
 
@@ -50,7 +51,7 @@ export default function AdminOrdersPage() {
         <div className="space-y-6">
             <h1 className="text-3xl md:text-4xl font-black text-primary dark:text-white tracking-tighter">Orders</h1>
 
-            {isLoading ? <p className="text-secondary dark:text-gray-400">Loading…</p>
+            {isLoading ? <CardListSkeleton rows={6} />
                 : orders.length === 0 ? <p className="text-secondary dark:text-gray-400">No orders yet.</p>
                     : (
                         <>

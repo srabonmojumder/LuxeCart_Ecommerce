@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useAdminReviews } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
+import { CardListSkeleton } from '@/components/ui/Skeleton';
 
 export default function AdminReviewsPage() {
     const isAdmin = useAuthStore((s) => s.status === 'authenticated' && s.user?.role === 'ADMIN');
@@ -25,7 +26,7 @@ export default function AdminReviewsPage() {
         <div className="space-y-6">
             <h1 className="text-3xl md:text-4xl font-black text-primary dark:text-white tracking-tighter">Reviews</h1>
 
-            {isLoading ? <p className="text-secondary dark:text-gray-400">Loading…</p>
+            {isLoading ? <CardListSkeleton rows={6} />
                 : reviews.length === 0 ? <p className="text-secondary dark:text-gray-400">No reviews yet.</p>
                     : (
                         <div className="space-y-3">

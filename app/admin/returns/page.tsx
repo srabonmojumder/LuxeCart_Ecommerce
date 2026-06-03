@@ -8,6 +8,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { useAdminReturns, type AdminReturn } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
 import Select from '@/components/ui/Select';
+import { CardListSkeleton } from '@/components/ui/Skeleton';
 
 const STATUSES: AdminReturn['status'][] = ['REQUESTED', 'APPROVED', 'REJECTED', 'RECEIVED', 'REFUNDED'];
 
@@ -80,7 +81,7 @@ export default function AdminReturnsPage() {
                 <RotateCcw className="w-7 h-7 text-accent" /> Returns &amp; Refunds
             </h1>
 
-            {isLoading ? <p className="text-secondary dark:text-gray-400">Loading…</p>
+            {isLoading ? <CardListSkeleton rows={5} />
                 : returns.length === 0 ? <p className="text-secondary dark:text-gray-400">No return requests yet.</p>
                     : <div className="space-y-3">{returns.map((r) => <ReturnRow key={r.id} r={r} onChanged={mutate} />)}</div>}
         </div>

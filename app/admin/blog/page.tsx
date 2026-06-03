@@ -10,6 +10,7 @@ import ImageUpload from '@/components/admin/ImageUpload';
 import Select from '@/components/ui/Select';
 import { usePagination } from '@/lib/usePagination';
 import Pagination from '@/components/ui/Pagination';
+import { TableSkeleton } from '@/components/ui/Skeleton';
 
 const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
 const label = 'text-[10px] font-black uppercase tracking-widest text-gray-400';
@@ -91,7 +92,7 @@ export default function AdminBlogPage() {
                 className="w-full md:max-w-sm px-4 py-2.5 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
             />
 
-            {isLoading ? <p className="text-secondary dark:text-gray-400">Loading…</p> : filtered.length === 0 ? (
+            {isLoading ? <TableSkeleton rows={6} cols={6} /> : filtered.length === 0 ? (
                 <p className="text-secondary dark:text-gray-400">{search ? 'No posts match.' : 'No posts yet — click "New Post" to write your first.'}</p>
             ) : (
                 <>

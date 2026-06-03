@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, User, Tag as TagIcon, BookOpen, ArrowRight } from 'lucide-react';
 import { usePost } from '@/lib/hooks';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 function formatLongDate(iso: string) {
     return new Date(iso).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -17,8 +18,17 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
 
     if (isLoading) {
         return (
-            <div className="min-h-[60vh] flex items-center justify-center">
-                <div className="w-10 h-10 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+            <div className="max-w-3xl mx-auto px-4 py-10 space-y-6">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-10 w-3/4" />
+                <div className="flex gap-4">
+                    <Skeleton className="h-4 w-28" />
+                    <Skeleton className="h-4 w-24" />
+                </div>
+                <Skeleton className="h-72 w-full rounded-2xl" />
+                <div className="space-y-3">
+                    {Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} className={`h-4 ${i % 4 === 3 ? 'w-1/2' : 'w-full'}`} />)}
+                </div>
             </div>
         );
     }

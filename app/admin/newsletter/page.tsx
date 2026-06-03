@@ -7,6 +7,7 @@ import { useSubscribers } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
 import { usePagination } from '@/lib/usePagination';
 import Pagination from '@/components/ui/Pagination';
+import { TableSkeleton } from '@/components/ui/Skeleton';
 
 const formatDate = (s: string) => new Date(s).toLocaleDateString();
 
@@ -41,7 +42,7 @@ export default function AdminNewsletterPage() {
                 )}
             </div>
 
-            {isLoading ? <p className="text-secondary dark:text-gray-400">Loading…</p> : subscribers.length === 0 ? <p className="text-secondary dark:text-gray-400">No subscribers yet.</p> : (
+            {isLoading ? <TableSkeleton rows={8} cols={2} /> : subscribers.length === 0 ? <p className="text-secondary dark:text-gray-400">No subscribers yet.</p> : (
                 <>
                 <div className="overflow-x-auto rounded-2xl border border-primary/5 dark:border-slate-800 bg-white dark:bg-slate-900">
                     <table className="w-full text-sm">

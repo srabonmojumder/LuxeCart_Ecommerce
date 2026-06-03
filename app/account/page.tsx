@@ -14,6 +14,7 @@ import EmailVerifyBanner from '@/components/account/EmailVerifyBanner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useStore, type Product } from '@/store/useStore';
 import { useOrders, type Order } from '@/lib/hooks';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { toast } from 'sonner';
 
 const formatDate = (dateString: string) => {
@@ -187,7 +188,21 @@ export default function AccountPage() {
                                     </div>
 
                                     {ordersLoading ? (
-                                        <p className="text-secondary dark:text-gray-400 font-medium">Loading orders…</p>
+                                        <div className="space-y-8">
+                                            {Array.from({ length: 3 }).map((_, i) => (
+                                                <div key={i} className="p-10 bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-[3rem] flex flex-col md:flex-row md:items-center justify-between gap-8">
+                                                    <div className="space-y-4 flex-1">
+                                                        <Skeleton className="h-3 w-32" />
+                                                        <Skeleton className="h-8 w-48" />
+                                                        <Skeleton className="h-3 w-24" />
+                                                    </div>
+                                                    <div className="flex flex-wrap items-center gap-3">
+                                                        <Skeleton className="h-9 w-24 rounded-full" />
+                                                        <Skeleton className="h-9 w-32 rounded-full" />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
                                     ) : orders.length === 0 ? (
                                         <p className="text-secondary dark:text-gray-400 font-medium">No orders yet. Start shopping to see them here.</p>
                                     ) : (

@@ -10,6 +10,7 @@ import ImageUpload from '@/components/admin/ImageUpload';
 import Select from '@/components/ui/Select';
 import { usePagination } from '@/lib/usePagination';
 import Pagination from '@/components/ui/Pagination';
+import { TableSkeleton } from '@/components/ui/Skeleton';
 
 interface ProductFormState {
     id?: number;
@@ -134,7 +135,7 @@ export default function AdminProductsPage() {
                 </div>
             )}
 
-            {isLoading ? <p className="text-secondary dark:text-gray-400">Loading…</p> : (
+            {isLoading ? <TableSkeleton rows={8} cols={7} /> : (
                 <>
                 <div className="overflow-x-auto rounded-2xl border border-primary/5 dark:border-slate-800 bg-white dark:bg-slate-900">
                     <table className="w-full text-sm">

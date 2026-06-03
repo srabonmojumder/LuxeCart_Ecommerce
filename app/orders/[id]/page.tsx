@@ -6,6 +6,7 @@ import { useOrder } from '@/lib/hooks';
 import { useAuthStore } from '@/store/useAuthStore';
 import OrderTrackingView from '@/components/order/OrderTrackingView';
 import OrderActions from '@/components/order/OrderActions';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export default function OrderTrackingPage() {
     const params = useParams();
@@ -14,7 +15,26 @@ export default function OrderTrackingPage() {
     const { order, isLoading, error, mutate } = useOrder(authStatus === 'authenticated' ? id : null);
 
     if (authStatus === 'loading' || (authStatus === 'authenticated' && isLoading)) {
-        return <div className="min-h-[50vh] flex items-center justify-center"><div className="w-10 h-10 border-2 border-accent border-t-transparent rounded-full animate-spin" /></div>;
+        return (
+            <div className="max-w-3xl mx-auto px-4 py-10 space-y-6">
+                <Skeleton className="h-8 w-48" />
+                <div className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6 space-y-4">
+                    <Skeleton className="h-5 w-32" />
+                    <div className="flex justify-between gap-2">
+                        {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-12 w-12 rounded-full" />)}
+                    </div>
+                    <Skeleton className="h-2 w-full rounded-full" />
+                </div>
+                <div className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6 space-y-3">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                            <Skeleton className="h-14 w-14 rounded-xl" />
+                            <div className="flex-1 space-y-2"><Skeleton className="h-4 w-2/3" /><Skeleton className="h-3 w-1/3" /></div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
     }
 
     if (authStatus === 'guest') {
