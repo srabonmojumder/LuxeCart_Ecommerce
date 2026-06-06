@@ -18,14 +18,14 @@ export default function OrderTrackingPage() {
         return (
             <div className="max-w-3xl mx-auto px-4 py-10 space-y-6">
                 <Skeleton className="h-8 w-48" />
-                <div className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6 space-y-4">
+                <div className="bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6 space-y-4">
                     <Skeleton className="h-5 w-32" />
                     <div className="flex justify-between gap-2">
                         {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-12 w-12 rounded-full" />)}
                     </div>
                     <Skeleton className="h-2 w-full rounded-full" />
                 </div>
-                <div className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6 space-y-3">
+                <div className="bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6 space-y-3">
                     {Array.from({ length: 3 }).map((_, i) => (
                         <div key={i} className="flex items-center gap-3">
                             <Skeleton className="h-14 w-14 rounded-xl" />
@@ -41,7 +41,7 @@ export default function OrderTrackingPage() {
         return (
             <div className="min-h-[50vh] flex items-center justify-center px-4 text-center">
                 <div className="space-y-4">
-                    <h1 className="text-2xl font-black text-primary dark:text-white tracking-tighter">Track your order</h1>
+                    <h1 className="text-2xl font-medium text-primary dark:text-white tracking-tight">Track your order</h1>
                     <p className="text-secondary dark:text-gray-400">Sign in, or track a guest order with your order number &amp; email.</p>
                     <div className="flex gap-3 justify-center">
                         <Link href="/account" className="px-6 py-3 bg-primary dark:bg-accent text-white rounded-xl font-bold text-sm">Sign In</Link>
@@ -56,7 +56,7 @@ export default function OrderTrackingPage() {
         return (
             <div className="min-h-[50vh] flex items-center justify-center px-4 text-center">
                 <div className="space-y-3">
-                    <h1 className="text-2xl font-black text-primary dark:text-white tracking-tighter">Order not found</h1>
+                    <h1 className="text-2xl font-medium text-primary dark:text-white tracking-tight">Order not found</h1>
                     <Link href="/account" className="text-accent font-bold hover:underline">Back to your orders</Link>
                 </div>
             </div>
@@ -65,7 +65,7 @@ export default function OrderTrackingPage() {
 
     return (
         <div className="max-w-3xl mx-auto px-4 md:px-8 py-8 pb-24">
-            <Link href="/account" className="text-[10px] font-black tracking-widest text-accent uppercase hover:underline">← Your Orders</Link>
+            <Link href="/account" className="text-[10px] font-medium tracking-widest text-accent uppercase hover:underline">← Your Orders</Link>
             <div className="mt-3 space-y-8">
                 <OrderTrackingView order={order} />
                 <OrderActions order={order} onChanged={() => mutate()} />

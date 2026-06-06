@@ -27,7 +27,7 @@ export default function InvoicePage() {
         return (
             <div className="min-h-[50vh] flex items-center justify-center px-4 text-center">
                 <div className="space-y-3">
-                    <h1 className="text-2xl font-black text-primary dark:text-white">Invoice unavailable</h1>
+                    <h1 className="text-2xl font-medium text-primary dark:text-white">Invoice unavailable</h1>
                     <Link href="/account" className="text-accent font-bold hover:underline">Back to your orders</Link>
                 </div>
             </div>
@@ -48,10 +48,10 @@ export default function InvoicePage() {
             }`}</style>
 
             <div className="flex items-center justify-between mb-6 no-print">
-                <Link href={`/orders/${order.id}`} className="inline-flex items-center gap-2 text-[10px] font-black tracking-widest text-accent uppercase hover:underline">
+                <Link href={`/orders/${order.id}`} className="inline-flex items-center gap-2 text-[10px] font-medium tracking-widest text-accent uppercase hover:underline">
                     <ArrowLeft className="w-4 h-4" /> Back to order
                 </Link>
-                <button onClick={() => window.print()} className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-primary text-white dark:bg-accent text-xs font-black uppercase tracking-widest hover:opacity-90">
+                <button onClick={() => window.print()} className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-primary text-white dark:bg-accent text-xs font-medium uppercase tracking-widest hover:opacity-90">
                     <Printer className="w-4 h-4" /> Print / Save PDF
                 </button>
             </div>
@@ -60,21 +60,21 @@ export default function InvoicePage() {
                 {/* Header */}
                 <div className="flex justify-between items-start mb-10">
                     <div>
-                        <h1 className="text-3xl font-black tracking-tighter">{settings?.storeName ?? 'LuxeCart'}</h1>
+                        <h1 className="text-3xl font-medium tracking-tight">{settings?.storeName ?? 'LuxeCart'}</h1>
                         {settings?.supportEmail && <p className="text-sm text-gray-500 mt-1">{settings.supportEmail}</p>}
                         {settings?.address && <p className="text-sm text-gray-500">{settings.address}</p>}
                     </div>
                     <div className="text-right">
-                        <p className="text-xs font-black uppercase tracking-widest text-gray-400">Invoice</p>
-                        <p className="text-2xl font-black">{ref}</p>
+                        <p className="text-xs font-medium uppercase tracking-widest text-gray-400">Invoice</p>
+                        <p className="text-2xl font-medium">{ref}</p>
                         <p className="text-sm text-gray-500 mt-1">{fmtDate(order.createdAt)}</p>
-                        <span className="inline-block mt-2 px-3 py-1 rounded-full bg-gray-100 text-xs font-black uppercase tracking-widest">{order.status}</span>
+                        <span className="inline-block mt-2 px-3 py-1 rounded-full bg-gray-100 text-xs font-medium uppercase tracking-widest">{order.status}</span>
                     </div>
                 </div>
 
                 {/* Bill to */}
                 <div className="mb-8">
-                    <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Bill to</p>
+                    <p className="text-xs font-medium uppercase tracking-widest text-gray-400 mb-2">Bill to</p>
                     <p className="text-sm leading-relaxed">
                         {addr?.fullName}<br />
                         {addr?.line1}{addr?.line2 ? `, ${addr.line2}` : ''}<br />
@@ -112,7 +112,7 @@ export default function InvoicePage() {
                         {order.discount > 0 && <div className="flex justify-between text-emerald-600"><span>Discount{order.couponCode ? ` (${order.couponCode})` : ''}</span><span>−{money(order.discount)}</span></div>}
                         <div className="flex justify-between text-gray-500"><span>Shipping</span><span>{order.shipping === 0 ? 'Free' : money(order.shipping)}</span></div>
                         <div className="flex justify-between text-gray-500"><span>Tax</span><span>{money(order.tax)}</span></div>
-                        <div className="flex justify-between font-black text-lg pt-2 border-t-2 border-gray-200"><span>Total</span><span>{money(order.total)}</span></div>
+                        <div className="flex justify-between font-medium text-lg pt-2 border-t-2 border-gray-200"><span>Total</span><span>{money(order.total)}</span></div>
                     </div>
                 </div>
 

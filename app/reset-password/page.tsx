@@ -35,23 +35,23 @@ function ResetPasswordInner() {
 
     return (
         <div className="min-h-[70vh] flex items-center justify-center px-4 py-16">
-            <div className="max-w-md w-full bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-3xl p-8 md:p-10 shadow-xl">
+            <div className="max-w-md w-full bg-white dark:bg-ink-900 border border-primary/10 dark:border-slate-800 rounded-3xl p-8 md:p-10 shadow-xl">
                 {!token ? (
                     <div className="text-center space-y-4">
                         <AlertTriangle className="w-14 h-14 text-hot mx-auto" />
-                        <h2 className="text-2xl font-black text-primary dark:text-white uppercase tracking-tight">Invalid link</h2>
+                        <h2 className="text-2xl font-medium text-primary dark:text-white uppercase tracking-tight">Invalid link</h2>
                         <p className="text-sm text-secondary dark:text-gray-400">This reset link is missing its token. Request a new one.</p>
                         <Link href="/forgot-password" className="text-accent font-bold text-sm hover:underline">Request a new link</Link>
                     </div>
                 ) : done ? (
                     <div className="text-center space-y-4">
                         <CheckCircle2 className="w-14 h-14 text-new mx-auto" />
-                        <h2 className="text-2xl font-black text-primary dark:text-white uppercase tracking-tight">All set!</h2>
+                        <h2 className="text-2xl font-medium text-primary dark:text-white uppercase tracking-tight">All set!</h2>
                         <p className="text-sm text-secondary dark:text-gray-400">Your password has been updated. Redirecting to sign in…</p>
                     </div>
                 ) : (
                     <>
-                        <h2 className="text-2xl font-black text-primary dark:text-white uppercase tracking-tight mb-2">Reset password</h2>
+                        <h2 className="text-2xl font-medium text-primary dark:text-white uppercase tracking-tight mb-2">Reset password</h2>
                         <p className="text-sm text-secondary dark:text-gray-400 mb-8">Choose a new password for your account.</p>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="relative">
@@ -63,7 +63,7 @@ function ResetPasswordInner() {
                                     placeholder="New password (min 6 chars)"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
+                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-ink-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
                                 />
                             </div>
                             <div className="relative">
@@ -75,7 +75,7 @@ function ResetPasswordInner() {
                                     placeholder="Confirm new password"
                                     value={confirm}
                                     onChange={(e) => setConfirm(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
+                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-ink-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
                                 />
                             </div>
                             <button

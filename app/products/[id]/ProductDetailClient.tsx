@@ -58,7 +58,7 @@ export default function ProductDetailPage() {
     if (isLoading) {
         return (
             <div className="pt-20 min-h-screen flex items-center justify-center">
-                <div className="w-10 h-10 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-10 h-10 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -105,13 +105,13 @@ export default function ProductDetailPage() {
     const images = [product.image, product.image, product.image];
 
     return (
-        <div className="pb-36 md:pb-8 min-h-screen bg-slate-50 dark:bg-slate-900">
+        <div className="pb-36 md:pb-8 min-h-screen bg-canvas dark:bg-ink-950">
             <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 md:py-8 lg:py-12">
                 {/* Breadcrumb */}
                 <nav className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm text-slate-600 dark:text-slate-400 mb-4 md:mb-8 overflow-x-auto">
-                    <Link href="/" className="hover:text-teal-600 whitespace-nowrap">Home</Link>
+                    <Link href="/" className="hover:text-accent-600 whitespace-nowrap">Home</Link>
                     <span>/</span>
-                    <Link href="/products" className="hover:text-teal-600 whitespace-nowrap">Products</Link>
+                    <Link href="/products" className="hover:text-accent-600 whitespace-nowrap">Products</Link>
                     <span>/</span>
                     <span className="text-slate-900 dark:text-white truncate max-w-[150px] md:max-w-none">{product.name}</span>
                 </nav>
@@ -132,7 +132,7 @@ export default function ProductDetailPage() {
                                             whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
                                             className={`relative aspect-square rounded-xl overflow-hidden transition-all duration-300 ${selectedImage === idx
-                                                    ? 'ring-2 ring-teal-500 shadow-lg shadow-teal-500/30'
+                                                    ? 'ring-2 ring-accent-500 shadow-lg shadow-accent-500/30'
                                                     : 'opacity-60 hover:opacity-100 grayscale hover:grayscale-0'
                                                 }`}
                                         >
@@ -144,7 +144,7 @@ export default function ProductDetailPage() {
                                                 sizes="96px"
                                             />
                                             {selectedImage === idx && (
-                                                <div className="absolute inset-0 border-2 border-teal-500 rounded-xl" />
+                                                <div className="absolute inset-0 border-2 border-accent-500 rounded-xl" />
                                             )}
                                         </motion.button>
                                     ))}
@@ -192,7 +192,7 @@ export default function ProductDetailPage() {
                                             initial={{ rotate: -12 }}
                                             animate={{ rotate: [-12, -8, -12] }}
                                             transition={{ repeat: Infinity, duration: 2 }}
-                                            className="inline-block bg-gradient-to-r from-rose-500 via-pink-500 to-orange-500 text-white px-4 py-2 rounded-xl text-lg font-black shadow-xl shadow-rose-500/30"
+                                            className="inline-block bg-gradient-to-r from-rose-500 via-pink-500 to-orange-500 text-white px-4 py-2 rounded-xl text-lg font-medium shadow-xl shadow-rose-500/30"
                                         >
                                             -{product.discount}% OFF
                                         </motion.span>
@@ -210,7 +210,7 @@ export default function ProductDetailPage() {
                                     initial={{ opacity: 0, x: 20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ duration: 0.25 }}
-                                    className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 shadow-lg"
+                                    className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-slate-100 dark:bg-ink-800 shadow-lg"
                                 >
                                     <Image
                                         src={images[selectedImage]}
@@ -258,7 +258,7 @@ export default function ProductDetailPage() {
                                             onClick={() => setSelectedImage(idx)}
                                             whileTap={{ scale: 0.95 }}
                                             className={`relative mt-3 flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden transition-all duration-200 ${selectedImage === idx
-                                                    ? 'ring-2 ring-teal-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-900 shadow-md'
+                                                    ? 'ring-2 ring-accent-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-900 shadow-md'
                                                     : 'opacity-50 hover:opacity-80'
                                                 }`}
                                         >
@@ -270,7 +270,7 @@ export default function ProductDetailPage() {
                                                 sizes="64px"
                                             />
                                             {selectedImage === idx && (
-                                                <div className="absolute inset-0 bg-teal-500/10" />
+                                                <div className="absolute inset-0 bg-accent-500/10" />
                                             )}
                                         </motion.button>
                                     ))}
@@ -285,7 +285,7 @@ export default function ProductDetailPage() {
                                             key={idx}
                                             onClick={() => setSelectedImage(idx)}
                                             className={`h-1.5 rounded-full transition-all duration-300 ${selectedImage === idx
-                                                    ? 'w-6 bg-teal-500'
+                                                    ? 'w-6 bg-accent-500'
                                                     : 'w-1.5 bg-slate-300 dark:bg-slate-600'
                                                 }`}
                                         />
@@ -303,10 +303,10 @@ export default function ProductDetailPage() {
                         className="space-y-3 xs:space-y-4 md:space-y-6"
                     >
                         <div>
-                            <p className="text-teal-600 dark:text-teal-400 font-medium text-xs xs:text-sm mb-0.5 xs:mb-1 md:mb-2">
+                            <p className="text-accent-600 dark:text-accent-400 font-medium text-xs xs:text-sm mb-0.5 xs:mb-1 md:mb-2">
                                 {product.category}
                             </p>
-                            <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-2 xs:mb-3 md:mb-4">
+                            <h1 className="font-display text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-medium text-slate-900 dark:text-white leading-[1.08] mb-2 xs:mb-3 md:mb-4">
                                 {product.name}
                             </h1>
 
@@ -332,7 +332,7 @@ export default function ProductDetailPage() {
                             <div className="flex flex-wrap items-baseline gap-1.5 xs:gap-2 md:gap-4 mb-3 xs:mb-4 md:mb-6">
                                 {product.discount ? (
                                     <>
-                                        <span className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-teal-600">
+                                        <span className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-accent-600">
                                             ${discountedPrice.toFixed(2)}
                                         </span>
                                         <span className="text-sm xs:text-lg md:text-2xl text-slate-400 line-through">
@@ -377,7 +377,7 @@ export default function ProductDetailPage() {
                             <div className="flex items-center gap-1.5 xs:gap-2 md:gap-3">
                                 <button
                                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                    className="p-1.5 xs:p-2 md:p-2.5 border-2 border-slate-200 dark:border-slate-700 rounded-lg xs:rounded-xl hover:border-teal-500 hover:text-teal-600 transition-colors text-slate-600 dark:text-slate-300"
+                                    className="p-1.5 xs:p-2 md:p-2.5 border-2 border-slate-200 dark:border-slate-700 rounded-lg xs:rounded-xl hover:border-accent-500 hover:text-accent-600 transition-colors text-slate-600 dark:text-slate-300"
                                 >
                                     <Minus className="w-4 h-4 md:w-5 md:h-5" />
                                 </button>
@@ -386,7 +386,7 @@ export default function ProductDetailPage() {
                                 </span>
                                 <button
                                     onClick={() => setQuantity(quantity + 1)}
-                                    className="p-1.5 xs:p-2 md:p-2.5 border-2 border-slate-200 dark:border-slate-700 rounded-lg xs:rounded-xl hover:border-teal-500 hover:text-teal-600 transition-colors text-slate-600 dark:text-slate-300"
+                                    className="p-1.5 xs:p-2 md:p-2.5 border-2 border-slate-200 dark:border-slate-700 rounded-lg xs:rounded-xl hover:border-accent-500 hover:text-accent-600 transition-colors text-slate-600 dark:text-slate-300"
                                 >
                                     <Plus className="w-4 h-4 md:w-5 md:h-5" />
                                 </button>
@@ -400,7 +400,7 @@ export default function ProductDetailPage() {
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     onClick={handleAddToCart}
-                                    className="flex-1 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white font-semibold py-2.5 xs:py-3 md:py-4 px-3 xs:px-4 md:px-6 rounded-xl flex items-center justify-center gap-1.5 xs:gap-2 shadow-lg shadow-teal-500/20 transition-all text-sm xs:text-base"
+                                    className="flex-1 bg-gradient-to-r from-accent-500 to-emerald-500 hover:from-accent-600 hover:to-emerald-600 text-white font-semibold py-2.5 xs:py-3 md:py-4 px-3 xs:px-4 md:px-6 rounded-xl flex items-center justify-center gap-1.5 xs:gap-2 shadow-lg shadow-accent-500/20 transition-all text-sm xs:text-base"
                                 >
                                     <ShoppingCart className="w-4 h-4 xs:w-5 xs:h-5" />
                                     <span className="hidden xs:inline">Add to Cart</span>
@@ -431,25 +431,25 @@ export default function ProductDetailPage() {
                                 <Heart className={`w-4 h-4 xs:w-5 xs:h-5 md:w-6 md:h-6 ${inWishlist ? 'fill-current' : ''}`} />
                             </motion.button>
 
-                            <button className="hidden xs:flex p-2.5 xs:p-3 md:p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-teal-500 hover:text-teal-600 transition-all flex-shrink-0">
+                            <button className="hidden xs:flex p-2.5 xs:p-3 md:p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-accent-500 hover:text-accent-600 transition-all flex-shrink-0">
                                 <Share2 className="w-4 h-4 xs:w-5 xs:h-5 md:w-6 md:h-6" />
                             </button>
                         </div>
 
                         {/* Features - Hidden on very small screens */}
                         <div className="hidden xs:grid grid-cols-3 gap-1.5 xs:gap-2 md:gap-4 pt-3 xs:pt-4 md:pt-6 border-t border-slate-200 dark:border-slate-700">
-                            <div className="text-center p-1.5 xs:p-2 md:p-3 rounded-lg xs:rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                                <Truck className="w-5 h-5 xs:w-6 xs:h-6 md:w-8 md:h-8 mx-auto mb-0.5 xs:mb-1 md:mb-2 text-teal-600" />
+                            <div className="text-center p-1.5 xs:p-2 md:p-3 rounded-lg xs:rounded-xl bg-slate-50 dark:bg-ink-800/50">
+                                <Truck className="w-5 h-5 xs:w-6 xs:h-6 md:w-8 md:h-8 mx-auto mb-0.5 xs:mb-1 md:mb-2 text-accent-600" />
                                 <p className="text-[10px] xs:text-xs md:text-sm font-medium text-slate-900 dark:text-white leading-tight">Free Ship</p>
                                 <p className="text-[9px] xs:text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden xs:block">On $50+</p>
                             </div>
-                            <div className="text-center p-1.5 xs:p-2 md:p-3 rounded-lg xs:rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                                <Shield className="w-5 h-5 xs:w-6 xs:h-6 md:w-8 md:h-8 mx-auto mb-0.5 xs:mb-1 md:mb-2 text-teal-600" />
+                            <div className="text-center p-1.5 xs:p-2 md:p-3 rounded-lg xs:rounded-xl bg-slate-50 dark:bg-ink-800/50">
+                                <Shield className="w-5 h-5 xs:w-6 xs:h-6 md:w-8 md:h-8 mx-auto mb-0.5 xs:mb-1 md:mb-2 text-accent-600" />
                                 <p className="text-[10px] xs:text-xs md:text-sm font-medium text-slate-900 dark:text-white leading-tight">Secure</p>
                                 <p className="text-[9px] xs:text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden xs:block">Protected</p>
                             </div>
-                            <div className="text-center p-1.5 xs:p-2 md:p-3 rounded-lg xs:rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                                <RotateCcw className="w-5 h-5 xs:w-6 xs:h-6 md:w-8 md:h-8 mx-auto mb-0.5 xs:mb-1 md:mb-2 text-teal-600" />
+                            <div className="text-center p-1.5 xs:p-2 md:p-3 rounded-lg xs:rounded-xl bg-slate-50 dark:bg-ink-800/50">
+                                <RotateCcw className="w-5 h-5 xs:w-6 xs:h-6 md:w-8 md:h-8 mx-auto mb-0.5 xs:mb-1 md:mb-2 text-accent-600" />
                                 <p className="text-[10px] xs:text-xs md:text-sm font-medium text-slate-900 dark:text-white leading-tight">Returns</p>
                                 <p className="text-[9px] xs:text-[10px] md:text-xs text-slate-500 dark:text-slate-400 hidden xs:block">30-day</p>
                             </div>
@@ -466,8 +466,8 @@ export default function ProductDetailPage() {
                                     key={tab}
                                     onClick={() => setActiveTab(tab)}
                                     className={`pb-3 md:pb-4 font-medium capitalize transition-colors whitespace-nowrap text-sm md:text-base ${activeTab === tab
-                                        ? 'text-teal-600 border-b-2 border-teal-600'
-                                        : 'text-slate-600 dark:text-slate-400 hover:text-teal-600'
+                                        ? 'text-accent-600 border-b-2 border-accent-600'
+                                        : 'text-slate-600 dark:text-slate-400 hover:text-accent-600'
                                         }`}
                                 >
                                     {tab}
@@ -476,7 +476,7 @@ export default function ProductDetailPage() {
                         </div>
                     </div>
 
-                    <div className="bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl p-4 md:p-6 border border-slate-200 dark:border-slate-700">
+                    <div className="bg-white dark:bg-ink-800 rounded-xl md:rounded-2xl p-4 md:p-6 border border-slate-200 dark:border-slate-700">
                         {activeTab === 'description' && (
                             <div>
                                 <h3 className="text-lg md:text-2xl font-bold text-slate-900 dark:text-white mb-3 md:mb-4">
