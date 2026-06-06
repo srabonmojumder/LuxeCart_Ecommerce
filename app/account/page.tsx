@@ -86,11 +86,11 @@ export default function AccountPage() {
 
     if (!isAuthed) {
         return (
-            <div className="pt-10 pb-48 bg-white dark:bg-slate-950">
+            <div className="pt-10 pb-48 bg-white dark:bg-ink-950">
                 <div className="max-w-[1440px] mx-auto px-4 md:px-12">
                     <header className="text-center mb-12 space-y-4">
-                        <span className="text-accent font-black tracking-[0.4em] text-xs uppercase block">Personal Terminal</span>
-                        <h1 className="text-5xl md:text-7xl font-black text-primary dark:text-white leading-[0.85] tracking-tighter">
+                        <span className="text-accent font-medium tracking-[0.4em] text-xs uppercase block">Personal Terminal</span>
+                        <h1 className="text-5xl md:text-7xl font-medium text-primary dark:text-white leading-[0.85] tracking-tight">
                             Client Access
                         </h1>
                     </header>
@@ -101,15 +101,15 @@ export default function AccountPage() {
     }
 
     return (
-        <div className="pt-5 md:pt-5 pb-48 bg-white dark:bg-slate-950">
+        <div className="pt-5 md:pt-5 pb-48 bg-white dark:bg-ink-950">
             <div className="max-w-[1440px] mx-auto px-4 md:px-12">
 
                 <EmailVerifyBanner />
 
                 <header className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-8">
                     <div className="space-y-6">
-                        <span className="text-accent font-black tracking-[0.4em] text-xs uppercase block">Personal Terminal</span>
-                        <h1 className="text-6xl md:text-9xl font-black text-primary dark:text-white leading-[0.8] tracking-tighter">
+                        <span className="text-accent font-medium tracking-[0.4em] text-xs uppercase block">Personal Terminal</span>
+                        <h1 className="text-6xl md:text-9xl font-medium text-primary dark:text-white leading-[0.8] tracking-tight">
                             Welcome,<br />{(user?.displayName || 'Client').split(' ')[0]}.
                         </h1>
                     </div>
@@ -121,8 +121,8 @@ export default function AccountPage() {
                     <aside className="lg:col-span-4 space-y-12">
                         <LoyaltyBadge points={3500} />
 
-                        <nav className="bg-primary/2 dark:bg-slate-900 rounded-[3.5rem] border border-primary/5 dark:border-slate-800 p-10 space-y-4">
-                            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-10">Navigation Matrix</h3>
+                        <nav className="bg-primary/2 dark:bg-ink-900 rounded-[3.5rem] border border-primary/5 dark:border-slate-800 p-10 space-y-4">
+                            <h3 className="text-[10px] font-medium text-gray-400 uppercase tracking-[0.4em] mb-10">Navigation Matrix</h3>
                             <div className="space-y-4">
                                 {tabs.map((tab) => {
                                     const Icon = tab.icon;
@@ -138,7 +138,7 @@ export default function AccountPage() {
                                         >
                                             <div className="flex items-center gap-6">
                                                 <Icon className={`w-6 h-6 ${isActive ? 'text-accent' : 'text-primary dark:text-white'}`} />
-                                                <span className="text-xs font-black uppercase tracking-widest">{tab.label}</span>
+                                                <span className="text-xs font-medium uppercase tracking-widest">{tab.label}</span>
                                             </div>
                                             {isActive ? (
                                                 <motion.div layoutId="navDot" className="w-2 h-2 rounded-full bg-accent" />
@@ -154,7 +154,7 @@ export default function AccountPage() {
                                         className="w-full flex items-center gap-6 p-6 rounded-2xl text-hot hover:bg-hot/5 transition-all group"
                                     >
                                         <LogOut className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-                                        <span className="text-xs font-black uppercase tracking-widest">Terminate Session</span>
+                                        <span className="text-xs font-medium uppercase tracking-widest">Terminate Session</span>
                                     </button>
                                 </div>
                             </div>
@@ -163,7 +163,7 @@ export default function AccountPage() {
                         {user?.role === 'ADMIN' && (
                             <Link
                                 href="/admin"
-                                className="flex items-center justify-center gap-3 p-6 rounded-[2rem] bg-primary text-white dark:bg-accent font-black uppercase tracking-widest text-xs hover:opacity-90 transition-opacity"
+                                className="flex items-center justify-center gap-3 p-6 rounded-[2rem] bg-primary text-white dark:bg-accent font-medium uppercase tracking-widest text-xs hover:opacity-90 transition-opacity"
                             >
                                 <Shield className="w-5 h-5" />
                                 Admin Dashboard
@@ -183,14 +183,14 @@ export default function AccountPage() {
                                     className="space-y-12"
                                 >
                                     <div className="flex items-center justify-between border-b-2 border-primary dark:border-white pb-8">
-                                        <h2 className="text-4xl font-black text-primary dark:text-white tracking-tighter uppercase">Order History</h2>
-                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{orders.length} Records</span>
+                                        <h2 className="text-4xl font-medium text-primary dark:text-white tracking-tight uppercase">Order History</h2>
+                                        <span className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">{orders.length} Records</span>
                                     </div>
 
                                     {ordersLoading ? (
                                         <div className="space-y-8">
                                             {Array.from({ length: 3 }).map((_, i) => (
-                                                <div key={i} className="p-10 bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-[3rem] flex flex-col md:flex-row md:items-center justify-between gap-8">
+                                                <div key={i} className="p-10 bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-[3rem] flex flex-col md:flex-row md:items-center justify-between gap-8">
                                                     <div className="space-y-4 flex-1">
                                                         <Skeleton className="h-3 w-32" />
                                                         <Skeleton className="h-8 w-48" />
@@ -213,30 +213,30 @@ export default function AccountPage() {
                                                     initial={{ opacity: 0, y: 20 }}
                                                     animate={{ opacity: 1, y: 0 }}
                                                     transition={{ delay: i * 0.1 }}
-                                                    className="group p-10 bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-[3rem] hover:shadow-2xl transition-all flex flex-col md:flex-row md:items-center justify-between gap-8"
+                                                    className="group p-10 bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-[3rem] hover:shadow-2xl transition-all flex flex-col md:flex-row md:items-center justify-between gap-8"
                                                 >
                                                     <div className="space-y-4">
                                                         <div className="flex items-center gap-4">
-                                                            <span className="text-[10px] font-black text-accent uppercase tracking-widest underline underline-offset-4">LC-{String(order.id).padStart(4, '0')}</span>
-                                                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{formatDate(order.createdAt)}</span>
+                                                            <span className="text-[10px] font-medium text-accent uppercase tracking-widest underline underline-offset-4">LC-{String(order.id).padStart(4, '0')}</span>
+                                                            <span className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">{formatDate(order.createdAt)}</span>
                                                         </div>
-                                                        <h3 className="text-3xl font-black text-primary dark:text-white tracking-tighter uppercase">Total: ${order.total.toFixed(2)}</h3>
-                                                        <p className="text-[10px] font-black text-secondary dark:text-gray-400 uppercase tracking-[0.2em]">{order.items.reduce((n, it) => n + it.quantity, 0)} Units</p>
+                                                        <h3 className="text-3xl font-medium text-primary dark:text-white tracking-tight uppercase">Total: ${order.total.toFixed(2)}</h3>
+                                                        <p className="text-[10px] font-medium text-secondary dark:text-gray-400 uppercase tracking-[0.2em]">{order.items.reduce((n, it) => n + it.quantity, 0)} Units</p>
                                                     </div>
                                                     <div className="flex flex-wrap items-center gap-3">
-                                                        <div className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border-2 ${statusStyles(order.status)}`}>
+                                                        <div className={`px-4 py-2 rounded-full text-[10px] font-medium uppercase tracking-widest border-2 ${statusStyles(order.status)}`}>
                                                             {order.status}
                                                         </div>
                                                         <button
                                                             onClick={() => orderAgain(order)}
                                                             title="Re-add all items to cart"
-                                                            className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-primary/15 dark:border-slate-700 text-primary dark:text-white text-[10px] font-black uppercase tracking-widest hover:bg-primary/5 dark:hover:bg-slate-800 transition-colors"
+                                                            className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-primary/15 dark:border-slate-700 text-primary dark:text-white text-[10px] font-medium uppercase tracking-widest hover:bg-primary/5 dark:hover:bg-slate-800 transition-colors"
                                                         >
                                                             <RefreshCw className="w-3 h-3" /> Order Again
                                                         </button>
                                                         <Link
                                                             href={`/orders/${order.id}`}
-                                                            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white dark:bg-accent text-[10px] font-black uppercase tracking-widest hover:opacity-90"
+                                                            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white dark:bg-accent text-[10px] font-medium uppercase tracking-widest hover:opacity-90"
                                                         >
                                                             Track <ChevronRight className="w-3.5 h-3.5" />
                                                         </Link>
@@ -268,7 +268,7 @@ export default function AccountPage() {
                                     className="space-y-16"
                                 >
                                     <div className="border-b-2 border-primary dark:border-white pb-8">
-                                        <h2 className="text-4xl font-black text-primary dark:text-white tracking-tighter uppercase">Client Identity</h2>
+                                        <h2 className="text-4xl font-medium text-primary dark:text-white tracking-tight uppercase">Client Identity</h2>
                                     </div>
                                     <ProfileForm />
                                 </motion.div>
@@ -283,7 +283,7 @@ export default function AccountPage() {
                                     className="space-y-16"
                                 >
                                     <div className="border-b-2 border-primary dark:border-white pb-8">
-                                        <h2 className="text-4xl font-black text-primary dark:text-white tracking-tighter uppercase">System Control</h2>
+                                        <h2 className="text-4xl font-medium text-primary dark:text-white tracking-tight uppercase">System Control</h2>
                                     </div>
                                     <SecurityForm />
                                     <div className="space-y-8">
@@ -292,17 +292,17 @@ export default function AccountPage() {
                                             { title: 'Metric Tracking', desc: 'Allow system to calibrate your experience based on navigation data.', icon: Settings },
                                             { title: 'Secure Vault', desc: 'Manage your biometric and transaction credentials.', icon: CreditCard },
                                         ].map((opt, i) => (
-                                            <div key={i} className="flex items-center justify-between p-10 bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-[3rem] hover:border-accent transition-all group">
+                                            <div key={i} className="flex items-center justify-between p-10 bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-[3rem] hover:border-accent transition-all group">
                                                 <div className="flex items-center gap-10">
-                                                    <div className="w-16 h-16 rounded-2xl bg-primary/2 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-white group-hover:bg-accent group-hover:text-white transition-all">
+                                                    <div className="w-16 h-16 rounded-2xl bg-primary/2 dark:bg-ink-800 flex items-center justify-center text-primary dark:text-white group-hover:bg-accent group-hover:text-white transition-all">
                                                         <opt.icon className="w-8 h-8" />
                                                     </div>
                                                     <div>
-                                                        <h3 className="text-xl font-black text-primary dark:text-white uppercase tracking-tight mb-2">{opt.title}</h3>
+                                                        <h3 className="text-xl font-medium text-primary dark:text-white uppercase tracking-tight mb-2">{opt.title}</h3>
                                                         <p className="text-sm font-medium text-secondary dark:text-gray-400 max-w-sm">{opt.desc}</p>
                                                     </div>
                                                 </div>
-                                                <div className="w-16 h-8 bg-primary/5 dark:bg-slate-800 rounded-full relative cursor-pointer border-2 border-primary/5 dark:border-slate-700">
+                                                <div className="w-16 h-8 bg-primary/5 dark:bg-ink-800 rounded-full relative cursor-pointer border-2 border-primary/5 dark:border-slate-700">
                                                     <motion.div animate={{ x: 36 }} className="absolute top-1 left-1 w-5 h-5 bg-accent rounded-full shadow-lg" />
                                                 </div>
                                             </div>

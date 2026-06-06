@@ -43,7 +43,7 @@ export default function CartPage() {
     // Empty Cart State
     if (cart.length === 0) {
         return (
-            <div className="pt-24 md:pt-[112px] min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center pb-24">
+            <div className="pt-24 md:pt-[112px] min-h-screen bg-canvas dark:bg-ink-950 flex items-center justify-center pb-24">
                 <div className="text-center px-4 max-w-lg mx-auto">
                     <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
@@ -52,7 +52,7 @@ export default function CartPage() {
                     >
                         <ShoppingBag className="w-16 h-16 text-primary/20" />
                     </motion.div>
-                    <h2 className="text-4xl md:text-5xl font-black text-primary dark:text-white mb-6 tracking-tighter">
+                    <h2 className="text-4xl md:text-5xl font-medium text-primary dark:text-white mb-6 tracking-tight">
                         Your Cart is Empty
                     </h2>
                     <p className="text-secondary dark:text-gray-400 text-lg mb-10 font-medium">
@@ -73,25 +73,25 @@ export default function CartPage() {
     }
 
     return (
-        <div className="pt-0 md:pt-0 min-h-screen bg-white dark:bg-slate-950 pb-32">
+        <div className="pt-0 md:pt-0 min-h-screen bg-canvas dark:bg-ink-950 pb-32">
             <div className="max-w-7xl mx-auto px-4 md:px-8 py-4">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 px-4 md:px-0">
                     <div className="max-w-2xl">
-                        <span className="inline-block text-accent font-black tracking-[0.4em] text-xs uppercase mb-4">
+                        <span className="inline-block text-accent font-medium tracking-[0.4em] text-xs uppercase mb-4">
                             Your Selection
                         </span>
-                        <h1 className="text-5xl md:text-7xl font-black text-primary dark:text-white leading-tight tracking-tighter">
+                        <h1 className="text-5xl md:text-7xl font-medium text-primary dark:text-white leading-tight tracking-tight">
                             Shopping Cart
                         </h1>
                     </div>
                     <div className="flex items-center gap-6">
-                        <p className="text-sm font-black tracking-widest text-primary dark:text-white uppercase">
+                        <p className="text-sm font-medium tracking-widest text-primary dark:text-white uppercase">
                             {cart.length} {cart.length === 1 ? 'item' : 'items'}
                         </p>
                         <button
                             onClick={handleClearCart}
-                            className="text-[10px] font-black tracking-widest text-accent uppercase hover:text-primary dark:hover:text-white transition-colors flex items-center gap-2"
+                            className="text-[10px] font-medium tracking-widest text-accent uppercase hover:text-primary dark:hover:text-white transition-colors flex items-center gap-2"
                         >
                             <Trash2 className="w-4 h-4" />
                             Clear Cart
@@ -114,11 +114,11 @@ export default function CartPage() {
                                         <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
                                             <Truck className="w-5 h-5 text-accent" />
                                         </div>
-                                        <span className="text-sm font-black tracking-widest text-primary uppercase">
+                                        <span className="text-sm font-medium tracking-widest text-primary uppercase">
                                             Add <span className="text-accent">${(50 - totalPrice).toFixed(2)}</span> for FREE shipping
                                         </span>
                                     </div>
-                                    <span className="text-xs font-black text-primary">{Math.round(freeShippingProgress)}%</span>
+                                    <span className="text-xs font-medium text-primary">{Math.round(freeShippingProgress)}%</span>
                                 </div>
                                 <div className="h-2.5 bg-white/50 rounded-full overflow-hidden">
                                     <motion.div
@@ -164,12 +164,12 @@ export default function CartPage() {
                                             <div className="flex-1 flex flex-col pt-1 sm:pt-2">
                                                 <div className="flex justify-between items-start gap-2 sm:gap-4 mb-2 sm:mb-4">
                                                     <div>
-                                                        <p className="text-[8px] sm:text-[10px] text-accent font-black uppercase tracking-[0.3em] mb-1 sm:mb-2">
+                                                        <p className="text-[8px] sm:text-[10px] text-accent font-medium uppercase tracking-[0.3em] mb-1 sm:mb-2">
                                                             {item.category}
                                                         </p>
                                                         <Link
                                                             href={`/products/${item.id}`}
-                                                            className="text-lg sm:text-2xl font-black text-primary dark:text-white hover:text-accent transition-colors tracking-tight leading-tight line-clamp-2"
+                                                            className="text-lg sm:text-2xl font-medium text-primary dark:text-white hover:text-accent transition-colors tracking-tight leading-tight line-clamp-2"
                                                         >
                                                             {item.name}
                                                         </Link>
@@ -203,7 +203,7 @@ export default function CartPage() {
                                                         >
                                                             <Minus className="w-3 h-3 sm:w-5 sm:h-5" />
                                                         </button>
-                                                        <span className="text-base sm:text-xl font-black text-primary dark:text-white min-w-[1.5ch] text-center">
+                                                        <span className="text-base sm:text-xl font-medium text-primary dark:text-white min-w-[1.5ch] text-center">
                                                             {item.quantity}
                                                         </span>
                                                         <button
@@ -216,7 +216,7 @@ export default function CartPage() {
 
                                                     {/* Price - Bold and Clean */}
                                                     <div className="text-right">
-                                                        <div className="text-lg sm:text-2xl font-black text-primary dark:text-white">
+                                                        <div className="text-lg sm:text-2xl font-medium text-primary dark:text-white">
                                                             ${(discountedPrice * item.quantity).toFixed(2)}
                                                         </div>
                                                         {item.discount && (
@@ -236,7 +236,7 @@ export default function CartPage() {
                         {/* Continue Shopping */}
                         <Link
                             href="/products"
-                            className="inline-flex items-center gap-4 text-xs font-black tracking-widest text-primary dark:text-white uppercase hover:gap-6 transition-all"
+                            className="inline-flex items-center gap-4 text-xs font-medium tracking-widest text-primary dark:text-white uppercase hover:gap-6 transition-all"
                         >
                             <div className="w-10 h-10 rounded-full bg-primary/5 dark:bg-white/5 flex items-center justify-center">
                                 <ArrowLeft className="w-4 h-4" />
@@ -250,9 +250,9 @@ export default function CartPage() {
                         <motion.div
                             initial={{ opacity: 0, x: 50 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-primary/5 dark:border-white/5 p-8 transition-all duration-500"
+                            className="bg-white dark:bg-ink-900 rounded-[2.5rem] border border-primary/5 dark:border-white/5 p-8 transition-all duration-500"
                         >
-                            <h2 className="text-2xl font-black text-primary dark:text-white mb-10 tracking-tight">
+                            <h2 className="text-2xl font-medium text-primary dark:text-white mb-10 tracking-tight">
                                 Order Summary
                             </h2>
 
@@ -260,27 +260,27 @@ export default function CartPage() {
                                 <div className="flex justify-between items-center bg-primary/5 dark:bg-white/5 px-6 py-4 rounded-2xl">
                                     <div className="flex items-center gap-3">
                                         <Tag className="w-4 h-4 text-accent" />
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Subtotal</span>
+                                        <span className="text-[10px] font-medium uppercase tracking-widest text-gray-500">Subtotal</span>
                                     </div>
-                                    <span className="text-lg font-black text-primary dark:text-white">
+                                    <span className="text-lg font-medium text-primary dark:text-white">
                                         ${totalPrice.toFixed(2)}
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center px-6">
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Shipping</span>
-                                    <span className={`text-sm font-black uppercase tracking-widest ${shipping === 0 ? 'text-accent' : 'text-primary dark:text-white'}`}>
+                                    <span className="text-[10px] font-medium uppercase tracking-widest text-gray-500">Shipping</span>
+                                    <span className={`text-sm font-medium uppercase tracking-widest ${shipping === 0 ? 'text-accent' : 'text-primary dark:text-white'}`}>
                                         {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center px-6 pb-6 border-b border-primary/5 dark:border-white/5">
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Tax</span>
-                                    <span className="text-sm font-black text-primary dark:text-white">
+                                    <span className="text-[10px] font-medium uppercase tracking-widest text-gray-500">Tax</span>
+                                    <span className="text-sm font-medium text-primary dark:text-white">
                                         ${tax.toFixed(2)}
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center px-6 pt-4">
-                                    <span className="text-xl font-black text-primary dark:text-white tracking-tight">Total</span>
-                                    <span className="text-3xl font-black text-primary dark:text-white tracking-tighter">
+                                    <span className="text-xl font-medium text-primary dark:text-white tracking-tight">Total</span>
+                                    <span className="text-3xl font-medium text-primary dark:text-white tracking-tight">
                                         ${finalTotal.toFixed(2)}
                                     </span>
                                 </div>
@@ -298,11 +298,11 @@ export default function CartPage() {
                             </Link>
 
                             <div className="mt-8 space-y-4 pt-8 border-t border-primary/5">
-                                <div className="flex items-center gap-4 text-[10px] font-black tracking-widest text-gray-400 uppercase">
+                                <div className="flex items-center gap-4 text-[10px] font-medium tracking-widest text-gray-400 uppercase">
                                     <Shield className="w-4 h-4 text-accent" />
                                     <span>Encrypted Payment</span>
                                 </div>
-                                <div className="flex items-center gap-4 text-[10px] font-black tracking-widest text-gray-400 uppercase">
+                                <div className="flex items-center gap-4 text-[10px] font-medium tracking-widest text-gray-400 uppercase">
                                     <Package className="w-4 h-4 text-accent" />
                                     <span>30-Day Easy Returns</span>
                                 </div>
@@ -316,11 +316,11 @@ export default function CartPage() {
             </div>
 
             {/* Mobile Checkout Bar - Styled Clean */}
-            <div className="lg:hidden fixed bottom-[60px] left-0 right-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-primary/5 dark:border-white/5 px-6 py-4 pb-safe shadow-2xl">
+            <div className="lg:hidden fixed bottom-[60px] left-0 right-0 z-40 bg-white/80 dark:bg-ink-900/80 backdrop-blur-xl border-t border-primary/5 dark:border-white/5 px-6 py-4 pb-safe shadow-2xl">
                 <div className="flex items-center justify-between mb-2">
                     <div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Total Amount</p>
-                        <p className="text-3xl font-black text-primary dark:text-white tracking-tighter">
+                        <p className="text-[10px] font-medium uppercase tracking-widest text-gray-400 mb-1">Total Amount</p>
+                        <p className="text-3xl font-medium text-primary dark:text-white tracking-tight">
                             ${finalTotal.toFixed(2)}
                         </p>
                     </div>

@@ -51,14 +51,14 @@ export default function BlogPage() {
     const end = pagination ? Math.min(start + pagination.limit, pagination.total) : 0;
 
     return (
-        <div className="bg-white dark:bg-slate-950 min-h-screen">
+        <div className="bg-white dark:bg-ink-950 min-h-screen">
             {/* ---------- Page Header Banner ---------- */}
-            <section className="bg-gray-50 dark:bg-slate-900/40 border-b border-primary/5 dark:border-slate-800 py-20 md:py-28">
+            <section className="bg-gray-50 dark:bg-ink-900/40 border-b border-primary/5 dark:border-slate-800 py-20 md:py-28">
                 <div className="max-w-7xl mx-auto px-4 md:px-8 text-center space-y-5">
-                    <span className="inline-block text-accent font-black tracking-[0.3em] text-[10px] md:text-xs uppercase">
+                    <span className="inline-block text-accent font-medium tracking-[0.3em] text-[10px] md:text-xs uppercase">
                         Latest Stories
                     </span>
-                    <h1 className="text-5xl md:text-7xl font-black text-primary dark:text-white tracking-tighter leading-none">
+                    <h1 className="text-5xl md:text-7xl font-medium text-primary dark:text-white tracking-tight leading-none">
                         Blog
                     </h1>
                     <div className="flex items-center justify-center gap-2 text-sm pt-1">
@@ -82,7 +82,7 @@ export default function BlogPage() {
                                     value={searchInput}
                                     onChange={(e) => setSearchInput(e.target.value)}
                                     placeholder="Search our store"
-                                    className="w-full pl-4 pr-12 py-3 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-lg text-sm focus:outline-none focus:border-accent dark:text-white transition-colors"
+                                    className="w-full pl-4 pr-12 py-3 bg-white dark:bg-ink-900 border border-primary/10 dark:border-slate-800 rounded-lg text-sm focus:outline-none focus:border-accent dark:text-white transition-colors"
                                 />
                                 <button type="submit" className="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-md bg-primary dark:bg-accent text-white flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="Search">
                                     <Search className="w-4 h-4" />
@@ -92,7 +92,7 @@ export default function BlogPage() {
                                 <button
                                     type="button"
                                     onClick={() => { setSearchInput(''); setSearch(''); setActiveTag(''); setPage(1); }}
-                                    className="text-[10px] font-black tracking-widest uppercase text-accent hover:underline"
+                                    className="text-[10px] font-medium tracking-widest uppercase text-accent hover:underline"
                                 >
                                     Clear filters
                                 </button>
@@ -106,7 +106,7 @@ export default function BlogPage() {
                                     {meta.recent.map((p) => (
                                         <li key={p.id}>
                                             <Link href={`/blog/${p.slug}`} className="flex gap-3 group">
-                                                <div className="relative w-[70px] h-[70px] rounded-md overflow-hidden bg-gray-100 dark:bg-slate-800 flex-shrink-0">
+                                                <div className="relative w-[70px] h-[70px] rounded-md overflow-hidden bg-gray-100 dark:bg-ink-800 flex-shrink-0">
                                                     <Image src={p.image} alt={p.title} fill sizes="70px" className="object-cover" />
                                                 </div>
                                                 <div className="min-w-0 flex-1 pt-0.5">
@@ -130,7 +130,7 @@ export default function BlogPage() {
                                 <div className="space-y-6">
                                     {meta.archive.map((entry) => (
                                         <div key={entry.month}>
-                                            <h4 className="text-[11px] font-black uppercase tracking-[0.15em] text-primary dark:text-white mb-3">{entry.month}</h4>
+                                            <h4 className="text-[11px] font-medium uppercase tracking-[0.15em] text-primary dark:text-white mb-3">{entry.month}</h4>
                                             <ul className="space-y-2">
                                                 {entry.posts.map((p) => (
                                                     <li key={p.slug}>
@@ -154,9 +154,9 @@ export default function BlogPage() {
                                         <button
                                             key={t.name}
                                             onClick={() => pickTag(t.name)}
-                                            className={`px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-[0.15em] border transition-colors ${activeTag === t.name
+                                            className={`px-3 py-1.5 rounded-md text-[10px] font-medium uppercase tracking-[0.15em] border transition-colors ${activeTag === t.name
                                                 ? 'bg-primary dark:bg-accent text-white border-primary dark:border-accent'
-                                                : 'bg-white dark:bg-slate-900 text-secondary dark:text-gray-400 border-primary/10 dark:border-slate-700 hover:border-accent hover:text-accent'}`}
+                                                : 'bg-white dark:bg-ink-900 text-secondary dark:text-gray-400 border-primary/10 dark:border-slate-700 hover:border-accent hover:text-accent'}`}
                                         >
                                             {t.name}
                                         </button>
@@ -187,7 +187,7 @@ export default function BlogPage() {
                         {isLoading ? (
                             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                                 {Array.from({ length: 6 }).map((_, i) => (
-                                    <div key={i} className="aspect-square rounded-2xl bg-gray-100 dark:bg-slate-800 animate-pulse" />
+                                    <div key={i} className="aspect-square rounded-2xl bg-gray-100 dark:bg-ink-800 animate-pulse" />
                                 ))}
                             </div>
                         ) : posts.length === 0 ? (
@@ -212,7 +212,7 @@ export default function BlogPage() {
                                         >
                                             <Link
                                                 href={`/blog/${post.slug}`}
-                                                className="group relative block aspect-square overflow-hidden rounded-2xl bg-gray-100 dark:bg-slate-800"
+                                                className="group relative block aspect-square overflow-hidden rounded-2xl bg-gray-100 dark:bg-ink-800"
                                             >
                                                 {/* Image (clean by default, subtle zoom on hover) */}
                                                 <Image
@@ -227,14 +227,14 @@ export default function BlogPage() {
                                                 <div className="absolute inset-0 flex flex-col justify-between p-6 text-white bg-gradient-to-t from-accent via-accent/85 to-accent/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                                     {/* Date top-center */}
                                                     <div className="flex flex-col items-center text-center pt-2 translate-y-[-8px] group-hover:translate-y-0 transition-transform duration-300 delay-75">
-                                                        <span className="text-3xl font-black leading-none tracking-tighter">{formatDay(post.publishedAt)}</span>
+                                                        <span className="text-3xl font-medium leading-none tracking-tight">{formatDay(post.publishedAt)}</span>
                                                         <span className="text-[10px] font-bold uppercase tracking-widest opacity-80 mt-1">{formatMonth(post.publishedAt)}</span>
                                                     </div>
                                                     {/* Meta bottom */}
                                                     <div className="space-y-2 translate-y-[8px] group-hover:translate-y-0 transition-transform duration-300 delay-75">
                                                         <p className="text-[10px] font-bold uppercase tracking-widest opacity-80">By {post.author}</p>
-                                                        <h3 className="font-black text-base leading-tight line-clamp-2">{post.title}</h3>
-                                                        <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest pt-1">
+                                                        <h3 className="font-medium text-base leading-tight line-clamp-2">{post.title}</h3>
+                                                        <span className="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-widest pt-1">
                                                             Read More <ArrowRight className="w-3 h-3" />
                                                         </span>
                                                     </div>
@@ -267,7 +267,7 @@ export default function BlogPage() {
 function SidebarBlock({ title, children }: { title: string; children: React.ReactNode }) {
     return (
         <div>
-            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-primary dark:text-white">
+            <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-primary dark:text-white">
                 {title}
             </h3>
             <div className="w-8 h-0.5 bg-accent mt-2 mb-6" />

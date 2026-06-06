@@ -102,8 +102,8 @@ export default function FaqPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center space-y-3"
             >
-                <span className="text-accent font-black tracking-[0.3em] text-xs uppercase">Help Center</span>
-                <h1 className="text-4xl md:text-6xl font-black text-primary dark:text-white tracking-tighter">
+                <span className="text-accent font-medium tracking-[0.3em] text-xs uppercase">Help Center</span>
+                <h1 className="text-4xl md:text-6xl font-medium text-primary dark:text-white tracking-tight">
                     Frequently Asked
                 </h1>
                 <p className="text-secondary dark:text-gray-400 text-lg max-w-xl mx-auto">
@@ -124,7 +124,7 @@ export default function FaqPage() {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search questions…"
-                    className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
+                    className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-ink-900 border border-primary/10 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
                 />
                 {query && (
                     <p className="mt-2 text-xs text-gray-400 text-center">
@@ -162,7 +162,7 @@ export default function FaqPage() {
                                 <div className="w-9 h-9 rounded-xl bg-accent/10 text-accent flex items-center justify-center">
                                     <section.icon className="w-4 h-4" />
                                 </div>
-                                <h2 className="text-xl font-black text-primary dark:text-white tracking-tight">
+                                <h2 className="text-xl font-medium text-primary dark:text-white tracking-tight">
                                     {section.title}
                                 </h2>
                             </div>
@@ -174,7 +174,7 @@ export default function FaqPage() {
                                     return (
                                         <div
                                             key={key}
-                                            className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl overflow-hidden"
+                                            className="bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-2xl overflow-hidden"
                                         >
                                             <button
                                                 onClick={() => setOpen(isOpen ? null : key)}
@@ -219,11 +219,11 @@ export default function FaqPage() {
                 transition={{ delay: 0.4 }}
                 className="bg-primary dark:bg-accent text-white rounded-2xl p-8 md:p-10 text-center space-y-4"
             >
-                <h2 className="text-2xl md:text-3xl font-black tracking-tight">Still need help?</h2>
+                <h2 className="text-2xl md:text-3xl font-medium tracking-tight">Still need help?</h2>
                 <p className="opacity-80 max-w-md mx-auto">Our support team replies within 24 hours on business days.</p>
                 <Link
                     href="/contact"
-                    className="inline-flex items-center gap-2 bg-white text-primary dark:text-accent px-6 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-white/90 transition-colors"
+                    className="inline-flex items-center gap-2 bg-white text-primary dark:text-accent px-6 py-3 rounded-xl font-medium uppercase tracking-widest text-xs hover:bg-white/90 transition-colors"
                 >
                     Contact Support
                     <ArrowRight className="w-4 h-4" />

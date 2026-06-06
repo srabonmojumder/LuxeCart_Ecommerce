@@ -8,8 +8,8 @@ import { useSettings } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
 
 const field =
-    'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white placeholder:text-gray-400';
-const label = 'text-[10px] font-black uppercase tracking-widest text-gray-400';
+    'w-full px-4 py-3 bg-gray-50 dark:bg-ink-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white placeholder:text-gray-400';
+const label = 'text-[10px] font-medium uppercase tracking-widest text-gray-400';
 
 export default function ContactPage() {
     const { settings } = useSettings();
@@ -44,8 +44,8 @@ export default function ContactPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center space-y-3 max-w-2xl mx-auto"
             >
-                <span className="text-accent font-black tracking-[0.3em] text-xs uppercase">Contact</span>
-                <h1 className="text-4xl md:text-6xl font-black text-primary dark:text-white tracking-tighter">
+                <span className="text-accent font-medium tracking-[0.3em] text-xs uppercase">Contact</span>
+                <h1 className="text-4xl md:text-6xl font-medium text-primary dark:text-white tracking-tight">
                     Get In Touch
                 </h1>
                 <p className="text-secondary dark:text-gray-400 text-lg">
@@ -60,9 +60,9 @@ export default function ContactPage() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6 md:p-8"
+                    className="bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6 md:p-8"
                 >
-                    <h2 className="text-2xl font-black text-primary dark:text-white tracking-tight mb-6">
+                    <h2 className="text-2xl font-medium text-primary dark:text-white tracking-tight mb-6">
                         Send us a message
                     </h2>
                     <form onSubmit={submit} className="space-y-4">
@@ -132,14 +132,14 @@ export default function ContactPage() {
                     className="space-y-4"
                 >
                     <div className="bg-primary dark:bg-accent text-white rounded-2xl p-6 md:p-8 space-y-5">
-                        <h2 className="text-2xl font-black tracking-tight">Reach us directly</h2>
+                        <h2 className="text-2xl font-medium tracking-tight">Reach us directly</h2>
 
                         <a href={`tel:${phone}`} className="flex items-start gap-4 group">
                             <div className="w-10 h-10 rounded-full bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-colors flex-shrink-0">
                                 <Phone className="w-4 h-4" />
                             </div>
                             <div className="min-w-0">
-                                <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Phone</p>
+                                <p className="text-[10px] font-medium uppercase tracking-widest opacity-60">Phone</p>
                                 <p className="font-bold">{phone}</p>
                             </div>
                         </a>
@@ -149,7 +149,7 @@ export default function ContactPage() {
                                 <Mail className="w-4 h-4" />
                             </div>
                             <div className="min-w-0">
-                                <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Email</p>
+                                <p className="text-[10px] font-medium uppercase tracking-widest opacity-60">Email</p>
                                 <p className="font-bold break-all">{email}</p>
                             </div>
                         </a>
@@ -159,7 +159,7 @@ export default function ContactPage() {
                                 <MapPin className="w-4 h-4" />
                             </div>
                             <div className="min-w-0">
-                                <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Address</p>
+                                <p className="text-[10px] font-medium uppercase tracking-widest opacity-60">Address</p>
                                 <p className="font-bold">{address}</p>
                             </div>
                         </div>
@@ -169,7 +169,7 @@ export default function ContactPage() {
                                 <Clock className="w-4 h-4" />
                             </div>
                             <div className="min-w-0">
-                                <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Hours</p>
+                                <p className="text-[10px] font-medium uppercase tracking-widest opacity-60">Hours</p>
                                 <p className="font-bold">Mon – Fri · 9am – 6pm</p>
                             </div>
                         </div>
@@ -195,14 +195,14 @@ export default function ContactPage() {
                         )}
                     </div>
 
-                    <div className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Order help?</p>
+                    <div className="bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6">
+                        <p className="text-[10px] font-medium uppercase tracking-widest text-gray-400 mb-2">Order help?</p>
                         <p className="text-sm text-secondary dark:text-gray-400 mb-3">
                             Tracking an order or starting a return? Skip the form and use our self-service tools.
                         </p>
                         <div className="flex flex-wrap gap-2">
-                            <a href="/track" className="px-4 py-2 rounded-xl bg-accent/10 text-accent text-xs font-black uppercase tracking-widest hover:bg-accent/20 transition-colors">Track Order</a>
-                            <a href="/account" className="px-4 py-2 rounded-xl bg-primary/5 dark:bg-slate-800 text-primary dark:text-white text-xs font-black uppercase tracking-widest hover:bg-primary/10 dark:hover:bg-slate-700 transition-colors">My Orders</a>
+                            <a href="/track" className="px-4 py-2 rounded-xl bg-accent/10 text-accent text-xs font-medium uppercase tracking-widest hover:bg-accent/20 transition-colors">Track Order</a>
+                            <a href="/account" className="px-4 py-2 rounded-xl bg-primary/5 dark:bg-ink-800 text-primary dark:text-white text-xs font-medium uppercase tracking-widest hover:bg-primary/10 dark:hover:bg-slate-700 transition-colors">My Orders</a>
                         </div>
                     </div>
                 </motion.aside>

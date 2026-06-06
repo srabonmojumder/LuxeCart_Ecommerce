@@ -30,11 +30,11 @@ export default function ForgotPasswordPage() {
 
     return (
         <div className="min-h-[70vh] flex items-center justify-center px-4 py-16">
-            <div className="max-w-md w-full bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-3xl p-8 md:p-10 shadow-xl">
+            <div className="max-w-md w-full bg-white dark:bg-ink-900 border border-primary/10 dark:border-slate-800 rounded-3xl p-8 md:p-10 shadow-xl">
                 {sent ? (
                     <div className="text-center space-y-4">
                         <CheckCircle2 className="w-14 h-14 text-new mx-auto" />
-                        <h2 className="text-2xl font-black text-primary dark:text-white uppercase tracking-tight">Check your inbox</h2>
+                        <h2 className="text-2xl font-medium text-primary dark:text-white uppercase tracking-tight">Check your inbox</h2>
                         <p className="text-sm text-secondary dark:text-gray-400">
                             If an account exists for <b>{email}</b>, we&apos;ve sent a link to reset your password. The link expires in 1 hour.
                         </p>
@@ -44,7 +44,7 @@ export default function ForgotPasswordPage() {
                     </div>
                 ) : (
                     <>
-                        <h2 className="text-2xl font-black text-primary dark:text-white uppercase tracking-tight mb-2">Forgot password</h2>
+                        <h2 className="text-2xl font-medium text-primary dark:text-white uppercase tracking-tight mb-2">Forgot password</h2>
                         <p className="text-sm text-secondary dark:text-gray-400 mb-8">
                             Enter your email and we&apos;ll send you a link to reset it.
                         </p>
@@ -57,7 +57,7 @@ export default function ForgotPasswordPage() {
                                     placeholder="Email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
+                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-ink-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
                                 />
                             </div>
                             <button

@@ -40,7 +40,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                     <div className="w-16 h-16 rounded-2xl bg-accent/10 text-accent flex items-center justify-center mx-auto">
                         <BookOpen className="w-8 h-8" />
                     </div>
-                    <h1 className="text-2xl md:text-3xl font-black text-primary dark:text-white tracking-tighter">Post not found</h1>
+                    <h1 className="text-2xl md:text-3xl font-medium text-primary dark:text-white tracking-tight">Post not found</h1>
                     <Link href="/blog" className="inline-flex items-center gap-2 text-accent font-bold hover:underline">
                         <ArrowLeft className="w-4 h-4" /> Back to Blog
                     </Link>
@@ -50,9 +50,9 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
     }
 
     return (
-        <article className="bg-white dark:bg-slate-950 min-h-screen">
+        <article className="bg-white dark:bg-ink-950 min-h-screen">
             {/* ---------- Editorial header ---------- */}
-            <header className="bg-gray-50 dark:bg-slate-900/40 border-b border-primary/5 dark:border-slate-800 py-14 md:py-20">
+            <header className="bg-gray-50 dark:bg-ink-900/40 border-b border-primary/5 dark:border-slate-800 py-14 md:py-20">
                 <div className="max-w-3xl mx-auto px-4 md:px-8 text-center space-y-6">
                     {/* Breadcrumb */}
                     <div className="flex items-center justify-center gap-2 text-xs">
@@ -65,7 +65,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                     {post.tags.length > 0 && (
                         <div className="flex flex-wrap items-center justify-center gap-2">
                             {post.tags.slice(0, 3).map((t) => (
-                                <span key={t} className="text-[10px] font-black uppercase tracking-[0.2em] text-accent">
+                                <span key={t} className="text-[10px] font-medium uppercase tracking-[0.2em] text-accent">
                                     #{t}
                                 </span>
                             ))}
@@ -75,7 +75,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                     <motion.h1
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-3xl md:text-5xl font-black text-primary dark:text-white tracking-tighter leading-[1.1]"
+                        className="text-3xl md:text-5xl font-medium text-primary dark:text-white tracking-tight leading-[1.1]"
                     >
                         {post.title}
                     </motion.h1>
@@ -99,7 +99,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="relative aspect-[16/9] rounded-3xl overflow-hidden bg-gray-100 dark:bg-slate-800 shadow-xl"
+                    className="relative aspect-[16/9] rounded-3xl overflow-hidden bg-gray-100 dark:bg-ink-800 shadow-xl"
                 >
                     <Image src={post.image} alt={post.title} fill priority sizes="100vw" className="object-cover" />
                 </motion.div>
@@ -129,12 +129,12 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                 {/* Tags footer */}
                 {post.tags.length > 0 && (
                     <div className="mt-14 pt-8 border-t border-primary/10 dark:border-slate-800 flex flex-wrap items-center gap-2">
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mr-2">Tagged</span>
+                        <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-gray-400 mr-2">Tagged</span>
                         {post.tags.map((t) => (
                             <Link
                                 key={t}
                                 href={`/blog?tag=${encodeURIComponent(t)}`}
-                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-[0.15em] border border-primary/10 dark:border-slate-700 text-secondary dark:text-gray-400 hover:border-accent hover:text-accent transition-colors"
+                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-[10px] font-medium uppercase tracking-[0.15em] border border-primary/10 dark:border-slate-700 text-secondary dark:text-gray-400 hover:border-accent hover:text-accent transition-colors"
                             >
                                 <TagIcon className="w-3 h-3" /> {t}
                             </Link>
@@ -143,15 +143,15 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                 )}
 
                 {/* Author card */}
-                <div className="mt-10 flex items-center gap-4 p-5 bg-gray-50 dark:bg-slate-900/40 border border-primary/5 dark:border-slate-800 rounded-2xl">
+                <div className="mt-10 flex items-center gap-4 p-5 bg-gray-50 dark:bg-ink-900/40 border border-primary/5 dark:border-slate-800 rounded-2xl">
                     <div className="w-14 h-14 rounded-full bg-gradient-to-br from-accent to-accent-700 p-[2px] flex-shrink-0">
-                        <div className="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center text-accent font-black">
+                        <div className="w-full h-full rounded-full bg-white dark:bg-ink-900 flex items-center justify-center text-accent font-medium">
                             {post.author.charAt(0).toUpperCase()}
                         </div>
                     </div>
                     <div className="min-w-0">
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Written by</p>
-                        <p className="font-black text-primary dark:text-white text-lg tracking-tight">{post.author}</p>
+                        <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-gray-400">Written by</p>
+                        <p className="font-medium text-primary dark:text-white text-lg tracking-tight">{post.author}</p>
                     </div>
                 </div>
             </div>
@@ -159,13 +159,13 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
             {/* ---------- CTA ---------- */}
             <section className="max-w-5xl mx-auto px-4 md:px-8 pb-24">
                 <div className="bg-primary dark:bg-accent text-white rounded-3xl p-8 md:p-14 text-center space-y-5">
-                    <h2 className="text-2xl md:text-4xl font-black tracking-tighter">Enjoyed this story?</h2>
+                    <h2 className="text-2xl md:text-4xl font-medium tracking-tight">Enjoyed this story?</h2>
                     <p className="opacity-80 max-w-md mx-auto">Read more from the blog or shop the curated collection that inspired it.</p>
                     <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-                        <Link href="/blog" className="inline-flex items-center gap-2 bg-white text-primary dark:text-accent px-6 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-white/90 transition-colors">
+                        <Link href="/blog" className="inline-flex items-center gap-2 bg-white text-primary dark:text-accent px-6 py-3 rounded-xl font-medium uppercase tracking-widest text-xs hover:bg-white/90 transition-colors">
                             More Posts <ArrowRight className="w-3.5 h-3.5" />
                         </Link>
-                        <Link href="/products" className="border border-white/30 text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-white/10 transition-colors">
+                        <Link href="/products" className="border border-white/30 text-white px-6 py-3 rounded-xl font-medium uppercase tracking-widest text-xs hover:bg-white/10 transition-colors">
                             Shop Now
                         </Link>
                     </div>
