@@ -35,7 +35,7 @@ export default function PriceSlider({ min, max, value, onChange }: PriceSliderPr
 
                 {/* Active Range */}
                 <motion.div
-                    className="absolute h-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full"
+                    className="absolute h-2 bg-gradient-to-r from-accent-600 to-pink-600 rounded-full"
                     style={{
                         left: `${minPercent}%`,
                         right: `${100 - maxPercent}%`,
@@ -49,7 +49,7 @@ export default function PriceSlider({ min, max, value, onChange }: PriceSliderPr
                     max={max}
                     value={value[0]}
                     onChange={handleMinChange}
-                    className="absolute w-full h-2 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-600 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-4 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-lg"
+                    className="absolute w-full h-2 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent-600 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-4 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-lg"
                 />
 
                 {/* Max Slider */}
@@ -67,7 +67,7 @@ export default function PriceSlider({ min, max, value, onChange }: PriceSliderPr
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                     <span className="text-sm text-gray-600 dark:text-gray-400">Min:</span>
-                    <span className="text-lg font-bold text-purple-600">${value[0]}</span>
+                    <span className="text-lg font-bold text-accent-600">${value[0]}</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <span className="text-sm text-gray-600 dark:text-gray-400">Max:</span>

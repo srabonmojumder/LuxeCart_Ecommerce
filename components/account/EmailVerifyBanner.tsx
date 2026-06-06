@@ -38,7 +38,7 @@ export default function EmailVerifyBanner() {
                 <button
                     onClick={resend}
                     disabled={sending}
-                    className="px-5 py-2.5 rounded-xl bg-primary text-white dark:bg-accent text-xs font-black uppercase tracking-widest hover:opacity-90 disabled:opacity-60"
+                    className="px-5 py-2.5 rounded-xl bg-primary text-white dark:bg-accent text-xs font-medium uppercase tracking-widest hover:opacity-90 disabled:opacity-60"
                 >
                     {sending ? 'Sending…' : 'Resend'}
                 </button>

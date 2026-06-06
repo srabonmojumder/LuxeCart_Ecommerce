@@ -131,7 +131,7 @@ export default function LiveChat() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 16, scale: 0.97 }}
                         transition={{ type: 'spring', stiffness: 280, damping: 24 }}
-                        className="fixed bottom-24 left-6 right-6 sm:left-auto sm:w-[380px] z-40 bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-700 rounded-2xl shadow-2xl shadow-black/15 dark:shadow-black/50 overflow-hidden flex flex-col max-h-[70vh]"
+                        className="fixed bottom-24 left-6 right-6 sm:left-auto sm:w-[380px] z-40 bg-white dark:bg-ink-900 border border-primary/10 dark:border-slate-700 rounded-2xl shadow-2xl shadow-black/15 dark:shadow-black/50 overflow-hidden flex flex-col max-h-[70vh]"
                     >
                         {/* Header */}
                         <div className="bg-gradient-to-br from-accent-900 via-accent-800 to-accent-950 text-white p-5 relative overflow-hidden">
@@ -141,7 +141,7 @@ export default function LiveChat() {
                                     <Headphones className="w-5 h-5" />
                                 </div>
                                 <div className="min-w-0">
-                                    <h3 className="font-black tracking-tight text-base">Live Support</h3>
+                                    <h3 className="font-medium tracking-tight text-base">Live Support</h3>
                                     <p className="text-[11px] text-white/70 flex items-center gap-1.5">
                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                                         Online — replies within 24h
@@ -151,7 +151,7 @@ export default function LiveChat() {
                         </div>
 
                         {/* Messages */}
-                        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/60 dark:bg-slate-900/40">
+                        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/60 dark:bg-ink-900/40">
                             {messages.map((m) => (
                                 <motion.div
                                     key={m.id}
@@ -161,7 +161,7 @@ export default function LiveChat() {
                                 >
                                     <div
                                         className={`max-w-[82%] px-4 py-2.5 text-sm leading-relaxed ${m.from === 'bot'
-                                            ? 'bg-white dark:bg-slate-800 text-primary dark:text-white rounded-2xl rounded-bl-md border border-primary/5 dark:border-slate-700'
+                                            ? 'bg-white dark:bg-ink-800 text-primary dark:text-white rounded-2xl rounded-bl-md border border-primary/5 dark:border-slate-700'
                                             : 'bg-primary dark:bg-accent text-white rounded-2xl rounded-br-md'
                                             }`}
                                     >
@@ -171,7 +171,7 @@ export default function LiveChat() {
                             ))}
                             {sending && (
                                 <div className="flex justify-start">
-                                    <div className="px-4 py-2.5 rounded-2xl rounded-bl-md bg-white dark:bg-slate-800 border border-primary/5 dark:border-slate-700 flex items-center gap-1.5">
+                                    <div className="px-4 py-2.5 rounded-2xl rounded-bl-md bg-white dark:bg-ink-800 border border-primary/5 dark:border-slate-700 flex items-center gap-1.5">
                                         <span className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0ms' }} />
                                         <span className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '150ms' }} />
                                         <span className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '300ms' }} />
@@ -188,7 +188,7 @@ export default function LiveChat() {
                                         key={q}
                                         onClick={() => setInput(q)}
                                         disabled={sending}
-                                        className="text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border border-primary/10 dark:border-slate-700 text-secondary dark:text-gray-400 hover:border-accent hover:text-accent disabled:opacity-50 transition-colors"
+                                        className="text-[10px] font-medium uppercase tracking-widest px-3 py-1.5 rounded-full border border-primary/10 dark:border-slate-700 text-secondary dark:text-gray-400 hover:border-accent hover:text-accent disabled:opacity-50 transition-colors"
                                     >
                                         {q}
                                     </button>
@@ -197,14 +197,14 @@ export default function LiveChat() {
                         )}
 
                         {/* Input */}
-                        <form onSubmit={handleSubmit} className="p-3 border-t border-primary/5 dark:border-slate-800 flex gap-2 bg-white dark:bg-slate-900">
+                        <form onSubmit={handleSubmit} className="p-3 border-t border-primary/5 dark:border-slate-800 flex gap-2 bg-white dark:bg-ink-900">
                             <input
                                 type={email ? 'text' : 'email'}
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 placeholder={email ? 'Type a message…' : 'Your email first…'}
                                 disabled={sending}
-                                className="flex-1 px-4 py-2.5 text-sm bg-gray-50 dark:bg-slate-800 rounded-full focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white placeholder:text-gray-400 disabled:opacity-60"
+                                className="flex-1 px-4 py-2.5 text-sm bg-gray-50 dark:bg-ink-800 rounded-full focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white placeholder:text-gray-400 disabled:opacity-60"
                             />
                             <button
                                 type="submit"

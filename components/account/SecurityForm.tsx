@@ -30,13 +30,13 @@ export default function SecurityForm() {
     };
 
     return (
-        <div className="p-10 bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-[3rem]">
+        <div className="p-10 bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-[3rem]">
             <div className="flex items-center gap-4 mb-8">
-                <div className="w-12 h-12 rounded-2xl bg-primary/5 dark:bg-slate-800 flex items-center justify-center text-primary dark:text-white">
+                <div className="w-12 h-12 rounded-2xl bg-primary/5 dark:bg-ink-800 flex items-center justify-center text-primary dark:text-white">
                     <Lock className="w-6 h-6" />
                 </div>
                 <div>
-                    <h3 className="text-xl font-black text-primary dark:text-white uppercase tracking-tight">Password</h3>
+                    <h3 className="text-xl font-medium text-primary dark:text-white uppercase tracking-tight">Password</h3>
                     <p className="text-sm text-secondary dark:text-gray-400">Update the password used to sign in.</p>
                 </div>
             </div>
@@ -46,7 +46,7 @@ export default function SecurityForm() {
                     placeholder="Current password (leave blank if none)"
                     value={current}
                     onChange={(e) => setCurrent(e.target.value)}
-                    className="w-full px-4 py-3.5 bg-gray-50 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
+                    className="w-full px-4 py-3.5 bg-gray-50 dark:bg-ink-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
                 />
                 <input
                     type="password"
@@ -55,7 +55,7 @@ export default function SecurityForm() {
                     placeholder="New password (min 6 chars)"
                     value={next}
                     onChange={(e) => setNext(e.target.value)}
-                    className="w-full px-4 py-3.5 bg-gray-50 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
+                    className="w-full px-4 py-3.5 bg-gray-50 dark:bg-ink-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
                 />
                 <input
                     type="password"
@@ -64,7 +64,7 @@ export default function SecurityForm() {
                     placeholder="Confirm new password"
                     value={confirm}
                     onChange={(e) => setConfirm(e.target.value)}
-                    className="w-full px-4 py-3.5 bg-gray-50 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
+                    className="w-full px-4 py-3.5 bg-gray-50 dark:bg-ink-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
                 />
                 <button
                     type="submit"

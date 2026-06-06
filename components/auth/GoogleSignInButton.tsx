@@ -85,7 +85,7 @@ export default function GoogleSignInButton({ onSuccess }: { onSuccess?: () => vo
         <div className="mt-6">
             <div className="flex items-center gap-3 mb-6">
                 <div className="h-px flex-1 bg-primary/10 dark:bg-slate-700" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">or</span>
+                <span className="text-[10px] font-medium uppercase tracking-widest text-gray-400">or</span>
                 <div className="h-px flex-1 bg-primary/10 dark:bg-slate-700" />
             </div>
             <div ref={ref} className="flex justify-center" />

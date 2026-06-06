@@ -9,7 +9,7 @@ export default function AnnouncementBar() {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const announcements = [
-        { id: 1, text: '🎉 New Year Sale! Get up to 50% OFF on selected items', color: 'bg-gradient-to-r from-purple-600 to-pink-600' },
+        { id: 1, text: '🎉 New Year Sale! Get up to 50% OFF on selected items', color: 'bg-gradient-to-r from-accent-600 to-pink-600' },
         { id: 2, text: '🚚 Free Shipping on orders over $50 - Limited Time!', color: 'bg-gradient-to-r from-blue-600 to-cyan-600' },
         { id: 3, text: '⭐ Join our loyalty program and earn rewards on every purchase', color: 'bg-gradient-to-r from-green-600 to-emerald-600' },
     ];

@@ -26,8 +26,8 @@ export default function VariantSelector({ type, options, selected, onSelect }: V
                             whileTap={{ scale: 0.95 }}
                             onClick={() => onSelect(size)}
                             className={`px-4 py-2 rounded-lg border-2 font-medium transition-all ${selected === size
-                                    ? 'border-purple-600 bg-purple-600 text-white'
-                                    : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-purple-400'
+                                    ? 'border-accent-600 bg-accent-600 text-white'
+                                    : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-accent-400'
                                 }`}
                         >
                             {size}
@@ -52,7 +52,7 @@ export default function VariantSelector({ type, options, selected, onSelect }: V
                         'Blue': 'bg-blue-500',
                         'Green': 'bg-green-500',
                         'Yellow': 'bg-yellow-400',
-                        'Purple': 'bg-purple-500',
+                        'Purple': 'bg-accent-500',
                         'Pink': 'bg-pink-500',
                         'Gray': 'bg-gray-500',
                         'Brown': 'bg-amber-700',
@@ -65,7 +65,7 @@ export default function VariantSelector({ type, options, selected, onSelect }: V
                             whileTap={{ scale: 0.95 }}
                             onClick={() => onSelect(color)}
                             className={`relative w-10 h-10 rounded-full ${colorMap[color] || 'bg-gray-400'} ${selected === color
-                                    ? 'ring-2 ring-purple-600 ring-offset-2 dark:ring-offset-gray-800'
+                                    ? 'ring-2 ring-accent-600 ring-offset-2 dark:ring-offset-gray-800'
                                     : 'hover:ring-2 hover:ring-gray-300'
                                 }`}
                             title={color}

@@ -58,19 +58,19 @@ export default function AddressBook() {
         }
     };
 
-    const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
+    const field = 'w-full px-4 py-3 bg-gray-50 dark:bg-ink-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
 
     return (
         <div className="space-y-8">
             <div className="flex items-center justify-between border-b-2 border-primary dark:border-white pb-8">
-                <h2 className="text-4xl font-black text-primary dark:text-white tracking-tighter uppercase">Address Book</h2>
+                <h2 className="text-4xl font-medium text-primary dark:text-white tracking-tight uppercase">Address Book</h2>
                 <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2 bg-primary dark:bg-accent text-white px-4 py-2.5 rounded-xl font-bold text-sm">
                     <Plus className="w-4 h-4" /> Add
                 </button>
             </div>
 
             {showForm && (
-                <form onSubmit={add} className="grid md:grid-cols-2 gap-4 p-6 bg-primary/2 dark:bg-slate-900 rounded-3xl border border-primary/5 dark:border-slate-800">
+                <form onSubmit={add} className="grid md:grid-cols-2 gap-4 p-6 bg-primary/2 dark:bg-ink-900 rounded-3xl border border-primary/5 dark:border-slate-800">
                     <input className={`${field} md:col-span-2`} placeholder="Full name" required value={form.fullName} onChange={(e) => set('fullName', e.target.value)} />
                     <input className={`${field} md:col-span-2`} placeholder="Address line 1" required value={form.line1} onChange={(e) => set('line1', e.target.value)} />
                     <input className={`${field} md:col-span-2`} placeholder="Address line 2 (optional)" value={form.line2} onChange={(e) => set('line2', e.target.value)} />
@@ -95,9 +95,9 @@ export default function AddressBook() {
             ) : (
                 <div className="grid md:grid-cols-2 gap-6">
                     {addresses.map((a) => (
-                        <div key={a.id} className="p-6 bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-3xl space-y-2 relative">
+                        <div key={a.id} className="p-6 bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-3xl space-y-2 relative">
                             {a.isDefault && (
-                                <span className="absolute top-4 right-4 text-[10px] font-black uppercase tracking-widest text-accent flex items-center gap-1">
+                                <span className="absolute top-4 right-4 text-[10px] font-medium uppercase tracking-widest text-accent flex items-center gap-1">
                                     <Check className="w-3 h-3" /> Default
                                 </span>
                             )}

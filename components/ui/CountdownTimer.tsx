@@ -44,7 +44,7 @@ export default function CountdownTimer({ endDate }: CountdownTimerProps) {
                 animate={{ scale: 1, opacity: 1 }}
                 className="bg-white dark:bg-gray-700 rounded-lg px-4 py-3 min-w-[70px] shadow-lg"
             >
-                <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                <div className="text-3xl font-bold text-accent-600 dark:text-accent-400">
                     {value.toString().padStart(2, '0')}
                 </div>
             </motion.div>

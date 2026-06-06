@@ -71,7 +71,7 @@ export default function MobileSearchModal() {
             <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(true)}
-                className="md:hidden fixed top-4 right-16 z-40 bg-white dark:bg-gray-800 p-2.5 rounded-full shadow-lg border border-gray-200 dark:border-gray-700"
+                className="md:hidden fixed top-4 right-16 z-40 bg-white dark:bg-ink-800 p-2.5 rounded-full shadow-lg border border-gray-200 dark:border-gray-700"
             >
                 <Search className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             </motion.button>
@@ -99,11 +99,11 @@ export default function MobileSearchModal() {
                             dragElastic={{ top: 0, bottom: 0.3 }}
                             onDragEnd={handleDragEnd}
                             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                            className="md:hidden fixed inset-x-0 bottom-0 top-20 bg-white dark:bg-gray-900 rounded-t-3xl shadow-2xl z-50 flex flex-col overflow-hidden"
+                            className="md:hidden fixed inset-x-0 bottom-0 top-20 bg-white dark:bg-ink-900 rounded-t-3xl shadow-2xl z-50 flex flex-col overflow-hidden"
                         >
                             {/* Drag Handle */}
                             <div className="flex justify-center py-3">
-                                <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full" />
+                                <div className="w-12 h-1.5 bg-gray-300 dark:bg-ink-800 rounded-full" />
                             </div>
 
                             {/* Search Input */}
@@ -121,7 +121,7 @@ export default function MobileSearchModal() {
                                             }
                                         }}
                                         placeholder="Search products..."
-                                        className="w-full pl-12 pr-12 py-4 bg-gray-100 dark:bg-gray-800 rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        className="w-full pl-12 pr-12 py-4 bg-[#efece5] dark:bg-ink-800 rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent-500"
                                     />
                                     {query && (
                                         <motion.button
@@ -129,7 +129,7 @@ export default function MobileSearchModal() {
                                             animate={{ scale: 1 }}
                                             whileTap={{ scale: 0.9 }}
                                             onClick={() => setQuery('')}
-                                            className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 bg-gray-200 dark:bg-gray-700 rounded-full"
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 bg-gray-200 dark:bg-ink-800 rounded-full"
                                         >
                                             <X className="w-4 h-4" />
                                         </motion.button>
@@ -158,7 +158,7 @@ export default function MobileSearchModal() {
                                                     <motion.div
                                                         initial={{ opacity: 0, x: -20 }}
                                                         animate={{ opacity: 1, x: 0 }}
-                                                        className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                                        className="flex items-center gap-3 p-3 bg-canvas dark:bg-ink-800 rounded-xl hover:bg-[#efece5] dark:hover:bg-ink-800 transition-colors"
                                                     >
                                                         <div className="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden">
                                                             <Image
@@ -177,11 +177,11 @@ export default function MobileSearchModal() {
                                                             </p>
                                                         </div>
                                                         <div className="flex flex-col items-end">
-                                                            <span className="font-bold text-purple-600">
+                                                            <span className="font-bold text-accent-600">
                                                                 ${product.price.toFixed(2)}
                                                             </span>
                                                             {product.discount && (
-                                                                <span className="text-xs bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-2 py-0.5 rounded-full">
+                                                                <span className="text-xs bg-primary text-white px-2 py-0.5 rounded-full">
                                                                     -{product.discount}%
                                                                 </span>
                                                             )}
@@ -204,7 +204,7 @@ export default function MobileSearchModal() {
                                                     </h3>
                                                     <button
                                                         onClick={clearRecentSearches}
-                                                        className="text-xs text-purple-600 dark:text-purple-400 font-medium"
+                                                        className="text-xs text-accent-600 dark:text-accent-400 font-medium"
                                                     >
                                                         Clear All
                                                     </button>
@@ -221,7 +221,7 @@ export default function MobileSearchModal() {
                                                                 setQuery(search);
                                                                 handleSearch(search);
                                                             }}
-                                                            className="px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full text-sm font-medium"
+                                                            className="px-4 py-2 bg-accent-100 dark:bg-accent-900/30 text-accent-600 dark:text-accent-400 rounded-full text-sm font-medium"
                                                         >
                                                             {search}
                                                         </motion.button>
@@ -248,7 +248,7 @@ export default function MobileSearchModal() {
                                                             setQuery(search);
                                                             handleSearch(search);
                                                         }}
-                                                        className="px-4 py-2 bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30 text-orange-600 dark:text-orange-400 rounded-full text-sm font-medium"
+                                                        className="px-4 py-2 bg-accent/8 dark:bg-accent/15 text-accent-700 dark:text-accent-300 border border-accent/15 rounded-full text-sm font-medium"
                                                     >
                                                         {search}
                                                     </motion.button>
@@ -274,7 +274,7 @@ export default function MobileSearchModal() {
                                                             animate={{ opacity: 1, y: 0 }}
                                                             transition={{ delay: index * 0.05 }}
                                                             whileTap={{ scale: 0.95 }}
-                                                            className="p-4 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl text-center font-medium text-gray-900 dark:text-white"
+                                                            className="p-4 bg-gradient-to-br from-accent-100 to-pink-100 dark:from-accent-900/30 dark:to-pink-900/30 rounded-xl text-center font-medium text-gray-900 dark:text-white"
                                                         >
                                                             {category}
                                                         </motion.div>

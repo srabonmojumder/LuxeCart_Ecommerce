@@ -120,7 +120,7 @@ export function PageSkeleton() {
 
             {/* Loading Indicator */}
             <div className="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 bg-white dark:bg-gray-800 px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 border border-gray-200 dark:border-gray-700">
-                <Loader2 className="w-5 h-5 animate-spin text-purple-600" />
+                <Loader2 className="w-5 h-5 animate-spin text-accent-600" />
                 <span className="font-medium text-gray-900 dark:text-white">Loading products...</span>
             </div>
         </div>

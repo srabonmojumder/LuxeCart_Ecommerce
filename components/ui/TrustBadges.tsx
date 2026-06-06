@@ -50,7 +50,7 @@ export default function TrustBadges() {
                             <motion.div
                                 whileHover={{ rotate: 360, scale: 1.1 }}
                                 transition={{ duration: 0.5 }}
-                                className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg mb-3 group-hover:shadow-xl transition-shadow"
+                                className="w-14 h-14 rounded-full bg-gradient-to-br from-accent-500 to-pink-500 flex items-center justify-center text-white shadow-lg mb-3 group-hover:shadow-xl transition-shadow"
                             >
                                 {badge.icon}
                             </motion.div>

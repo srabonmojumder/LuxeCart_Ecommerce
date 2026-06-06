@@ -76,27 +76,27 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
             className="group block"
         >
             <Link href={`/products/${product.slug ?? product.id}`} className="block touch-manipulation">
-                <div className="relative aspect-[3/4] overflow-hidden bg-gray-50 dark:bg-slate-900 rounded-xl md:rounded-2xl mb-2.5 md:mb-3 group">
+                <div className="relative aspect-[3/4] overflow-hidden bg-[#efece5] dark:bg-ink-900 rounded-xl md:rounded-2xl mb-3.5 group">
                     <Image
                         src={product.image}
                         alt={product.name}
                         fill
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                        className={`object-cover transition-transform duration-500 ${isHovered ? 'scale-105' : 'scale-100'}`}
+                        className={`object-cover transition-transform duration-700 ease-out ${isHovered ? 'scale-[1.04]' : 'scale-100'}`}
                         onLoad={() => setImageLoaded(true)}
                         loading="lazy"
                     />
 
-                    {/* Badges */}
-                    <div className="absolute top-2 md:top-3 left-2 md:left-3 flex flex-col gap-1.5">
-                        {product.discount && (
-                            <span className="bg-hot text-white text-[9px] md:text-[10px] font-bold px-1.5 md:px-2 py-0.5 md:py-1 rounded">
-                                -{product.discount}%
+                    {/* Badges — quiet, editorial */}
+                    <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+                        {product.discount ? (
+                            <span className="bg-primary text-white text-[10px] font-medium tracking-[0.1em] px-2.5 py-1 rounded-full">
+                                −{product.discount}%
                             </span>
-                        )}
+                        ) : null}
                         {product.rating >= 4.8 && (
-                            <span className="bg-hot text-white text-[9px] md:text-[10px] font-bold px-1.5 md:px-2 py-0.5 md:py-1 rounded">
-                                HOT
+                            <span className="bg-ivory/95 text-primary text-[10px] font-medium tracking-[0.14em] uppercase px-2.5 py-1 rounded-full backdrop-blur-sm">
+                                Bestseller
                             </span>
                         )}
                     </div>
@@ -104,7 +104,7 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                     {/* Mobile Wishlist Button */}
                     <button
                         onClick={handleToggleWishlist}
-                        className={`md:hidden absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-colors ${inWishlist ? 'bg-accent text-white' : 'bg-white/90 dark:bg-slate-900/90 text-primary dark:text-white'}`}
+                        className={`md:hidden absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-colors ${inWishlist ? 'bg-accent text-white' : 'bg-white/90 dark:bg-ink-900/90 text-primary dark:text-white'}`}
                     >
                         <Heart className={`w-4 h-4 ${inWishlist ? 'fill-current' : ''}`} />
                     </button>
@@ -113,9 +113,9 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                     <div className="absolute inset-x-3 bottom-3 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 hidden md:block">
                         <button
                             onClick={handleAddToCart}
-                            className="w-full bg-primary dark:bg-white text-white dark:text-primary py-2.5 rounded-lg font-bold text-xs tracking-wide shadow-xl hover:bg-black dark:hover:bg-gray-200 transition-colors"
+                            className="w-full bg-primary/95 dark:bg-white text-white dark:text-primary py-3 rounded-full font-medium text-xs tracking-[0.12em] uppercase shadow-medium hover:bg-ink-950 dark:hover:bg-gray-100 backdrop-blur-sm transition-colors"
                         >
-                            ADD TO CART
+                            Add to Bag
                         </button>
                     </div>
 
@@ -124,38 +124,38 @@ export default function ProductCard({ product, onQuickView, variant = 'default' 
                         <button
                             onClick={handleQuickView}
                             aria-label="Quick view"
-                            className="w-9 h-9 rounded-full flex items-center justify-center shadow-lg transition-colors bg-white dark:bg-slate-800 text-primary dark:text-white hover:bg-accent hover:text-white"
+                            className="w-9 h-9 rounded-full flex items-center justify-center shadow-lg transition-colors bg-white dark:bg-ink-800 text-primary dark:text-white hover:bg-accent hover:text-white"
                         >
                             <Eye className="w-4 h-4" />
                         </button>
                         <button
                             onClick={handleToggleWishlist}
                             aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-                            className={`w-9 h-9 rounded-full flex items-center justify-center shadow-lg transition-colors ${inWishlist ? 'bg-accent text-white' : 'bg-white dark:bg-slate-800 text-primary dark:text-white hover:bg-accent hover:text-white'}`}
+                            className={`w-9 h-9 rounded-full flex items-center justify-center shadow-lg transition-colors ${inWishlist ? 'bg-accent text-white' : 'bg-white dark:bg-ink-800 text-primary dark:text-white hover:bg-accent hover:text-white'}`}
                         >
                             <Heart className={`w-4 h-4 ${inWishlist ? 'fill-current' : ''}`} />
                         </button>
                     </div>
                 </div>
 
-                <div className="space-y-0.5 md:space-y-1 px-0.5">
-                    <h3 className="text-secondary dark:text-gray-400 text-xs md:text-sm font-medium line-clamp-1 group-hover:text-primary dark:group-hover:text-white transition-colors">
+                <div className="space-y-1.5 px-0.5">
+                    <h3 className="font-display text-[15px] md:text-base font-medium text-primary dark:text-white line-clamp-1 group-hover:text-accent-700 dark:group-hover:text-accent-300 transition-colors">
                         {product.name}
                     </h3>
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5">
-                            <span className="text-primary dark:text-white font-bold text-sm md:text-base">
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-primary dark:text-white font-sans font-medium text-sm md:text-[15px] tabular-nums">
                                 ${discountedPrice.toFixed(2)}
                             </span>
                             {product.discount && (
-                                <span className="text-gray-400 text-[10px] md:text-xs line-through">
+                                <span className="text-secondary/60 dark:text-gray-500 text-xs line-through tabular-nums">
                                     ${product.price.toFixed(2)}
                                 </span>
                             )}
                         </div>
-                        <div className="flex items-center gap-0.5">
-                            <Star className="w-3 h-3 text-amber-400 fill-current" />
-                            <span className="text-[10px] font-bold text-primary dark:text-white">{product.rating}</span>
+                        <div className="flex items-center gap-1">
+                            <Star className="w-3 h-3 text-accent fill-current" />
+                            <span className="text-[11px] font-sans font-medium text-secondary dark:text-gray-400 tabular-nums">{product.rating}</span>
                         </div>
                     </div>
                 </div>

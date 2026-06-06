@@ -65,7 +65,7 @@ export default function FloatingActionButton() {
             icon: <ShoppingCart className="w-5 h-5" />,
             label: 'Cart',
             onClick: () => window.location.href = '/cart',
-            color: 'from-purple-500 to-pink-500',
+            color: 'from-accent-500 to-pink-500',
             badge: cartItems > 0 ? cartItems : undefined
         },
         {
@@ -111,7 +111,7 @@ export default function FloatingActionButton() {
                         <motion.div
                             animate={{ y: [0, -5, 0] }}
                             transition={{ duration: 2, repeat: Infinity }}
-                            className="relative bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-2xl shadow-xl max-w-xs"
+                            className="relative bg-gradient-to-r from-accent-600 to-pink-600 text-white p-4 rounded-2xl shadow-xl max-w-xs"
                         >
                             <button
                                 onClick={() => setShowPromo(false)}
@@ -141,7 +141,7 @@ export default function FloatingActionButton() {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0 }}
                         onClick={scrollToTop}
-                        className="fixed bottom-6 left-6 z-50 w-12 h-12 bg-white dark:bg-gray-800 rounded-full shadow-xl flex items-center justify-center text-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 border border-gray-200 dark:border-gray-700"
+                        className="fixed bottom-6 left-6 z-50 w-12 h-12 bg-white dark:bg-gray-800 rounded-full shadow-xl flex items-center justify-center text-accent-600 hover:bg-accent-600 hover:text-white transition-all duration-300 border border-gray-200 dark:border-gray-700"
                     >
                         <ArrowUp className="w-5 h-5" />
                     </motion.button>
@@ -213,7 +213,7 @@ export default function FloatingActionButton() {
                     onClick={() => setIsOpen(!isOpen)}
                     className={`
                         relative w-14 h-14 rounded-full 
-                        bg-gradient-to-br from-purple-600 to-pink-600 
+                        bg-gradient-to-br from-accent-600 to-pink-600 
                         text-white 
                         flex items-center justify-center 
                         shadow-2xl
@@ -237,7 +237,7 @@ export default function FloatingActionButton() {
                         <motion.span
                             animate={{ scale: [1, 1.5, 1], opacity: [0.7, 0, 0.7] }}
                             transition={{ duration: 2, repeat: Infinity }}
-                            className="absolute inset-0 rounded-full bg-purple-600"
+                            className="absolute inset-0 rounded-full bg-accent-600"
                         />
                     )}
 

@@ -25,10 +25,10 @@ export default function OrderTrackingView({ order }: { order: Order }) {
             {/* Header */}
             <div className="flex flex-wrap items-end justify-between gap-3">
                 <div>
-                    <h1 className="text-3xl md:text-5xl font-black text-primary dark:text-white tracking-tighter">Order LC-{String(order.id).padStart(4, '0')}</h1>
+                    <h1 className="text-3xl md:text-5xl font-medium text-primary dark:text-white tracking-tight">Order LC-{String(order.id).padStart(4, '0')}</h1>
                     <p className="text-sm text-secondary dark:text-gray-400 mt-1">Placed {fmt(order.createdAt)}</p>
                 </div>
-                <span className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${cancelled ? 'bg-hot/10 text-hot' : 'bg-accent/10 text-accent'}`}>{order.status}</span>
+                <span className={`px-3 py-1.5 rounded-full text-[10px] font-medium uppercase tracking-widest ${cancelled ? 'bg-hot/10 text-hot' : 'bg-accent/10 text-accent'}`}>{order.status}</span>
             </div>
 
             {/* Stepper */}
@@ -38,7 +38,7 @@ export default function OrderTrackingView({ order }: { order: Order }) {
                     <span className="font-bold">This order was {order.status.toLowerCase()}.</span>
                 </div>
             ) : (
-                <div className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6">
+                <div className="bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6">
                     <div className="flex items-center justify-between">
                         {STEPS.map((step, i) => {
                             const Icon = step.icon;
@@ -47,7 +47,7 @@ export default function OrderTrackingView({ order }: { order: Order }) {
                             return (
                                 <div key={step.key} className="flex-1 flex flex-col items-center relative">
                                     {i > 0 && <div className={`absolute right-1/2 top-5 h-0.5 w-full -z-0 ${i <= currentIndex ? 'bg-accent' : 'bg-gray-200 dark:bg-slate-700'}`} />}
-                                    <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${done ? 'bg-accent text-white' : 'bg-gray-100 dark:bg-slate-800 text-gray-400'} ${isCurrent ? 'ring-4 ring-accent/20' : ''}`}>
+                                    <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${done ? 'bg-accent text-white' : 'bg-gray-100 dark:bg-ink-800 text-gray-400'} ${isCurrent ? 'ring-4 ring-accent/20' : ''}`}>
                                         {done && !isCurrent ? <Check className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
                                     </div>
                                     <span className={`mt-2 text-[10px] md:text-xs font-bold text-center ${done ? 'text-primary dark:text-white' : 'text-gray-400'}`}>{step.label}</span>
@@ -60,18 +60,18 @@ export default function OrderTrackingView({ order }: { order: Order }) {
 
             {/* Tracking number */}
             {order.trackingNumber && (
-                <div className="flex items-center gap-4 p-5 bg-primary/5 dark:bg-slate-900 rounded-2xl">
+                <div className="flex items-center gap-4 p-5 bg-primary/5 dark:bg-ink-900 rounded-2xl">
                     <Truck className="w-6 h-6 text-accent" />
                     <div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Tracking {order.carrier ? `· ${order.carrier}` : ''}</p>
-                        <p className="text-lg font-black text-primary dark:text-white tracking-tight">{order.trackingNumber}</p>
+                        <p className="text-[10px] font-medium uppercase tracking-widest text-gray-400">Tracking {order.carrier ? `· ${order.carrier}` : ''}</p>
+                        <p className="text-lg font-medium text-primary dark:text-white tracking-tight">{order.trackingNumber}</p>
                     </div>
                 </div>
             )}
 
             {/* Timeline */}
-            <div className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6">
-                <h2 className="font-black text-primary dark:text-white uppercase tracking-tight mb-4">History</h2>
+            <div className="bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6">
+                <h2 className="font-medium text-primary dark:text-white uppercase tracking-tight mb-4">History</h2>
                 <ol className="space-y-4">
                     {[...order.events].reverse().map((e, i) => (
                         <li key={i} className="flex gap-4">
@@ -90,8 +90,8 @@ export default function OrderTrackingView({ order }: { order: Order }) {
 
             {/* Items + address + totals */}
             <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6 space-y-4">
-                    <h2 className="font-black text-primary dark:text-white uppercase tracking-tight">Items</h2>
+                <div className="bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6 space-y-4">
+                    <h2 className="font-medium text-primary dark:text-white uppercase tracking-tight">Items</h2>
                     {order.items.map((it) => (
                         <div key={it.productId} className="flex items-center gap-3">
                             {it.image && <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0"><Image src={it.image} alt={it.name} fill className="object-cover" /></div>}
@@ -107,12 +107,12 @@ export default function OrderTrackingView({ order }: { order: Order }) {
                         {order.discount > 0 && <div className="flex justify-between text-new"><span>Discount{order.couponCode ? ` (${order.couponCode})` : ''}</span><span>−${order.discount.toFixed(2)}</span></div>}
                         <div className="flex justify-between text-gray-500"><span>Shipping</span><span>{order.shipping === 0 ? 'Free' : `$${order.shipping.toFixed(2)}`}</span></div>
                         <div className="flex justify-between text-gray-500"><span>Tax</span><span>${order.tax.toFixed(2)}</span></div>
-                        <div className="flex justify-between font-black text-primary dark:text-white text-lg pt-1.5 border-t border-primary/10 dark:border-slate-800"><span>Total</span><span>${order.total.toFixed(2)}</span></div>
+                        <div className="flex justify-between font-medium text-primary dark:text-white text-lg pt-1.5 border-t border-primary/10 dark:border-slate-800"><span>Total</span><span>${order.total.toFixed(2)}</span></div>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6">
-                    <h2 className="font-black text-primary dark:text-white uppercase tracking-tight mb-4 flex items-center gap-2"><MapPin className="w-4 h-4 text-accent" /> Shipping</h2>
+                <div className="bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-2xl p-6">
+                    <h2 className="font-medium text-primary dark:text-white uppercase tracking-tight mb-4 flex items-center gap-2"><MapPin className="w-4 h-4 text-accent" /> Shipping</h2>
                     <p className="text-sm text-secondary dark:text-gray-400 leading-relaxed">
                         {addr?.fullName}<br />
                         {addr?.line1}{addr?.line2 ? `, ${addr.line2}` : ''}<br />

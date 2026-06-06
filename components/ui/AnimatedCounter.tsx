@@ -118,16 +118,16 @@ export function AnimatedStatCard({
             className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700"
         >
             {/* Background gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-900/10 dark:to-pink-900/10" />
+            <div className="absolute inset-0 bg-gradient-to-br from-accent-50/50 to-pink-50/50 dark:from-accent-900/10 dark:to-pink-900/10" />
 
             <div className="relative z-10">
                 {icon && (
-                    <div className="mb-4 inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl text-white shadow-lg">
+                    <div className="mb-4 inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-accent-500 to-pink-500 rounded-xl text-white shadow-lg">
                         {icon}
                     </div>
                 )}
 
-                <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-1">
+                <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-accent-600 to-pink-600 bg-clip-text text-transparent mb-1">
                     <AnimatedCounter value={value} prefix={prefix} suffix={suffix} />
                 </div>
 

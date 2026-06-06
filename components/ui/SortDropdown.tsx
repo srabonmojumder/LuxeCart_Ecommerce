@@ -29,13 +29,13 @@ const sortOptions: SortOption[] = [
         value: 'featured',
         label: 'Featured',
         icon: <Sparkles className="w-4 h-4" />,
-        gradient: 'from-violet-500 to-purple-600',
+        gradient: 'from-accent-500 to-accent-600',
     },
     {
         value: 'price-low',
         label: 'Price: Low to High',
         icon: <TrendingUp className="w-4 h-4" />,
-        gradient: 'from-emerald-500 to-teal-600',
+        gradient: 'from-emerald-500 to-accent-600',
     },
     {
         value: 'price-high',
@@ -90,10 +90,10 @@ export default function SortDropdown({ value, onChange }: SortDropdownProps) {
                     relative flex items-center gap-3 px-4 py-3 rounded-2xl
                     bg-white dark:bg-gray-800
                     border-2 border-gray-200 dark:border-gray-700
-                    hover:border-purple-400 dark:hover:border-purple-500
+                    hover:border-accent-400 dark:hover:border-accent-500
                     shadow-lg shadow-gray-200/50 dark:shadow-gray-900/50
                     transition-all duration-300 min-w-[220px]
-                    ${isOpen ? 'border-purple-500 dark:border-purple-400 ring-4 ring-purple-500/20' : ''}
+                    ${isOpen ? 'border-accent-500 dark:border-accent-400 ring-4 ring-accent-500/20' : ''}
                 `}
             >
                 {/* Animated Icon Container */}
@@ -131,7 +131,7 @@ export default function SortDropdown({ value, onChange }: SortDropdownProps) {
                 {isOpen && (
                     <motion.div
                         layoutId="glow"
-                        className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 -z-10"
+                        className="absolute inset-0 rounded-2xl bg-gradient-to-r from-accent-500/20 to-pink-500/20 -z-10"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -150,7 +150,7 @@ export default function SortDropdown({ value, onChange }: SortDropdownProps) {
                         className="absolute top-full left-0 right-0 mt-2 p-2 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl shadow-gray-300/50 dark:shadow-gray-900/50 border border-gray-200 dark:border-gray-700 overflow-hidden"
                     >
                         {/* Decorative gradient */}
-                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500" />
+                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-accent-500 via-pink-500 to-orange-500" />
 
                         <div className="space-y-1 pt-1">
                             {sortOptions.map((option, index) => (
@@ -165,7 +165,7 @@ export default function SortDropdown({ value, onChange }: SortDropdownProps) {
                                         w-full flex items-center gap-3 px-3 py-2.5 rounded-xl
                                         transition-all duration-200
                                         ${value === option.value
-                                            ? 'bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30'
+                                            ? 'bg-gradient-to-r from-accent-50 to-pink-50 dark:from-accent-900/30 dark:to-pink-900/30'
                                             : 'hover:bg-gray-100 dark:hover:bg-gray-700/50'
                                         }
                                     `}

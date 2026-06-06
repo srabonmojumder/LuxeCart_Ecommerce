@@ -181,7 +181,7 @@ export default function HeroCarousel({ slides: slidesProp }: HeroCarouselProps =
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: 0.1 }}
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 backdrop-blur-sm border border-white/20 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full mb-5"
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 backdrop-blur-sm border border-white/20 text-white text-[10px] font-medium uppercase tracking-[0.2em] rounded-full mb-5"
                                 >
                                     <span className="w-1.5 h-1.5 rounded-full bg-accent-300 animate-pulse" />
                                     {slide.badge}
@@ -193,7 +193,7 @@ export default function HeroCarousel({ slides: slidesProp }: HeroCarouselProps =
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.15 }}
-                                className="text-accent-300 font-black tracking-[0.3em] uppercase text-[10px] sm:text-xs mb-3"
+                                className="text-accent-300 font-medium tracking-[0.3em] uppercase text-[10px] sm:text-xs mb-3"
                             >
                                 {slide.subtitle}
                             </motion.p>
@@ -203,7 +203,7 @@ export default function HeroCarousel({ slides: slidesProp }: HeroCarouselProps =
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.2 }}
-                                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter text-white mb-5 leading-[1.05]"
+                                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium tracking-tight text-white mb-5 leading-[1.05]"
                             >
                                 {slide.title}
                             </motion.h1>
@@ -225,13 +225,13 @@ export default function HeroCarousel({ slides: slidesProp }: HeroCarouselProps =
                                 transition={{ delay: 0.3 }}
                                 className="flex items-end gap-4 justify-center lg:justify-start mb-7"
                             >
-                                <span className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-white tabular-nums leading-none">
+                                <span className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-white tabular-nums leading-none">
                                     ${slide.salePrice.toFixed(2)}
                                 </span>
                                 <span className="text-lg sm:text-xl text-white/40 line-through font-bold tabular-nums">
                                     ${slide.originalPrice.toFixed(2)}
                                 </span>
-                                <span className="px-2.5 py-1 bg-hot text-white text-[10px] font-black uppercase tracking-widest rounded-md">
+                                <span className="px-2.5 py-1 bg-hot text-white text-[10px] font-medium uppercase tracking-widest rounded-md">
                                     −{slide.discount}%
                                 </span>
                             </motion.div>
@@ -246,7 +246,7 @@ export default function HeroCarousel({ slides: slidesProp }: HeroCarouselProps =
                                     <motion.button
                                         whileHover={{ scale: 1.02, y: -2 }}
                                         whileTap={{ scale: 0.98 }}
-                                        className="inline-flex items-center gap-3 px-8 py-4 bg-white text-primary hover:bg-accent hover:text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-2xl transition-colors"
+                                        className="inline-flex items-center gap-3 px-8 py-4 bg-white text-primary hover:bg-accent hover:text-white font-medium uppercase tracking-widest text-xs rounded-2xl shadow-2xl transition-colors"
                                     >
                                         <ShoppingBag className="w-4 h-4" />
                                         {slide.cta}
@@ -292,8 +292,8 @@ export default function HeroCarousel({ slides: slidesProp }: HeroCarouselProps =
                                     transition={{ type: 'spring', stiffness: 280, damping: 18 }}
                                     className="absolute top-4 right-4 w-20 h-20 bg-white text-primary rounded-2xl flex flex-col items-center justify-center shadow-2xl ring-1 ring-black/5"
                                 >
-                                    <span className="text-2xl font-black tracking-tighter leading-none">{slide.discount}%</span>
-                                    <span className="text-[9px] font-black tracking-[0.2em] text-accent mt-0.5">OFF</span>
+                                    <span className="text-2xl font-medium tracking-tight leading-none">{slide.discount}%</span>
+                                    <span className="text-[9px] font-medium tracking-[0.2em] text-accent mt-0.5">OFF</span>
                                 </motion.div>
                             </div>
                         </motion.div>

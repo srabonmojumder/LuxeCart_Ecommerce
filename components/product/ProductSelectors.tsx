@@ -59,7 +59,7 @@ export function ColorSelector({ colors, selectedColor, onColorSelect }: ColorSel
                             onClick={() => onColorSelect(color)}
                             className={`
                                 relative w-10 h-10 rounded-full transition-all duration-300
-                                ${isSelected ? 'ring-2 ring-offset-2 ring-purple-500 dark:ring-offset-gray-800' : 'ring-1 ring-gray-200 dark:ring-gray-600 hover:ring-2 hover:ring-purple-300'}
+                                ${isSelected ? 'ring-2 ring-offset-2 ring-accent-500 dark:ring-offset-gray-800' : 'ring-1 ring-gray-200 dark:ring-gray-600 hover:ring-2 hover:ring-accent-300'}
                             `}
                             style={{ backgroundColor: color }}
                             title={getColorName(color)}
@@ -95,7 +95,7 @@ export function SizeSelector({ sizes, selectedSize, onSizeSelect, outOfStockSize
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Size: <span className="text-gray-900 dark:text-white">{selectedSize || 'Select a size'}</span>
                 </span>
-                <button className="text-sm text-purple-600 hover:text-purple-700 font-medium">
+                <button className="text-sm text-accent-600 hover:text-accent-700 font-medium">
                     Size Guide
                 </button>
             </div>
@@ -114,7 +114,7 @@ export function SizeSelector({ sizes, selectedSize, onSizeSelect, outOfStockSize
                             className={`
                                 relative min-w-[3rem] px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-300
                                 ${isSelected
-                                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                                    ? 'bg-gradient-to-r from-accent-600 to-pink-600 text-white shadow-lg'
                                     : isOutOfStock
                                         ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed line-through'
                                         : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600'

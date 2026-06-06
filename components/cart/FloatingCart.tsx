@@ -37,7 +37,7 @@ export default function FloatingCart() {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setIsOpen(true)}
-                    className="fixed bottom-24 right-6 z-40 bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-full shadow-2xl hover:shadow-purple-500/50 transition-all"
+                    className="fixed bottom-24 right-6 z-40 bg-gradient-to-r from-accent-600 to-pink-600 text-white p-4 rounded-full shadow-2xl hover:shadow-accent-500/50 transition-all"
                 >
                     <ShoppingCart className="w-6 h-6" />
                     <motion.span
@@ -72,7 +72,7 @@ export default function FloatingCart() {
                             className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-white dark:bg-gray-800 shadow-2xl z-[60] overflow-hidden flex flex-col"
                         >
                             {/* Header */}
-                            <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-600 to-pink-600">
+                            <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-accent-600 to-pink-600">
                                 <div className="flex justify-between items-center text-white">
                                     <h3 className="text-xl font-bold">Shopping Cart ({totalItems})</h3>
                                     <button
@@ -135,7 +135,7 @@ export default function FloatingCart() {
                                                         </button>
                                                     </div>
                                                     <div className="text-right">
-                                                        <p className="text-sm font-bold text-purple-600">
+                                                        <p className="text-sm font-bold text-accent-600">
                                                             ${(price * item.quantity).toFixed(2)}
                                                         </p>
                                                     </div>
@@ -159,7 +159,7 @@ export default function FloatingCart() {
                                     <span className="text-lg font-semibold text-gray-900 dark:text-white">
                                         Total:
                                     </span>
-                                    <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                                    <span className="text-2xl font-bold bg-gradient-to-r from-accent-600 to-pink-600 bg-clip-text text-transparent">
                                         ${totalPrice.toFixed(2)}
                                     </span>
                                 </div>

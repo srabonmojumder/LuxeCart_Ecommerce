@@ -22,7 +22,7 @@ interface SelectProps {
 }
 
 const defaultTrigger =
-    'w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
+    'w-full px-4 py-3 bg-gray-50 dark:bg-ink-800 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white';
 
 export default function Select({
     value,
@@ -51,7 +51,7 @@ export default function Select({
                 <RadixSelect.Content
                     position="popper"
                     sideOffset={8}
-                    className="z-[60] min-w-[var(--radix-select-trigger-width)] max-h-[var(--radix-select-content-available-height)] overflow-hidden rounded-[6px] border border-primary/10 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xl shadow-black/10 dark:shadow-black/40 origin-top data-[state=open]:animate-scale-in"
+                    className="z-[60] min-w-[var(--radix-select-trigger-width)] max-h-[var(--radix-select-content-available-height)] overflow-hidden rounded-[6px] border border-primary/10 dark:border-slate-700 bg-white dark:bg-ink-900 shadow-2xl shadow-black/10 dark:shadow-black/40 origin-top data-[state=open]:animate-scale-in"
                 >
                     <RadixSelect.ScrollUpButton className="flex items-center justify-center h-7 text-gray-400">
                         <ChevronUp className="w-4 h-4" />

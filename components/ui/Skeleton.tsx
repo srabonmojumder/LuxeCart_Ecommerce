@@ -12,7 +12,7 @@
 /** Base shimmering block. Size/shape it with `className` (h-*, w-*, rounded-*). */
 export function Skeleton({ className = '' }: { className?: string }) {
     return (
-        <div className={`relative overflow-hidden bg-gray-200 dark:bg-slate-800 rounded ${className}`}>
+        <div className={`relative overflow-hidden bg-gray-200 dark:bg-ink-800 rounded ${className}`}>
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 dark:via-white/10 to-transparent animate-shimmer" />
         </div>
     );
@@ -21,9 +21,9 @@ export function Skeleton({ className = '' }: { className?: string }) {
 /** Table placeholder matching the admin list tables (header + N rows × M cells). */
 export function TableSkeleton({ rows = 8, cols = 6 }: { rows?: number; cols?: number }) {
     return (
-        <div className="overflow-x-auto rounded-2xl border border-primary/5 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div className="overflow-x-auto rounded-2xl border border-primary/5 dark:border-slate-800 bg-white dark:bg-ink-900">
             <table className="w-full text-sm">
-                <thead className="bg-primary/5 dark:bg-slate-800/50 text-left">
+                <thead className="bg-primary/5 dark:bg-ink-800/50 text-left">
                     <tr>
                         {Array.from({ length: cols }).map((_, i) => (
                             <th key={i} className="p-4"><Skeleton className="h-3 w-16" /></th>
@@ -51,7 +51,7 @@ export function CardListSkeleton({ rows = 6 }: { rows?: number }) {
     return (
         <div className="space-y-3">
             {Array.from({ length: rows }).map((_, i) => (
-                <div key={i} className="flex items-center justify-between gap-4 p-5 bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl">
+                <div key={i} className="flex items-center justify-between gap-4 p-5 bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-2xl">
                     <div className="min-w-0 flex-1 space-y-2.5">
                         <Skeleton className="h-4 w-40 max-w-[60%]" />
                         <Skeleton className="h-3 w-2/3" />
@@ -68,7 +68,7 @@ export function CardGridSkeleton({ count = 6, className = 'grid sm:grid-cols-2 l
     return (
         <div className={className}>
             {Array.from({ length: count }).map((_, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl overflow-hidden">
+                <div key={i} className="bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-2xl overflow-hidden">
                     <Skeleton className="h-40 w-full rounded-none" />
                     <div className="p-4 space-y-2.5">
                         <Skeleton className="h-4 w-3/4" />
@@ -85,7 +85,7 @@ export function StatCardsSkeleton({ count = 4, className = 'grid grid-cols-2 lg:
     return (
         <div className={className}>
             {Array.from({ length: count }).map((_, i) => (
-                <div key={i} className="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-primary/5 dark:border-slate-800">
+                <div key={i} className="p-5 bg-white dark:bg-ink-900 rounded-2xl border border-primary/5 dark:border-slate-800">
                     <Skeleton className="w-10 h-10 rounded-xl mb-4" />
                     <Skeleton className="h-7 w-24 mb-2" />
                     <Skeleton className="h-3 w-16" />
@@ -98,7 +98,7 @@ export function StatCardsSkeleton({ count = 4, className = 'grid grid-cols-2 lg:
 /** Card with a title + tall chart-shaped block. */
 export function ChartSkeleton({ height = 'h-56' }: { height?: string }) {
     return (
-        <div className="p-6 bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl">
+        <div className="p-6 bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-2xl">
             <Skeleton className="h-4 w-32 mb-4" />
             <Skeleton className={`w-full ${height} rounded-xl`} />
         </div>
@@ -126,7 +126,7 @@ export function FormSkeleton({ fields = 8 }: { fields?: number }) {
 /** Card with a title + N labelled progress-bar rows (analytics breakdowns). */
 export function BarListSkeleton({ rows = 5 }: { rows?: number }) {
     return (
-        <div className="p-6 bg-white dark:bg-slate-900 border border-primary/5 dark:border-slate-800 rounded-2xl">
+        <div className="p-6 bg-white dark:bg-ink-900 border border-primary/5 dark:border-slate-800 rounded-2xl">
             <Skeleton className="h-4 w-32 mb-4" />
             <div className="space-y-3">
                 {Array.from({ length: rows }).map((_, i) => (

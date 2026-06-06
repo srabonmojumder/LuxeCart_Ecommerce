@@ -97,7 +97,7 @@ export default function MegaMenu() {
     }, [categories]);
 
     return (
-        <nav className="hidden lg:block border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <nav className="hidden lg:block border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-ink-900">
             <div className="max-w-7xl mx-auto px-4 md:px-8">
                 <ul className="flex items-center gap-0">
                     {items.map((item) => (
@@ -127,7 +127,7 @@ export default function MegaMenu() {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: 10 }}
                                         transition={{ duration: 0.15 }}
-                                        className="absolute left-0 top-full w-[600px] bg-white dark:bg-slate-900 rounded-b-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50"
+                                        className="absolute left-0 top-full w-[600px] bg-white dark:bg-ink-900 rounded-b-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50"
                                     >
                                         <div className="flex">
                                             {/* Menu Links */}
@@ -151,7 +151,7 @@ export default function MegaMenu() {
                                                                                 ? 'bg-accent/10 dark:bg-accent/20 text-accent'
                                                                                 : link.badge === 'Hot'
                                                                                     ? 'bg-hot/10 dark:bg-hot/20 text-hot'
-                                                                                    : 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400'
+                                                                                    : 'bg-accent-100 dark:bg-accent-900/30 text-accent-600 dark:text-accent-400'
                                                                                 }`}>
                                                                                 {link.badge}
                                                                             </span>
@@ -166,7 +166,7 @@ export default function MegaMenu() {
 
                                             {/* Promo Banner */}
                                             {item.promoImage && (
-                                                <div className="w-48 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-br-xl">
+                                                <div className="w-48 p-4 bg-slate-50 dark:bg-ink-800/50 rounded-br-xl">
                                                     <div className="relative h-full rounded-lg overflow-hidden">
                                                         <Image
                                                             src={item.promoImage}

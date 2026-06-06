@@ -54,7 +54,7 @@ export default function NewsletterPopup() {
                         exit={{ opacity: 0, scale: 0.8, y: 50 }}
                         className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg z-50 px-4"
                     >
-                        <div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl">
+                        <div className="bg-gradient-to-br from-accent-600 to-pink-600 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl">
                             {/* Decorative elements */}
                             <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20" />
                             <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full -ml-16 -mb-16" />
@@ -96,7 +96,7 @@ export default function NewsletterPopup() {
                                     </div>
                                     <button
                                         type="submit"
-                                        className="w-full bg-white text-purple-600 font-bold py-3 rounded-lg hover:bg-gray-100 transition-colors"
+                                        className="w-full bg-white text-accent-600 font-bold py-3 rounded-lg hover:bg-gray-100 transition-colors"
                                     >
                                         Get My Discount
                                     </button>

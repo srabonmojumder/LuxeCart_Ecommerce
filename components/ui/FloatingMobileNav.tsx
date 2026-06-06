@@ -39,7 +39,7 @@ export default function FloatingMobileNav() {
             icon: ShoppingBag,
             href: '/cart',
             badge: cartCount || null,
-            badgeColor: 'bg-gradient-to-r from-teal-500 to-emerald-500',
+            badgeColor: 'bg-gradient-to-r from-accent-500 to-emerald-500',
         },
         {
             label: 'Account',
@@ -60,7 +60,7 @@ export default function FloatingMobileNav() {
             <div className="h-4 bg-gradient-to-t from-white dark:from-slate-900 to-transparent pointer-events-none" />
 
             {/* Main Navigation Bar */}
-            <div className="bg-white/98 dark:bg-slate-900/98 backdrop-blur-xl border-t border-slate-200/60 dark:border-slate-700/60 shadow-[0_-2px_16px_rgba(0,0,0,0.06)]">
+            <div className="bg-white/98 dark:bg-ink-900/98 backdrop-blur-xl border-t border-slate-200/60 dark:border-slate-700/60 shadow-[0_-2px_16px_rgba(0,0,0,0.06)]">
                 <div className="flex items-center justify-around px-1 pt-1.5 pb-safe">
                     {navItems.map((item) => {
                         const Icon = item.icon;
@@ -143,7 +143,7 @@ export default function FloatingMobileNav() {
                 </div>
 
                 {/* Safe area spacer for iPhone */}
-                <div className="h-safe-area-inset-bottom bg-white dark:bg-slate-900" />
+                <div className="h-safe-area-inset-bottom bg-white dark:bg-ink-900" />
             </div>
         </motion.nav>
     );

@@ -19,7 +19,7 @@ export default function TopUtilityBar() {
     const languages = ['English', 'Spanish', 'French', 'German'];
 
     return (
-        <div className="bg-slate-900 text-slate-300 text-xs py-2 border-b border-slate-800">
+        <div className="bg-ink-950 text-stone-300 text-xs py-2.5 tracking-wide border-b border-white/5">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between">
                     {/* Left - Contact Info */}
@@ -63,7 +63,7 @@ export default function TopUtilityBar() {
                                 <ChevronDown className="w-3 h-3" />
                             </button>
                             {showCurrencyDropdown && (
-                                <div className="absolute top-full right-0 mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-lg py-1 z-[60] min-w-[80px]">
+                                <div className="absolute top-full right-0 mt-1 bg-white dark:bg-ink-800 rounded-lg shadow-lg py-1 z-[60] min-w-[80px]">
                                     {currencies.map((c) => (
                                         <button
                                             key={c}
@@ -94,7 +94,7 @@ export default function TopUtilityBar() {
                                 <ChevronDown className="w-3 h-3" />
                             </button>
                             {showLanguageDropdown && (
-                                <div className="absolute top-full right-0 mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-lg py-1 z-[60] min-w-[100px]">
+                                <div className="absolute top-full right-0 mt-1 bg-white dark:bg-ink-800 rounded-lg shadow-lg py-1 z-[60] min-w-[100px]">
                                     {languages.map((l) => (
                                         <button
                                             key={l}

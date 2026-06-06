@@ -47,7 +47,7 @@ export default function CookieConsent() {
                     role="dialog"
                     aria-label="Cookie consent"
                 >
-                    <div className="bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-700 rounded-2xl shadow-2xl shadow-black/15 dark:shadow-black/40 p-5 md:p-6 relative">
+                    <div className="bg-white dark:bg-ink-900 border border-primary/10 dark:border-slate-700 rounded-2xl shadow-2xl shadow-black/15 dark:shadow-black/40 p-5 md:p-6 relative">
                         <button
                             onClick={() => choose('rejected')}
                             aria-label="Dismiss"
@@ -61,7 +61,7 @@ export default function CookieConsent() {
                                 <Cookie className="w-5 h-5" />
                             </div>
                             <div className="min-w-0 pr-6">
-                                <h3 className="font-black text-primary dark:text-white tracking-tight text-base">
+                                <h3 className="font-medium text-primary dark:text-white tracking-tight text-base">
                                     We use cookies
                                 </h3>
                                 <p className="text-xs text-secondary dark:text-gray-400 mt-1 leading-relaxed">
@@ -75,13 +75,13 @@ export default function CookieConsent() {
                         <div className="flex flex-wrap gap-2">
                             <button
                                 onClick={() => choose('accepted')}
-                                className="flex-1 min-w-[120px] bg-primary dark:bg-accent text-white px-4 py-2.5 rounded-xl font-black uppercase tracking-widest text-[11px] hover:opacity-90 transition-opacity"
+                                className="flex-1 min-w-[120px] bg-primary dark:bg-accent text-white px-4 py-2.5 rounded-xl font-medium uppercase tracking-widest text-[11px] hover:opacity-90 transition-opacity"
                             >
                                 Accept All
                             </button>
                             <button
                                 onClick={() => choose('rejected')}
-                                className="flex-1 min-w-[120px] border border-primary/10 dark:border-slate-700 text-primary dark:text-white px-4 py-2.5 rounded-xl font-black uppercase tracking-widest text-[11px] hover:bg-primary/5 dark:hover:bg-slate-800 transition-colors"
+                                className="flex-1 min-w-[120px] border border-primary/10 dark:border-slate-700 text-primary dark:text-white px-4 py-2.5 rounded-xl font-medium uppercase tracking-widest text-[11px] hover:bg-primary/5 dark:hover:bg-slate-800 transition-colors"
                             >
                                 Essential Only
                             </button>

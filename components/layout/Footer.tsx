@@ -7,9 +7,9 @@ import { useSettings } from '@/lib/hooks';
 export default function Footer() {
     const { settings } = useSettings();
     return (
-        <footer className="relative bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-t border-slate-200/50 dark:border-slate-800/50">
-            {/* Gradient Accent Line */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-accent via-primary to-accent opacity-60"></div>
+        <footer className="relative bg-ivory dark:bg-ink-950 border-t border-primary/10 dark:border-white/8">
+            {/* Thin gold accent line */}
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent"></div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12">
                 {/* Main Footer Content */}
@@ -17,8 +17,8 @@ export default function Footer() {
                     {/* Brand Info - Takes more space */}
                     <div className="lg:col-span-4">
                         <div className="mb-8">
-                            <h4 className="text-3xl md:text-4xl font-black tracking-tighter bg-gradient-to-r from-primary via-accent to-primary dark:from-accent dark:via-purple-400 dark:to-accent bg-clip-text text-transparent mb-4">
-                                LuxeCart
+                            <h4 className="font-display text-3xl md:text-4xl font-semibold tracking-tight text-primary dark:text-white mb-4">
+                                LuxeCart<span className="text-accent">.</span>
                             </h4>
                             <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed max-w-sm">
                                 Premium home accessories for the modern minimalist. Elevate your living space with our curated collection of decor, lighting, and essentials.
@@ -81,7 +81,7 @@ export default function Footer() {
 
                     {/* Quick Links */}
                     <div className="lg:col-span-2">
-                        <h5 className="font-black text-primary dark:text-white mb-6 text-sm tracking-wider uppercase">
+                        <h5 className="font-sans font-semibold text-primary dark:text-white mb-6 text-xs tracking-[0.2em] uppercase">
                             Collections
                         </h5>
                         <ul className="space-y-3">
@@ -135,7 +135,7 @@ export default function Footer() {
 
                     {/* Support */}
                     <div className="lg:col-span-2">
-                        <h5 className="font-black text-primary dark:text-white mb-6 text-sm tracking-wider uppercase">
+                        <h5 className="font-sans font-semibold text-primary dark:text-white mb-6 text-xs tracking-[0.2em] uppercase">
                             Support
                         </h5>
                         <ul className="space-y-3">
@@ -198,7 +198,7 @@ export default function Footer() {
 
                     {/* Company */}
                     <div className="lg:col-span-2">
-                        <h5 className="font-black text-primary dark:text-white mb-6 text-sm tracking-wider uppercase">
+                        <h5 className="font-sans font-semibold text-primary dark:text-white mb-6 text-xs tracking-[0.2em] uppercase">
                             Company
                         </h5>
                         <ul className="space-y-3">
@@ -252,7 +252,7 @@ export default function Footer() {
 
                     {/* Newsletter */}
                     <div className="lg:col-span-2">
-                        <h5 className="font-black text-primary dark:text-white mb-6 text-sm tracking-wider uppercase">
+                        <h5 className="font-sans font-semibold text-primary dark:text-white mb-6 text-xs tracking-[0.2em] uppercase">
                             Newsletter
                         </h5>
                         <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">
@@ -262,7 +262,7 @@ export default function Footer() {
                             <input
                                 type="email"
                                 placeholder="Your email"
-                                className="w-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 pr-12 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+                                className="w-full bg-white dark:bg-ink-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 pr-12 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
                             />
                             <button
                                 className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-accent to-accent/80 text-white p-2.5 rounded-lg hover:from-accent/90 hover:to-accent transition-all hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
@@ -274,13 +274,13 @@ export default function Footer() {
 
                         {/* Trust Badges */}
                         <div className="mt-6 flex flex-wrap gap-2">
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-ink-800 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                                 <svg className="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                 </svg>
                                 Secure
                             </div>
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-ink-800 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                                 <svg className="w-3.5 h-3.5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                                     <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
@@ -310,16 +310,16 @@ export default function Footer() {
                         <div className="flex items-center gap-3">
                             <span className="text-xs text-slate-500 dark:text-slate-500 font-semibold">We Accept:</span>
                             <div className="flex gap-2">
-                                <div className="w-10 h-7 bg-slate-100 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 flex items-center justify-center">
+                                <div className="w-10 h-7 bg-slate-100 dark:bg-ink-800 rounded border border-slate-200 dark:border-slate-700 flex items-center justify-center">
                                     <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">VISA</span>
                                 </div>
-                                <div className="w-10 h-7 bg-slate-100 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 flex items-center justify-center">
+                                <div className="w-10 h-7 bg-slate-100 dark:bg-ink-800 rounded border border-slate-200 dark:border-slate-700 flex items-center justify-center">
                                     <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">MC</span>
                                 </div>
-                                <div className="w-10 h-7 bg-slate-100 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 flex items-center justify-center">
+                                <div className="w-10 h-7 bg-slate-100 dark:bg-ink-800 rounded border border-slate-200 dark:border-slate-700 flex items-center justify-center">
                                     <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">AMEX</span>
                                 </div>
-                                <div className="w-10 h-7 bg-slate-100 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 flex items-center justify-center">
+                                <div className="w-10 h-7 bg-slate-100 dark:bg-ink-800 rounded border border-slate-200 dark:border-slate-700 flex items-center justify-center">
                                     <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">PP</span>
                                 </div>
                             </div>

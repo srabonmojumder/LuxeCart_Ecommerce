@@ -36,7 +36,7 @@ export default function ReviewSection({ slug }: { slug: string }) {
         <div className="space-y-8">
             {/* Write a review */}
             {authStatus === 'authenticated' ? (
-                <form onSubmit={submit} className="space-y-4 p-5 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+                <form onSubmit={submit} className="space-y-4 p-5 bg-slate-50 dark:bg-ink-900/50 rounded-2xl border border-slate-200 dark:border-slate-700">
                     <h4 className="font-bold text-slate-900 dark:text-white">Write a review</h4>
                     <div className="flex items-center gap-1">
                         {[1, 2, 3, 4, 5].map((n) => (
@@ -58,15 +58,15 @@ export default function ReviewSection({ slug }: { slug: string }) {
                         onChange={(e) => setComment(e.target.value)}
                         placeholder="Share your thoughts about this product…"
                         rows={3}
-                        className="w-full px-4 py-3 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-slate-900 dark:text-white"
+                        className="w-full px-4 py-3 bg-white dark:bg-ink-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-500 text-slate-900 dark:text-white"
                     />
-                    <button type="submit" disabled={submitting} className="bg-teal-500 hover:bg-teal-600 text-white font-semibold px-6 py-2.5 rounded-xl disabled:opacity-60">
+                    <button type="submit" disabled={submitting} className="bg-accent-500 hover:bg-accent-600 text-white font-semibold px-6 py-2.5 rounded-xl disabled:opacity-60">
                         {submitting ? 'Submitting…' : 'Submit Review'}
                     </button>
                 </form>
             ) : (
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                    <a href="/account" className="text-teal-600 font-semibold hover:underline">Sign in</a> to write a review.
+                    <a href="/account" className="text-accent-600 font-semibold hover:underline">Sign in</a> to write a review.
                 </p>
             )}
 

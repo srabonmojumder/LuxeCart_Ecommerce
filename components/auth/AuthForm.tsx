@@ -38,8 +38,8 @@ export default function AuthForm() {
     };
 
     return (
-        <div className="max-w-md mx-auto w-full bg-white dark:bg-slate-900 border border-primary/10 dark:border-slate-800 rounded-3xl p-8 md:p-10 shadow-xl">
-            <h2 className="text-2xl font-black text-primary dark:text-white uppercase tracking-tight mb-2">
+        <div className="max-w-md mx-auto w-full bg-white dark:bg-ink-900 border border-primary/10 dark:border-slate-800 rounded-3xl p-8 md:p-10 shadow-xl">
+            <h2 className="text-2xl font-medium text-primary dark:text-white uppercase tracking-tight mb-2">
                 {mode === 'login' ? 'Sign In' : 'Create Account'}
             </h2>
             <p className="text-sm text-secondary dark:text-gray-400 mb-8">
@@ -56,7 +56,7 @@ export default function AuthForm() {
                             placeholder="Full name"
                             value={displayName}
                             onChange={(e) => setDisplayName(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
+                            className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-ink-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
                         />
                     </div>
                 )}
@@ -68,7 +68,7 @@ export default function AuthForm() {
                         placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
+                        className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-ink-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
                     />
                 </div>
                 <div className="relative">
@@ -80,7 +80,7 @@ export default function AuthForm() {
                         placeholder="Password (min 6 chars)"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
+                        className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-ink-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white"
                     />
                 </div>
 

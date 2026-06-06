@@ -65,7 +65,7 @@ export default function BackInStockModal({ isOpen, onClose, productName, product
                     >
                         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
                             {/* Header */}
-                            <div className="relative bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
+                            <div className="relative bg-gradient-to-r from-accent-600 to-pink-600 p-6 text-white">
                                 <button
                                     onClick={onClose}
                                     className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
@@ -136,7 +136,7 @@ export default function BackInStockModal({ isOpen, onClose, productName, product
                                                     onChange={(e) => setEmail(e.target.value)}
                                                     placeholder="Enter your email"
                                                     required
-                                                    className="w-full pl-12 pr-4 py-3.5 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
+                                                    className="w-full pl-12 pr-4 py-3.5 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-accent-500 focus:border-transparent outline-none transition-all bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                                                 />
                                             </div>
 
@@ -145,7 +145,7 @@ export default function BackInStockModal({ isOpen, onClose, productName, product
                                                 whileTap={{ scale: 0.98 }}
                                                 type="submit"
                                                 disabled={isLoading}
-                                                className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                                className="w-full py-3.5 bg-gradient-to-r from-accent-600 to-pink-600 text-white font-semibold rounded-xl hover:from-accent-700 hover:to-pink-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                             >
                                                 {isLoading ? (
                                                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
