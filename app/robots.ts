@@ -1,5 +1,8 @@
 import { MetadataRoute } from 'next';
 
+// Required for `output: export` — emit a single static robots.txt.
+export const dynamic = 'force-static';
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://luxecart.com';
 
 export default function robots(): MetadataRoute.Robots {

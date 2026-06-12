@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ShoppingCart, Heart, Search, Menu, X, User } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -65,12 +66,18 @@ export default function Navbar() {
                         <div className="flex justify-center">
                             <Link
                                 href="/"
+                                aria-label="LuxeCart — home"
                                 className="relative group flex items-center"
                             >
-                                <span className="font-display text-2xl md:text-[28px] lg:text-3xl font-semibold tracking-tight text-primary dark:text-white transition-colors duration-300 group-hover:text-accent-700 dark:group-hover:text-accent-300">
-                                    LuxeCart
-                                </span>
-                                <span className="ml-1 mt-1 hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-accent" aria-hidden />
+                                <Image
+                                    src="/newlogo.png"
+                                    alt="LuxeCart"
+                                    width={850}
+                                    height={300}
+                                    priority
+                                    sizes="(max-width: 768px) 140px, 180px"
+                                    className="h-8 md:h-9 lg:h-10 w-auto object-contain transition-opacity duration-300 group-hover:opacity-80 dark:brightness-0 dark:invert"
+                                />
                             </Link>
                         </div>
 

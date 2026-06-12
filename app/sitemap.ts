@@ -1,6 +1,9 @@
 import { MetadataRoute } from 'next';
 import { products } from '@/data/products';
 
+// Required for `output: export` — emit a single static sitemap.xml.
+export const dynamic = 'force-static';
+
 // Static build: derive sitemap entries from the local catalog — no backend.
 const categorySlugs = Array.from(new Set(products.map((p) => p.category))).map((name) =>
   name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),

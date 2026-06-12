@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // NOTE: 'output: export' removed so pages render dynamically from the Node
-    // API (SSR/ISR) with live products and SEO intact, instead of a static build.
+    // Fully static build → emits an `out/` directory of static HTML for
+    // Firebase Hosting (no backend on this branch). trailingSlash makes each
+    // route a folder with index.html, which Firebase serves on clean URLs.
+    output: 'export',
+    trailingSlash: true,
     images: {
         unoptimized: true,
         remotePatterns: [
