@@ -5,7 +5,7 @@ import { X, Search as SearchIcon, TrendingUp, Clock, Tag, Star } from 'lucide-re
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { products } from '@/data/products';
+import { useProducts } from '@/lib/hooks';
 import { Product } from '@/store/useStore';
 
 interface SearchModalProps {
@@ -14,6 +14,7 @@ interface SearchModalProps {
 }
 
 export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
+    const { products } = useProducts();
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<Product[]>([]);
     const [recentSearches, setRecentSearches] = useState<string[]>([]);
@@ -115,9 +116,9 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                         className="hidden md:block fixed top-24 left-1/2 -translate-x-1/2 w-full max-w-2xl z-50 px-4"
                     >
-                        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-800">
+                        <div className="bg-white dark:bg-ink-900 rounded-3xl shadow-2xl overflow-hidden border border-primary/8 dark:border-white/8">
                             {/* Search Input */}
-                            <div className="p-4 border-b border-gray-100 dark:border-gray-800">
+                            <div className="p-4 border-b border-primary/8 dark:border-white/8">
                                 <div className="relative">
                                     <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                     <input
@@ -130,11 +131,11 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                             if (e.key === 'Enter' && query) handleSearch(query);
                                             if (e.key === 'Escape') onClose();
                                         }}
-                                        className="w-full pl-12 pr-12 py-3.5 bg-gray-50 dark:bg-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white text-base"
+                                        className="w-full pl-12 pr-12 py-3.5 bg-canvas dark:bg-ink-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white text-base"
                                     />
                                     <button
                                         onClick={onClose}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition-colors"
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-200 dark:hover:bg-ink-800 rounded-full transition-colors"
                                     >
                                         <X className="w-5 h-5 text-gray-400" />
                                     </button>
@@ -146,20 +147,20 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                 {query.length > 0 ? (
                                     results.length > 0 ? (
                                         <div className="p-3">
-                                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider px-3 mb-3">
+                                            <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.18em] font-sans px-3 mb-3">
                                                 {results.length} Results
                                             </p>
                                             {results.map((product) => (
                                                 <Link
                                                     key={product.id}
-                                                    href={`/products/${product.id}`}
+                                                    href={`/products/${product.slug ?? product.id}`}
                                                     onClick={handleProductClick}
                                                 >
                                                     <motion.div
-                                                        whileHover={{ backgroundColor: 'rgba(104, 91, 199, 0.08)' }}
+                                                        whileHover={{ backgroundColor: 'rgba(184, 155, 94, 0.10)' }}
                                                         className="flex gap-4 p-3 rounded-2xl cursor-pointer transition-colors"
                                                     >
-                                                        <div className="relative w-16 h-16 flex-shrink-0 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden">
+                                                        <div className="relative w-16 h-16 flex-shrink-0 bg-[#efece5] dark:bg-ink-800 rounded-xl overflow-hidden">
                                                             <Image
                                                                 src={product.image}
                                                                 alt={product.name}
@@ -197,7 +198,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                         </div>
                                     ) : (
                                         <div className="p-12 text-center">
-                                            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <div className="w-16 h-16 bg-[#efece5] dark:bg-ink-800 rounded-full flex items-center justify-center mx-auto mb-4">
                                                 <SearchIcon className="w-8 h-8 text-gray-300" />
                                             </div>
                                             <p className="text-gray-500 dark:text-gray-400">No products found for "{query}"</p>
@@ -209,7 +210,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                         {recentSearches.length > 0 && (
                                             <div>
                                                 <div className="flex items-center justify-between mb-3 px-1">
-                                                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                                                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.18em] font-sans flex items-center gap-2">
                                                         <Clock className="w-4 h-4" />
                                                         Recent Searches
                                                     </h3>
@@ -225,7 +226,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                                         <button
                                                             key={index}
                                                             onClick={() => setQuery(search)}
-                                                            className="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-accent/10 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium transition-colors"
+                                                            className="px-4 py-2 bg-[#efece5] dark:bg-ink-800 hover:bg-accent/10 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium transition-colors"
                                                         >
                                                             {search}
                                                         </button>
@@ -236,7 +237,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                                         {/* Trending */}
                                         <div>
-                                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2 mb-3 px-1">
+                                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.18em] font-sans flex items-center gap-2 mb-3 px-1">
                                                 <TrendingUp className="w-4 h-4" />
                                                 Trending Searches
                                             </h3>
@@ -245,7 +246,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                                     <button
                                                         key={index}
                                                         onClick={() => setQuery(search)}
-                                                        className="px-4 py-2 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 text-orange-600 dark:text-orange-400 rounded-full text-sm font-medium hover:shadow-md transition-all"
+                                                        className="px-4 py-2 bg-accent/8 dark:bg-accent/15 text-accent-700 dark:text-accent-300 border border-accent/15 rounded-full text-sm font-medium hover:shadow-md transition-all"
                                                     >
                                                         {search}
                                                     </button>
@@ -255,7 +256,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                                         {/* Categories */}
                                         <div>
-                                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2 mb-3 px-1">
+                                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.18em] font-sans flex items-center gap-2 mb-3 px-1">
                                                 <Tag className="w-4 h-4" />
                                                 Popular Categories
                                             </h3>
@@ -285,14 +286,14 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         animate={{ y: 0 }}
                         exit={{ y: '100%' }}
                         transition={{ type: 'spring', damping: 30, stiffness: 350 }}
-                        className="md:hidden fixed inset-0 bg-white dark:bg-gray-900 z-50 flex flex-col"
+                        className="md:hidden fixed inset-0 bg-white dark:bg-ink-900 z-50 flex flex-col"
                     >
                         {/* Header with Search Input */}
-                        <div className="flex-shrink-0 px-4 pt-3 pb-3 border-b border-gray-100 dark:border-gray-800 safe-area-top">
+                        <div className="flex-shrink-0 px-4 pt-3 pb-3 border-b border-primary/8 dark:border-white/8 safe-area-top">
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={onClose}
-                                    className="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+                                    className="p-2 -ml-2 hover:bg-[#efece5] dark:hover:bg-ink-800 rounded-full transition-colors"
                                 >
                                     <X className="w-6 h-6 text-gray-500" />
                                 </button>
@@ -304,7 +305,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                         placeholder="Search products..."
                                         value={query}
                                         onChange={(e) => setQuery(e.target.value)}
-                                        className="w-full pl-11 pr-10 py-3 bg-gray-100 dark:bg-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white text-base"
+                                        className="w-full pl-11 pr-10 py-3 bg-[#efece5] dark:bg-ink-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white text-base"
                                     />
                                     {query && (
                                         <button
@@ -323,23 +324,23 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                             {query ? (
                                 results.length > 0 ? (
                                     <div>
-                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.18em] font-sans mb-3">
                                             {results.length} Results
                                         </p>
                                         <div className="space-y-2">
                                             {results.map((product, index) => (
                                                 <Link
                                                     key={product.id}
-                                                    href={`/products/${product.id}`}
+                                                    href={`/products/${product.slug ?? product.id}`}
                                                     onClick={handleProductClick}
                                                 >
                                                     <motion.div
                                                         initial={{ opacity: 0, y: 10 }}
                                                         animate={{ opacity: 1, y: 0 }}
                                                         transition={{ delay: index * 0.05 }}
-                                                        className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl active:bg-gray-100 dark:active:bg-gray-700 transition-colors"
+                                                        className="flex items-center gap-3 p-3 bg-canvas dark:bg-ink-800 rounded-xl active:bg-[#efece5] dark:active:bg-ink-800 transition-colors"
                                                     >
-                                                        <div className="relative w-14 h-14 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                                                        <div className="relative w-14 h-14 flex-shrink-0 rounded-lg overflow-hidden bg-[#efece5]">
                                                             <Image
                                                                 src={product.image}
                                                                 alt={product.name}
@@ -362,7 +363,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                                                     : product.price.toFixed(2)}
                                                             </span>
                                                             {product.discount && (
-                                                                <span className="text-[10px] bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded-full font-medium">
+                                                                <span className="text-[10px] bg-primary text-white px-1.5 py-0.5 rounded-full font-medium">
                                                                     -{product.discount}%
                                                                 </span>
                                                             )}
@@ -374,7 +375,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                     </div>
                                 ) : (
                                     <div className="py-16 text-center">
-                                        <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <div className="w-16 h-16 bg-[#efece5] dark:bg-ink-800 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <SearchIcon className="w-7 h-7 text-gray-300" />
                                         </div>
                                         <p className="text-gray-500 dark:text-gray-400 text-sm">No products found for "{query}"</p>
@@ -387,7 +388,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                     {recentSearches.length > 0 && (
                                         <div>
                                             <div className="flex items-center justify-between mb-2.5">
-                                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.18em] font-sans flex items-center gap-2">
                                                     <Clock className="w-3.5 h-3.5" />
                                                     Recent
                                                 </h3>
@@ -403,7 +404,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                                     <button
                                                         key={index}
                                                         onClick={() => setQuery(search)}
-                                                        className="px-3.5 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium active:scale-95 transition-transform"
+                                                        className="px-3.5 py-2 bg-[#efece5] dark:bg-ink-800 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium active:scale-95 transition-transform"
                                                     >
                                                         {search}
                                                     </button>
@@ -414,7 +415,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                                     {/* Trending */}
                                     <div>
-                                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2 mb-2.5">
+                                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.18em] font-sans flex items-center gap-2 mb-2.5">
                                             <TrendingUp className="w-3.5 h-3.5" />
                                             Trending
                                         </h3>
@@ -423,7 +424,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                                 <button
                                                     key={index}
                                                     onClick={() => setQuery(search)}
-                                                    className="px-3.5 py-2 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 text-orange-600 dark:text-orange-400 rounded-full text-sm font-medium active:scale-95 transition-transform border border-orange-100 dark:border-orange-800/30"
+                                                    className="px-3.5 py-2 bg-accent/8 dark:bg-accent/15 text-accent-700 dark:text-accent-300 border border-accent/15 rounded-full text-sm font-medium active:scale-95 transition-transform"
                                                 >
                                                     {search}
                                                 </button>
@@ -433,7 +434,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                                     {/* Categories */}
                                     <div>
-                                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2 mb-2.5">
+                                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.18em] font-sans flex items-center gap-2 mb-2.5">
                                             <Tag className="w-3.5 h-3.5" />
                                             Categories
                                         </h3>

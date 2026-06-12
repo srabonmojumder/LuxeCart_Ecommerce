@@ -28,24 +28,27 @@ export default function FloatingCart() {
 
     return (
         <>
-            {/* Floating Action Button */}
-            <motion.button
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setIsOpen(!isOpen)}
-                className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-full shadow-2xl hover:shadow-purple-500/50 transition-all"
-            >
-                <ShoppingCart className="w-6 h-6" />
-                <motion.span
+            {/* Floating Action Button — hidden while drawer is open so it
+                doesn't sit awkwardly behind the panel and create dead clicks. */}
+            {!isOpen && (
+                <motion.button
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -top-[40px] -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center border-2 border-white"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setIsOpen(true)}
+                    className="fixed bottom-24 right-6 z-40 bg-gradient-to-r from-accent-600 to-pink-600 text-white p-4 rounded-full shadow-2xl hover:shadow-accent-500/50 transition-all"
                 >
-                    {totalItems}
-                </motion.span>
-            </motion.button>
+                    <ShoppingCart className="w-6 h-6" />
+                    <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute -top-[12px] -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center border-2 border-white"
+                    >
+                        {totalItems}
+                    </motion.span>
+                </motion.button>
+            )}
 
             {/* Mini Cart Panel */}
             <AnimatePresence>
@@ -57,7 +60,7 @@ export default function FloatingCart() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsOpen(false)}
-                            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+                            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[55]"
                         />
 
                         {/* Cart Panel */}
@@ -66,10 +69,10 @@ export default function FloatingCart() {
                             animate={{ x: 0 }}
                             exit={{ x: 400 }}
                             transition={{ type: 'spring', damping: 25 }}
-                            className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-white dark:bg-gray-800 shadow-2xl z-50 overflow-hidden flex flex-col"
+                            className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-white dark:bg-gray-800 shadow-2xl z-[60] overflow-hidden flex flex-col"
                         >
                             {/* Header */}
-                            <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-600 to-pink-600">
+                            <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-accent-600 to-pink-600">
                                 <div className="flex justify-between items-center text-white">
                                     <h3 className="text-xl font-bold">Shopping Cart ({totalItems})</h3>
                                     <button
@@ -132,7 +135,7 @@ export default function FloatingCart() {
                                                         </button>
                                                     </div>
                                                     <div className="text-right">
-                                                        <p className="text-sm font-bold text-purple-600">
+                                                        <p className="text-sm font-bold text-accent-600">
                                                             ${(price * item.quantity).toFixed(2)}
                                                         </p>
                                                     </div>
@@ -156,7 +159,7 @@ export default function FloatingCart() {
                                     <span className="text-lg font-semibold text-gray-900 dark:text-white">
                                         Total:
                                     </span>
-                                    <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                                    <span className="text-2xl font-bold bg-gradient-to-r from-accent-600 to-pink-600 bg-clip-text text-transparent">
                                         ${totalPrice.toFixed(2)}
                                     </span>
                                 </div>

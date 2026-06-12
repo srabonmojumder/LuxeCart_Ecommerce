@@ -33,19 +33,19 @@ export default function LoyaltyBadge({ points }: LoyaltyBadgeProps) {
                         <TierIcon className="w-8 h-8" />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-black text-primary tracking-tighter uppercase leading-none mb-1">
+                        <h3 className="text-2xl font-medium text-primary tracking-tight uppercase leading-none mb-1">
                             {tier.name}
                         </h3>
-                        <p className="text-[10px] font-black text-gray-400 tracking-[0.3em] uppercase">
+                        <p className="text-[10px] font-medium text-gray-400 tracking-[0.3em] uppercase">
                             Level Status
                         </p>
                     </div>
                 </div>
                 <div className="text-right">
-                    <p className="text-3xl font-black text-primary tracking-tighter">
+                    <p className="text-3xl font-medium text-primary tracking-tight">
                         {points.toLocaleString()}
                     </p>
-                    <p className="text-[10px] font-black text-accent tracking-widest uppercase">
+                    <p className="text-[10px] font-medium text-accent tracking-widest uppercase">
                         Units Accum
                     </p>
                 </div>
@@ -54,8 +54,8 @@ export default function LoyaltyBadge({ points }: LoyaltyBadgeProps) {
             {nextTier && (
                 <div className="space-y-4">
                     <div className="flex justify-between items-end">
-                        <span className="text-[8px] font-black uppercase tracking-[0.4em] text-gray-400">Progression Index</span>
-                        <span className="text-sm font-black text-primary">{Math.round(progress)}%</span>
+                        <span className="text-[8px] font-medium uppercase tracking-[0.4em] text-gray-400">Progression Index</span>
+                        <span className="text-sm font-medium text-primary">{Math.round(progress)}%</span>
                     </div>
                     <div className="h-1 bg-primary/5 rounded-full overflow-hidden">
                         <motion.div
@@ -65,14 +65,14 @@ export default function LoyaltyBadge({ points }: LoyaltyBadgeProps) {
                             className={`h-full ${tier.name === 'Quartz' ? 'bg-accent' : tier.color}`}
                         />
                     </div>
-                    <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest text-center">
+                    <p className="text-[8px] font-medium text-gray-400 uppercase tracking-widest text-center">
                         {(nextTier - points).toLocaleString()} Units for Next Elevation
                     </p>
                 </div>
             )}
 
             <div className="mt-8 pt-8 border-t border-primary/5">
-                <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.4em] mb-6">
+                <h4 className="text-[10px] font-medium text-primary uppercase tracking-[0.4em] mb-6">
                     Active Privileges:
                 </h4>
                 <ul className="space-y-3">
@@ -83,7 +83,7 @@ export default function LoyaltyBadge({ points }: LoyaltyBadgeProps) {
                     ].map((benefit, i) => (
                         <li key={i} className="flex items-center gap-4 group/item">
                             <div className="w-1.5 h-1.5 rounded-full bg-accent group-hover/item:scale-150 transition-transform" />
-                            <span className="text-xs font-black text-secondary tracking-tight uppercase">{benefit}</span>
+                            <span className="text-xs font-medium text-secondary tracking-tight uppercase">{benefit}</span>
                         </li>
                     ))}
                 </ul>

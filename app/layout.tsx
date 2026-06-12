@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from 'sonner';
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import TopUtilityBar from "@/components/layout/TopUtilityBar";
-import MegaMenu from "@/components/layout/MegaMenu";
-import FloatingMobileNav from "@/components/ui/FloatingMobileNav";
+import ConditionalChrome from "@/components/layout/ConditionalChrome";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { AuthProvider } from "@/components/providers/AuthProvider";
 import { generateOrganizationSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -72,33 +69,26 @@ export default function RootLayout({
             <head>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                <link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+                <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
                 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" />
-                <meta name="theme-color" content="#000000" />
+                <meta name="theme-color" content="#0A0A0A" />
                 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
                 />
             </head>
-            <body suppressHydrationWarning className="antialiased bg-white dark:bg-slate-950 text-secondary dark:text-gray-400">
+            <body suppressHydrationWarning className="antialiased bg-canvas dark:bg-ink-950 text-ink-700 dark:text-stone-300">
                 <ThemeProvider
                     attribute="class"
                     defaultTheme="system"
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <TopUtilityBar />
-                    <div className="sticky top-0 z-50">
-                        <Navbar />
-                        <MegaMenu />
-                    </div>
-                    <main className="relative my-5">
-                        {children}
-                    </main>
-                    <Footer />
-                    <FloatingMobileNav />
-                    <Toaster position="top-right" richColors />
+                    <AuthProvider>
+                        <ConditionalChrome>{children}</ConditionalChrome>
+                        <Toaster position="top-right" richColors />
+                    </AuthProvider>
                 </ThemeProvider>
             </body>
         </html>

@@ -8,32 +8,32 @@
 
 /* Design Tokens - CSS Custom Properties */
 :root {
-  /* Primary Colors - Black & Shades */
-  --color-primary-50: #f6f6f6;
-  --color-primary-100: #e7e7e7;
-  --color-primary-200: #d1d1d1;
-  --color-primary-300: #b0b0b0;
-  --color-primary-400: #888888;
-  --color-primary-500: #6d6d6d;
-  --color-primary-600: #5d5d5d;
-  --color-primary-700: #4f4f4f;
-  --color-primary-800: #454545;
-  --color-primary-900: #3d3d3d;
+  /* Primary Colors - Warm Ink & Shades */
+  --color-primary-50: #f6f5f3;
+  --color-primary-100: #e9e7e2;
+  --color-primary-200: #d4d0c8;
+  --color-primary-300: #b3ada1;
+  --color-primary-400: #8a8478;
+  --color-primary-500: #6b655a;
+  --color-primary-600: #524d44;
+  --color-primary-700: #3d3a33;
+  --color-primary-800: #2a2722;
+  --color-primary-900: #14110e;
 
-  /* Accent Colors - Premium Purple (#685BC7) */
-  --color-accent-50: #f4f3fd;
-  --color-accent-100: #eae8fb;
-  --color-accent-200: #d6d3f8;
-  --color-accent-300: #b9b2f2;
-  --color-accent-400: #9389e8;
-  --color-accent-500: #685bc7;
-  --color-accent-600: #5d4daf;
-  --color-accent-700: #4d4091;
-  --color-accent-800: #423878;
-  --color-accent-900: #393164;
+  /* Accent Colors - Muted Antique Gold (#B89B5E) */
+  --color-accent-50: #fbf9f3;
+  --color-accent-100: #f5eedd;
+  --color-accent-200: #eadbb6;
+  --color-accent-300: #dcc289;
+  --color-accent-400: #cdaa6c;
+  --color-accent-500: #b89b5e;
+  --color-accent-600: #9e8049;
+  --color-accent-700: #7e633a;
+  --color-accent-800: #5e4b2f;
+  --color-accent-900: #443728;
 
-  /* Secondary Colors - Muted Gray-Green */
-  --color-secondary: #5F615E;
+  /* Secondary Colors - Warm Taupe Stone */
+  --color-secondary: #6F685C;
 
   /* Neutral Colors */
   --color-slate-50: #f8fafc;
@@ -55,11 +55,11 @@
   --color-info: #3b82f6;
 
   /* Surface Colors */
-  --background: #ffffff;
-  --foreground: #5F615E;
-  --surface-1: #ffffff;
-  --surface-2: #f1f1f1;
-  --surface-3: #e7e7e7;
+  --background: #F6F4EF;
+  --foreground: #3d3a33;
+  --surface-1: #FBFAF6;
+  --surface-2: #efece5;
+  --surface-3: #e4e0d7;
   --surface-elevated: #ffffff;
 
   /* Shadows */
@@ -88,23 +88,20 @@
   --transition-spring: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Typography */
-  --font-sans: 'Afacad', sans-serif;
-  --font-display: 'Afacad', sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
 }
 
 /* Dark Mode - Uses class-based detection to match Tailwind config */
 .dark {
-  --background: #020617;
-  /* slate-950 */
-  --foreground: #f1f5f9;
-  /* slate-100 */
-  --surface-1: #0f172a;
-  /* slate-900 */
-  --surface-2: #1e293b;
-  /* slate-800 */
-  --surface-3: #334155;
-  /* slate-700 */
-  --surface-elevated: #1e293b;
+  --background: #0f0d0b;
+  /* warm near-black */
+  --foreground: #ece8e1;
+  /* warm off-white */
+  --surface-1: #1a1714;
+  --surface-2: #2a2722;
+  --surface-3: #3d3a33;
+  --surface-elevated: #1a1714;
 
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -130,14 +127,26 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Headings default to the serif display face for an editorial feel.
+   Components still control size/weight; this only sets the family. */
+@layer base {
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
 /* Selection */
 ::selection {
-  background: rgba(104, 91, 199, 0.2);
+  background: rgba(184, 155, 94, 0.25);
   color: var(--color-primary-900);
 }
 
 ::-moz-selection {
-  background: rgba(104, 91, 199, 0.2);
+  background: rgba(184, 155, 94, 0.25);
   color: var(--color-primary-900);
 }
 
@@ -307,55 +316,60 @@ body {
 
 @layer components {
 
-  /* Button Variants */
+  /* Button Variants — restrained, editorial */
   .btn-primary {
-    @apply bg-primary hover:bg-black text-white font-black tracking-widest text-xs py-5 px-10 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-xl uppercase;
+    @apply inline-flex items-center justify-center gap-2 bg-primary hover:bg-ink-950 text-white font-medium tracking-[0.08em] text-sm py-3.5 px-8 rounded-full transition-all duration-300 active:scale-[0.98] shadow-soft hover:shadow-medium;
   }
 
   .btn-secondary {
-    @apply border-2 border-primary text-primary hover:bg-primary hover:text-white font-black tracking-widest text-xs py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 uppercase;
+    @apply inline-flex items-center justify-center gap-2 border border-primary/80 text-primary hover:bg-primary hover:text-white font-medium tracking-[0.08em] text-sm py-3.5 px-8 rounded-full transition-all duration-300 active:scale-[0.98];
   }
 
   .btn-accent {
-    @apply bg-accent hover:bg-accent/90 text-white font-black tracking-widest text-xs py-5 px-10 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-xl uppercase;
+    @apply inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-600 text-white font-medium tracking-[0.08em] text-sm py-3.5 px-8 rounded-full transition-all duration-300 active:scale-[0.98] shadow-soft hover:shadow-accent;
   }
 
   .btn-ghost {
-    @apply text-primary hover:bg-primary/5 font-black tracking-widest text-xs py-4 px-8 rounded-2xl transition-all duration-300 uppercase;
+    @apply inline-flex items-center justify-center gap-2 text-primary hover:bg-primary/5 font-medium tracking-[0.08em] text-sm py-3 px-6 rounded-full transition-all duration-300;
   }
 
   .btn-outline {
-    @apply border-2 border-primary/10 text-primary hover:border-primary hover:bg-primary/5 font-black tracking-widest text-xs py-4 px-8 rounded-2xl transition-all duration-300 uppercase;
+    @apply inline-flex items-center justify-center gap-2 border border-primary/15 text-primary hover:border-primary hover:bg-primary/5 font-medium tracking-[0.08em] text-sm py-3 px-6 rounded-full transition-all duration-300;
   }
 
-  /* Card Variants */
+  /* Eyebrow label — the small letter-spaced caps above headings */
+  .eyebrow {
+    @apply inline-block font-sans text-[11px] font-medium tracking-[0.28em] uppercase text-accent-700 dark:text-accent-400;
+  }
+
+  /* Card Variants — clean ivory panels on warm canvas */
   .card {
-    @apply bg-white dark:bg-slate-900 rounded-[2rem] shadow-strong hover:shadow-xl transition-all duration-500 p-8 border border-primary/5;
+    @apply bg-ivory dark:bg-ink-900 rounded-2xl shadow-soft hover:shadow-medium transition-all duration-500 p-8 border border-primary/8 dark:border-white/5;
   }
 
   .card-minimal {
-    @apply bg-white dark:bg-slate-900 rounded-2xl border border-primary/5 p-6 shadow-soft transition-all duration-300;
+    @apply bg-ivory dark:bg-ink-900 rounded-2xl border border-primary/8 dark:border-white/5 p-6 shadow-soft transition-all duration-300;
   }
 
   .card-elevated {
-    @apply bg-white dark:bg-slate-900 rounded-[2.5rem] border border-primary/5 dark:border-white/5 shadow-premium dark:shadow-2xl p-8 transition-all duration-500;
+    @apply bg-white dark:bg-ink-900 rounded-2xl border border-primary/8 dark:border-white/5 shadow-premium p-8 transition-all duration-500;
   }
 
   .card-interactive {
-    @apply bg-white dark:bg-slate-900 rounded-[2rem] border border-primary/5 hover:border-accent shadow-soft hover:shadow-2xl transition-all duration-500 p-6 cursor-pointer;
+    @apply bg-ivory dark:bg-ink-900 rounded-2xl border border-primary/8 dark:border-white/5 hover:border-accent/50 shadow-soft hover:shadow-strong transition-all duration-500 p-6 cursor-pointer;
   }
 
   .card-gradient {
-    @apply bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 p-6;
+    @apply bg-gradient-to-br from-ivory to-canvas dark:from-ink-800 dark:to-ink-900 rounded-2xl border border-primary/8 dark:border-white/5 p-6;
   }
 
-  /* Input Fields */
+  /* Input Fields — quiet, refined */
   .input-field {
-    @apply w-full px-6 py-5 text-sm border-2 border-primary/5 rounded-2xl focus:ring-0 focus:border-accent outline-none transition-all duration-300 bg-primary/5 dark:bg-white/5 text-primary dark:text-white placeholder:text-primary/30;
+    @apply w-full px-5 py-4 text-sm border border-primary/15 dark:border-white/10 rounded-xl focus:ring-0 focus:border-accent outline-none transition-all duration-300 bg-white dark:bg-ink-900 text-primary dark:text-white placeholder:text-primary/35;
   }
 
   .input-field-lg {
-    @apply w-full h-14 px-5 text-lg border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all duration-200 bg-white dark:bg-slate-800 text-slate-900 dark:text-white;
+    @apply w-full h-14 px-5 text-base border border-primary/15 dark:border-white/10 rounded-xl focus:ring-1 focus:ring-accent focus:border-accent outline-none transition-all duration-200 bg-white dark:bg-ink-900 text-primary dark:text-white;
   }
 
   /* Badge Variants */
@@ -405,25 +419,30 @@ body {
     @apply bg-slate-400;
   }
 
-  /* Typography Scale */
+  /* Typography Scale — serif display headings, refined weights */
   .text-display {
-    @apply text-5xl md:text-8xl font-black leading-tight tracking-tighter;
+    @apply font-display text-5xl md:text-7xl lg:text-8xl font-medium leading-[1.04] tracking-[-0.01em];
   }
 
   .text-h1 {
-    @apply text-4xl md:text-6xl font-black leading-tight tracking-tighter;
+    @apply font-display text-4xl md:text-6xl font-medium leading-[1.06] tracking-[-0.01em];
   }
 
   .text-h2 {
-    @apply text-3xl md:text-5xl font-black leading-tight tracking-tighter;
+    @apply font-display text-3xl md:text-5xl font-medium leading-[1.08] tracking-[-0.005em];
   }
 
   .text-h3 {
-    @apply text-2xl md:text-3xl font-black leading-tight tracking-tighter;
+    @apply font-display text-2xl md:text-3xl font-medium leading-snug;
   }
 
   .text-h4 {
-    @apply text-xl md:text-2xl font-black leading-tight tracking-tight;
+    @apply font-display text-xl md:text-2xl font-medium leading-snug;
+  }
+
+  /* Convenience: serif display utility for inline headings */
+  .font-display {
+    font-family: var(--font-display);
   }
 
   .text-body-lg {
@@ -825,8 +844,8 @@ a:focus-visible {
 .dark .card-minimal,
 .dark .card-elevated,
 .dark .card-interactive {
-  background: var(--color-slate-800);
-  border-color: var(--color-slate-700);
+  background: #1a1714;
+  border-color: rgba(255, 255, 255, 0.07);
 }
 
 .dark .shimmer-effect::after {
@@ -849,4 +868,74 @@ a:focus-visible {
     background: white;
     color: black;
   }
+}
+/* Hide scrollbars (used by the admin sidebar rail and mobile menus). */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide every scrollbar inside the admin dashboard (content stays scrollable). */
+.admin-scope,
+.admin-scope * {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.admin-scope::-webkit-scrollbar,
+.admin-scope *::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* ===================== Admin dark mode =====================
+   Scoped re-skin of the admin dashboard. These rules are unlayered, so they
+   override Tailwind's layered utilities without !important. Light mode is
+   unchanged. */
+.dark .admin-scope { background-color: #0b1120; color: #cbd5e1; }
+.dark .admin-scope .bg-\[\#f3f5f7\] { background-color: #0f172a; }   /* panel */
+.dark .admin-scope .bg-white       { background-color: #1e293b; }   /* cards */
+.dark .admin-scope .bg-slate-50    { background-color: #0f172a; }   /* sub-cards */
+.dark .admin-scope .bg-slate-100   { background-color: #334155; }   /* tracks / empty heatmap */
+.dark .admin-scope .bg-gray-50     { background-color: #0f172a; }   /* inputs */
+.dark .admin-scope .bg-gray-100    { background-color: #334155; }
+.dark .admin-scope .bg-primary\/5  { background-color: rgba(255,255,255,0.05); }
+.dark .admin-scope .bg-emerald-50  { background-color: rgba(16,185,129,0.15); }
+
+.dark .admin-scope .text-slate-800,
+.dark .admin-scope .text-primary,
+.dark .admin-scope .text-gray-900  { color: #f1f5f9; }
+.dark .admin-scope .text-slate-700 { color: #e2e8f0; }
+.dark .admin-scope .text-slate-600 { color: #cbd5e1; }
+.dark .admin-scope .text-secondary { color: #94a3b8; }
+
+.dark .admin-scope .border-slate-100,
+.dark .admin-scope .border-slate-200,
+.dark .admin-scope .border-slate-200\/70,
+.dark .admin-scope .border-primary\/5,
+.dark .admin-scope .border-primary\/10 { border-color: rgba(255,255,255,0.08); }
+.dark .admin-scope .divide-primary\/5 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(255,255,255,0.08); }
+
+.dark .admin-scope input,
+.dark .admin-scope textarea        { color: #f1f5f9; }
+.dark .admin-scope input::placeholder,
+.dark .admin-scope textarea::placeholder { color: #64748b; }
+
+/* ===================== Testimonials marquee ===================== */
+@keyframes marquee-left  { from { transform: translateX(0); }      to { transform: translateX(-50%); } }
+@keyframes marquee-right { from { transform: translateX(-50%); }   to { transform: translateX(0); } }
+.animate-marquee-left  { animation: marquee-left 55s linear infinite; }
+.animate-marquee-right { animation: marquee-right 55s linear infinite; }
+/* fade the row edges so cards appear/disappear smoothly */
+.marquee-row {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+          mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+.marquee-row:hover .animate-marquee-left,
+.marquee-row:hover .animate-marquee-right { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee-left, .animate-marquee-right { animation: none; }
 }

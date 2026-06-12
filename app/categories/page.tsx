@@ -4,9 +4,10 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { categories } from '@/data/products';
+import { useCategories } from '@/lib/hooks';
 
 export default function CategoriesPage() {
+    const { categories } = useCategories();
     return (
         <div className="pt-20 min-h-screen bg-gray-50 dark:bg-gray-900">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -32,10 +33,10 @@ export default function CategoriesPage() {
                             transition={{ delay: index * 0.1 }}
                             whileHover={{ scale: 1.05 }}
                         >
-                            <Link href={`/products?category=${category.name.toLowerCase()}`}>
+                            <Link href={`/products?category=${category.slug}`}>
                                 <div className="relative h-80 rounded-2xl overflow-hidden group cursor-pointer shadow-lg">
                                     <Image
-                                        src={category.image}
+                                        src={category.image || '/home_accessories_hero.png'}
                                         alt={category.name}
                                         fill
                                         className="object-cover group-hover:scale-110 transition-transform duration-500"

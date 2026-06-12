@@ -1,16 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Filter, SlidersHorizontal, X, Package, RotateCcw, Check, ArrowRight } from 'lucide-react';
 import ProductCard from '@/components/product/ProductCard';
 import QuickFilters from '@/components/ui/QuickFilters';
 import SortDropdown from '@/components/ui/SortDropdown';
 import ProductGridSkeleton from '@/components/product/ProductGridSkeleton';
-import { products } from '@/data/products';
+import { useProducts, useCategory } from '@/lib/hooks';
 
 export default function ProductsPage() {
+    const { products, isLoading: productsLoading } = useProducts();
     const [selectedCategory, setSelectedCategory] = useState('All');
+    const [categoryParam, setCategoryParam] = useState<string | null>(null);
+
+    // Read the ?category=<slug> URL param and resolve it to a category.
+    useEffect(() => {
+        setCategoryParam(new URLSearchParams(window.location.search).get('category'));
+    }, []);
+    const { category: activeCategory } = useCategory(categoryParam);
+    useEffect(() => {
+        if (activeCategory?.name) setSelectedCategory(activeCategory.name);
+    }, [activeCategory?.name]);
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 2000]);
     const [sortBy, setSortBy] = useState('featured');
     const [showFilters, setShowFilters] = useState(false);
@@ -70,13 +81,13 @@ export default function ProductsPage() {
         <div className="space-y-8 lg:space-y-12">
             {/* Categories Section */}
             <div>
-                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4 lg:mb-8">Collections</h4>
+                <h4 className="text-[10px] font-medium text-gray-400 uppercase tracking-[0.3em] mb-4 lg:mb-8">Collections</h4>
                 <div className="flex flex-col gap-3 lg:gap-4">
                     {categories.map((cat) => (
                         <button
                             key={cat}
                             onClick={() => setSelectedCategory(cat)}
-                            className={`text-left text-sm font-black tracking-widest uppercase transition-all flex items-center justify-between group ${selectedCategory === cat ? 'text-primary' : 'text-gray-400 hover:text-primary'
+                            className={`text-left text-sm font-medium tracking-widest uppercase transition-all flex items-center justify-between group ${selectedCategory === cat ? 'text-primary' : 'text-gray-400 hover:text-primary'
                                 }`}
                         >
                             {cat}
@@ -92,7 +103,7 @@ export default function ProductsPage() {
 
             {/* Price Range Section */}
             <div>
-                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4 lg:mb-8">Price Range</h4>
+                <h4 className="text-[10px] font-medium text-gray-400 uppercase tracking-[0.3em] mb-4 lg:mb-8">Price Range</h4>
                 <div className="space-y-4 lg:space-y-8">
                     <input
                         type="range"
@@ -101,24 +112,24 @@ export default function ProductsPage() {
                         step="50"
                         value={priceRange[1]}
                         onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                        className="w-full h-1.5 bg-gray-100 dark:bg-slate-800 rounded-full appearance-none cursor-pointer accent-primary"
+                        className="w-full h-1.5 bg-gray-100 dark:bg-ink-800 rounded-full appearance-none cursor-pointer accent-primary"
                     />
-                    <div className="flex justify-between items-center px-4 lg:px-6 py-4 lg:py-5 bg-primary dark:bg-slate-900 text-white rounded-2xl shadow-xl border border-primary/5 dark:border-slate-800">
-                        <span className="text-[10px] font-black tracking-widest uppercase opacity-60">Max Price</span>
-                        <span className="text-xl lg:text-2xl font-black">${priceRange[1]}</span>
+                    <div className="flex justify-between items-center px-4 lg:px-6 py-4 lg:py-5 bg-primary dark:bg-ink-900 text-white rounded-2xl shadow-xl border border-primary/5 dark:border-slate-800">
+                        <span className="text-[10px] font-medium tracking-widest uppercase opacity-60">Max Price</span>
+                        <span className="text-xl lg:text-2xl font-medium">${priceRange[1]}</span>
                     </div>
                 </div>
             </div>
 
             {/* Quick Toggles */}
             <div className="space-y-4 lg:space-y-6">
-                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4 lg:mb-8">Refine</h4>
+                <h4 className="text-[10px] font-medium text-gray-400 uppercase tracking-[0.3em] mb-4 lg:mb-8">Refine</h4>
                 <button
                     onClick={() => setInStockOnly(!inStockOnly)}
                     className="flex items-center justify-between w-full group"
                 >
-                    <span className={`text-[10px] font-black tracking-widest uppercase transition-colors ${inStockOnly ? 'text-primary dark:text-accent' : 'text-gray-400'}`}>In Stock Only</span>
-                    <div className={`w-12 h-6 rounded-full transition-all duration-300 relative ${inStockOnly ? 'bg-primary dark:bg-accent' : 'bg-gray-100 dark:bg-slate-800'}`}>
+                    <span className={`text-[10px] font-medium tracking-widest uppercase transition-colors ${inStockOnly ? 'text-primary dark:text-accent' : 'text-gray-400'}`}>In Stock Only</span>
+                    <div className={`w-12 h-6 rounded-full transition-all duration-300 relative ${inStockOnly ? 'bg-primary dark:bg-accent' : 'bg-gray-100 dark:bg-ink-800'}`}>
                         <motion.div
                             animate={{ x: inStockOnly ? 26 : 4 }}
                             className="absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm"
@@ -129,8 +140,8 @@ export default function ProductsPage() {
                     onClick={() => setOnSaleOnly(!onSaleOnly)}
                     className="flex items-center justify-between w-full group"
                 >
-                    <span className={`text-[10px] font-black tracking-widest uppercase transition-colors ${onSaleOnly ? 'text-primary dark:text-accent' : 'text-gray-400'}`}>On Sale Items</span>
-                    <div className={`w-12 h-6 rounded-full transition-all duration-300 relative ${onSaleOnly ? 'bg-accent' : 'bg-gray-100 dark:bg-slate-800'}`}>
+                    <span className={`text-[10px] font-medium tracking-widest uppercase transition-colors ${onSaleOnly ? 'text-primary dark:text-accent' : 'text-gray-400'}`}>On Sale Items</span>
+                    <div className={`w-12 h-6 rounded-full transition-all duration-300 relative ${onSaleOnly ? 'bg-accent' : 'bg-gray-100 dark:bg-ink-800'}`}>
                         <motion.div
                             animate={{ x: onSaleOnly ? 26 : 4 }}
                             className="absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm"
@@ -142,37 +153,38 @@ export default function ProductsPage() {
     );
 
     return (
-        <div className="min-h-screen bg-white dark:bg-slate-950 pb-28 md:pb-24">
+        <div className="min-h-screen bg-canvas dark:bg-ink-950 pb-28 md:pb-24">
             {/* Header Section */}
-            <div className="max-w-7xl mx-auto px-4 mb-6 md:mb-16 md:px-8">
+            <div className="max-w-7xl mx-auto px-4 pt-6 md:pt-12 mb-6 md:mb-16 md:px-8">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 md:gap-12">
                     <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        animate={{ opacity: 1, x: 0 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
                         className="max-w-2xl"
                     >
-                        <span className="inline-block text-accent font-black tracking-[0.3em] text-[10px] md:text-xs uppercase mb-2 md:mb-6">
-                            Premium Collection
+                        <span className="inline-flex items-center gap-3 text-accent-700 dark:text-accent-400 font-medium tracking-[0.28em] text-[10px] md:text-xs uppercase mb-3 md:mb-6">
+                            <span className="w-7 h-px bg-accent" />
+                            {activeCategory ? 'Collection' : 'The Collection'}
                         </span>
-                        <h1 className="text-3xl md:text-7xl font-black text-primary dark:text-white leading-tight tracking-tighter">
-                            All Products
+                        <h1 className="font-display text-4xl md:text-7xl font-medium text-primary dark:text-white leading-[1.05] tracking-tight">
+                            {activeCategory?.name ?? 'All Products'}
                         </h1>
                         <p className="text-base md:text-lg text-secondary dark:text-gray-400 mt-3 md:mt-6 max-w-lg font-medium leading-relaxed hidden md:block">
-                            Discover our full range of curated minimalist home accessories, designed to bring harmony to your living space.
+                            {activeCategory?.description ?? 'Discover our full range of curated minimalist home accessories, designed to bring harmony to your living space.'}
                         </p>
                     </motion.div>
 
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-primary/5 dark:bg-slate-900 px-4 md:px-8 py-3 md:py-5 rounded-xl md:rounded-2xl border border-primary/5 dark:border-slate-800 flex items-center gap-3 md:gap-5 shadow-sm"
+                        className="bg-primary/5 dark:bg-ink-900 px-4 md:px-8 py-3 md:py-5 rounded-xl md:rounded-2xl border border-primary/5 dark:border-slate-800 flex items-center gap-3 md:gap-5 shadow-sm"
                     >
-                        <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg md:rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center">
+                        <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg md:rounded-xl bg-white dark:bg-ink-800 shadow-sm flex items-center justify-center">
                             <Package className="w-4 h-4 md:w-5 md:h-5 text-accent" />
                         </div>
                         <div>
-                            <span className="block text-[9px] md:text-[10px] font-black tracking-widest text-gray-400 uppercase">Total</span>
-                            <span className="text-lg md:text-xl font-black text-primary dark:text-white uppercase">
+                            <span className="block text-[9px] md:text-[10px] font-medium tracking-widest text-gray-400 uppercase">Total</span>
+                            <span className="text-lg md:text-xl font-medium text-primary dark:text-white uppercase">
                                 {filteredProducts.length} Items
                             </span>
                         </div>
@@ -181,7 +193,7 @@ export default function ProductsPage() {
             </div>
 
             {/* Quick Filters - Horizontal Strip */}
-            <section className="border-y border-primary/5 dark:border-slate-800 mb-4 md:mb-12 py-3 md:py-5 bg-primary/5 dark:bg-slate-900/50">
+            <section className="border-y border-primary/5 dark:border-slate-800 mb-4 md:mb-12 py-3 md:py-5 bg-primary/5 dark:bg-ink-900/50">
                 <div className="max-w-7xl mx-auto px-4 md:px-8">
                     <QuickFilters
                         onFilterChange={handleQuickFilter}
@@ -230,14 +242,14 @@ export default function ProductsPage() {
                     <aside className="hidden lg:block w-72 flex-shrink-0 sticky top-32 self-start space-y-16">
                         <div>
                             <div className="flex items-center justify-between mb-10 pb-4 border-b-2 border-primary dark:border-white">
-                                <h3 className="text-sm font-black tracking-[0.2em] text-primary dark:text-white uppercase flex items-center gap-3">
+                                <h3 className="text-sm font-medium tracking-[0.2em] text-primary dark:text-white uppercase flex items-center gap-3">
                                     <SlidersHorizontal className="w-4 h-4" />
                                     Filter
                                 </h3>
                                 {activeFiltersCount > 0 && (
                                     <button
                                         onClick={resetFilters}
-                                        className="text-[10px] font-black tracking-widest text-accent hover:text-primary transition-colors uppercase"
+                                        className="text-[10px] font-medium tracking-widest text-accent hover:text-primary transition-colors uppercase"
                                     >
                                         Clear All
                                     </button>
@@ -250,13 +262,13 @@ export default function ProductsPage() {
                     {/* Products Section */}
                     <div className="flex-1">
                         {/* Sort Bar - Desktop Only */}
-                        <div className="hidden lg:flex justify-between items-center mb-16 gap-10 bg-white dark:bg-slate-950">
+                        <div className="hidden lg:flex justify-between items-center mb-16 gap-10 bg-white dark:bg-ink-950">
                             <div className="w-full flex justify-start gap-10 border-b border-primary/5 dark:border-slate-800 pb-6">
                                 {['featured', 'price-low', 'price-high', 'rating'].map((s) => (
                                     <button
                                         key={s}
                                         onClick={() => setSortBy(s)}
-                                        className={`text-[10px] font-black tracking-[0.3em] uppercase transition-all relative pb-4 whitespace-nowrap ${sortBy === s ? 'text-primary dark:text-white' : 'text-gray-400 hover:text-primary'
+                                        className={`text-[10px] font-medium tracking-[0.3em] uppercase transition-all relative pb-4 whitespace-nowrap ${sortBy === s ? 'text-primary dark:text-white' : 'text-gray-400 hover:text-primary'
                                             }`}
                                     >
                                         {s.replace('-', ' ')}
@@ -269,7 +281,7 @@ export default function ProductsPage() {
                         </div>
 
                         {/* Product Grid */}
-                        {isLoading ? (
+                        {(isLoading || productsLoading) ? (
                             <ProductGridSkeleton count={12} />
                         ) : filteredProducts.length > 0 ? (
                             <div className="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-x-3 gap-y-5 md:gap-x-6 md:gap-y-12">
@@ -289,12 +301,12 @@ export default function ProductsPage() {
                                 </AnimatePresence>
                             </div>
                         ) : (
-                            <div className="text-center py-12 md:py-32 space-y-6 md:space-y-10 bg-primary/5 dark:bg-slate-900 rounded-2xl md:rounded-[3rem]">
-                                <div className="w-16 h-16 md:w-20 md:h-20 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto shadow-xl">
+                            <div className="text-center py-12 md:py-32 space-y-6 md:space-y-10 bg-primary/5 dark:bg-ink-900 rounded-2xl md:rounded-[3rem]">
+                                <div className="w-16 h-16 md:w-20 md:h-20 bg-white dark:bg-ink-800 rounded-full flex items-center justify-center mx-auto shadow-xl">
                                     <Package className="w-7 h-7 md:w-9 md:h-9 text-gray-300 dark:text-gray-600" />
                                 </div>
                                 <div className="space-y-3">
-                                    <h3 className="text-xl md:text-3xl font-black text-primary dark:text-white tracking-tighter">No items found</h3>
+                                    <h3 className="text-xl md:text-3xl font-medium text-primary dark:text-white tracking-tight">No items found</h3>
                                     <p className="text-secondary dark:text-gray-400 text-sm md:text-base max-w-xs mx-auto font-medium px-4">Try adjusting your filters to discover something new.</p>
                                 </div>
                                 <button
@@ -332,7 +344,7 @@ export default function ProductsPage() {
                         >
                             {/* Header */}
                             <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
-                                <h2 className="text-base font-black text-primary uppercase tracking-wider flex items-center gap-2">
+                                <h2 className="text-base font-medium text-primary uppercase tracking-wider flex items-center gap-2">
                                     <SlidersHorizontal className="w-4 h-4" />
                                     Filters
                                 </h2>

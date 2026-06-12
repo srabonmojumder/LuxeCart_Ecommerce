@@ -198,8 +198,8 @@ export default function ProductReviews({ productId, averageRating, totalReviews 
                                 <button
                                     onClick={() => handleHelpful(review.id)}
                                     className={`flex items-center gap-2 text-sm transition-colors ${helpfulClicks[review.id]
-                                            ? 'text-purple-600'
-                                            : 'text-gray-500 hover:text-purple-600'
+                                            ? 'text-accent-600'
+                                            : 'text-gray-500 hover:text-accent-600'
                                         }`}
                                 >
                                     <ThumbsUp

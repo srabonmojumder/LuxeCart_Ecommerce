@@ -49,7 +49,7 @@ export default function ShareButton({ productName, productUrl }: ShareButtonProp
         {
             name: 'Copy Link',
             icon: LinkIcon,
-            color: 'hover:bg-purple-600',
+            color: 'hover:bg-accent-600',
             action: () => {
                 navigator.clipboard.writeText(productUrl);
                 toast.success('Link copied to clipboard!');
@@ -64,7 +64,7 @@ export default function ShareButton({ productName, productUrl }: ShareButtonProp
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowMenu(!showMenu)}
-                className="p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-purple-500 hover:text-purple-500 transition-colors"
+                className="p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-accent-500 hover:text-accent-500 transition-colors"
             >
                 <Share2 className="w-6 h-6" />
             </motion.button>

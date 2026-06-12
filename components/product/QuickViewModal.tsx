@@ -83,7 +83,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
                                     </button>
 
                                     <div className="flex-1">
-                                        <p className="text-purple-600 dark:text-purple-400 font-medium mb-2">
+                                        <p className="text-accent-600 dark:text-accent-400 font-medium mb-2">
                                             {product.category}
                                         </p>
                                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
@@ -112,7 +112,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
                                         <div className="flex items-center gap-3 mb-4">
                                             {product.discount ? (
                                                 <>
-                                                    <span className="text-3xl font-bold text-purple-600">
+                                                    <span className="text-3xl font-bold text-accent-600">
                                                         ${discountedPrice.toFixed(2)}
                                                     </span>
                                                     <span className="text-xl text-gray-400 line-through">

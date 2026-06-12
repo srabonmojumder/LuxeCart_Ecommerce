@@ -1,12 +1,18 @@
 import ProductDetailClient from './ProductDetailClient';
-import { products } from '@/data/products';
 import { generateProductSchema } from '@/lib/seo';
+import type { Product } from '@/store/useStore';
+import { products } from '@/data/products';
 import { Metadata } from 'next';
 
+// `id` is the route param name but holds the product slug (or numeric id).
+// Static build: look the product up in the local catalog — no backend.
+async function fetchProduct(key: string): Promise<Product | null> {
+    return products.find((p) => p.slug === key || String(p.id) === key) ?? null;
+}
+
+// Pre-render a page for every product in the static catalog.
 export function generateStaticParams() {
-    return products.map((product) => ({
-        id: product.id.toString(),
-    }));
+    return products.map((p) => ({ id: p.slug ?? String(p.id) }));
 }
 
 export async function generateMetadata({
@@ -15,19 +21,14 @@ export async function generateMetadata({
     params: Promise<{ id: string }>;
 }): Promise<Metadata> {
     const { id } = await params;
-    const product = products.find((p) => p.id.toString() === id);
+    const product = await fetchProduct(id);
 
     if (!product) {
-        return {
-            title: 'Product Not Found',
-        };
+        return { title: 'Product Not Found' };
     }
 
-    const finalPrice = product.discount
-        ? (product.price * (1 - product.discount / 100)).toFixed(2)
-        : product.price.toFixed(2);
-
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://luxecart.com';
+    const path = `/products/${product.slug ?? product.id}`;
 
     return {
         title: product.name,
@@ -44,15 +45,8 @@ export async function generateMetadata({
             type: 'website',
             title: product.name,
             description: product.description,
-            url: `/products/${product.id}`,
-            images: [
-                {
-                    url: product.image,
-                    width: 800,
-                    height: 600,
-                    alt: product.name,
-                },
-            ],
+            url: path,
+            images: [{ url: product.image, width: 800, height: 600, alt: product.name }],
             siteName: 'LuxeCart',
         },
         twitter: {
@@ -61,29 +55,22 @@ export async function generateMetadata({
             description: product.description,
             images: [product.image],
         },
-        alternates: {
-            canonical: `${siteUrl}/products/${product.id}`,
-        },
+        alternates: { canonical: `${siteUrl}${path}` },
     };
 }
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    const product = products.find((p) => p.id.toString() === id);
-
-    if (!product) {
-        return <div>Product not found</div>;
-    }
-
-    const productSchema = generateProductSchema(product);
+    const product = await fetchProduct(id);
 
     return (
         <>
-            {/* JSON-LD for Product Schema */}
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
-            />
+            {product && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(generateProductSchema(product)) }}
+                />
+            )}
             <ProductDetailClient />
         </>
     );

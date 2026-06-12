@@ -130,7 +130,7 @@ export default function MobileComparisonSheet() {
                                                             )}
                                                             {row.type === 'price' && (
                                                                 <div className="space-y-1">
-                                                                    <span className="text-lg font-bold text-purple-600">
+                                                                    <span className="text-lg font-bold text-accent-600">
                                                                         ${product.price.toFixed(2)}
                                                                     </span>
                                                                     {product.discount && (
@@ -182,7 +182,7 @@ export default function MobileComparisonSheet() {
                                         >
                                             <motion.button
                                                 whileTap={{ scale: 0.95 }}
-                                                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold shadow-lg truncate"
+                                                className="w-full bg-gradient-to-r from-accent-600 to-pink-600 text-white py-3 rounded-xl font-semibold shadow-lg truncate"
                                             >
                                                 View {product.name}
                                             </motion.button>

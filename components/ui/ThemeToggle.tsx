@@ -15,7 +15,7 @@ export function ThemeToggle() {
 
     if (!mounted) {
         return (
-            <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-100 dark:bg-slate-800 animate-pulse" />
+            <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-100 dark:bg-ink-800 animate-pulse" />
         );
     }
 

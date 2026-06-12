@@ -1,9 +1,12 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { api } from '@/lib/api';
+import { getAccessToken } from '@/lib/authToken';
 
 export interface Product {
     id: number;
     name: string;
+    slug?: string;
     price: number;
     image: string;
     category: string;
@@ -22,6 +25,8 @@ export interface CartItem extends Product {
     quantity: number;
 }
 
+const isAuthed = () => typeof window !== 'undefined' && !!getAccessToken();
+
 interface StoreState {
     cart: CartItem[];
     wishlist: Product[];
@@ -34,6 +39,10 @@ interface StoreState {
     isInWishlist: (id: number) => boolean;
     getTotalPrice: () => number;
     getTotalItems: () => number;
+    // Server sync
+    hydrateFromServer: () => Promise<void>;
+    syncGuestStateToServer: () => Promise<void>;
+    resetLocalState: () => void;
 }
 
 export const useStore = create<StoreState>()(
@@ -57,10 +66,18 @@ export const useStore = create<StoreState>()(
                 } else {
                     set({ cart: [...cart, { ...product, quantity: 1 }] });
                 }
+
+                if (isAuthed()) {
+                    api.post('/cart', { productId: product.id, quantity: 1 }, true)
+                        .catch(() => get().hydrateFromServer());
+                }
             },
 
             removeFromCart: (id) => {
                 set({ cart: get().cart.filter(item => item.id !== id) });
+                if (isAuthed()) {
+                    api.del(`/cart/${id}`, true).catch(() => get().hydrateFromServer());
+                }
             },
 
             updateQuantity: (id, quantity) => {
@@ -74,10 +91,16 @@ export const useStore = create<StoreState>()(
                         item.id === id ? { ...item, quantity } : item
                     ),
                 });
+                if (isAuthed()) {
+                    api.patch(`/cart/${id}`, { quantity }, true).catch(() => get().hydrateFromServer());
+                }
             },
 
             clearCart: () => {
                 set({ cart: [] });
+                if (isAuthed()) {
+                    api.del('/cart', true).catch(() => get().hydrateFromServer());
+                }
             },
 
             addToWishlist: (product) => {
@@ -85,10 +108,17 @@ export const useStore = create<StoreState>()(
                 if (!wishlist.find(item => item.id === product.id)) {
                     set({ wishlist: [...wishlist, product] });
                 }
+                if (isAuthed()) {
+                    api.post('/wishlist', { productId: product.id }, true)
+                        .catch(() => get().hydrateFromServer());
+                }
             },
 
             removeFromWishlist: (id) => {
                 set({ wishlist: get().wishlist.filter(item => item.id !== id) });
+                if (isAuthed()) {
+                    api.del(`/wishlist/${id}`, true).catch(() => get().hydrateFromServer());
+                }
             },
 
             isInWishlist: (id) => {
@@ -107,6 +137,38 @@ export const useStore = create<StoreState>()(
             getTotalItems: () => {
                 return get().cart.reduce((total, item) => total + item.quantity, 0);
             },
+
+            // Pull the authoritative cart & wishlist from the server.
+            hydrateFromServer: async () => {
+                try {
+                    const [cart, wl] = await Promise.all([
+                        api.get<{ items: CartItem[] }>('/cart', true),
+                        api.get<{ items: Product[] }>('/wishlist', true),
+                    ]);
+                    set({ cart: cart.items, wishlist: wl.items });
+                } catch {
+                    /* not authenticated yet — keep local state */
+                }
+            },
+
+            // On login: push the guest cart/wishlist to the server, then hydrate.
+            syncGuestStateToServer: async () => {
+                const { cart, wishlist } = get();
+                try {
+                    if (cart.length) {
+                        await api.post('/cart/merge', {
+                            items: cart.map(i => ({ productId: i.id, quantity: i.quantity })),
+                        }, true);
+                    }
+                    for (const w of wishlist) {
+                        await api.post('/wishlist', { productId: w.id }, true).catch(() => {});
+                    }
+                } finally {
+                    await get().hydrateFromServer();
+                }
+            },
+
+            resetLocalState: () => set({ cart: [], wishlist: [] }),
         }),
         {
             name: 'luxecart-storage',

@@ -56,8 +56,8 @@ export default function CurrencySelector() {
                                 <button
                                     key={currency.code}
                                     onClick={() => handleSelect(currency)}
-                                    className={`w-full flex items-center justify-between px-4 py-3 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors ${selected.code === currency.code
-                                            ? 'bg-purple-100 dark:bg-purple-900/30'
+                                    className={`w-full flex items-center justify-between px-4 py-3 hover:bg-accent-50 dark:hover:bg-accent-900/20 transition-colors ${selected.code === currency.code
+                                            ? 'bg-accent-100 dark:bg-accent-900/30'
                                             : ''
                                         }`}
                                 >
@@ -69,7 +69,7 @@ export default function CurrencySelector() {
                                             {currency.name}
                                         </span>
                                     </div>
-                                    <span className="text-lg font-bold text-purple-600">
+                                    <span className="text-lg font-bold text-accent-600">
                                         {currency.symbol}
                                     </span>
                                 </button>

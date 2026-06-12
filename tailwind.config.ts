@@ -1,5 +1,21 @@
 import type { Config } from "tailwindcss";
 
+// Warm near-black "ink" ramp — replaces cold black for a softer, luxe feel.
+const ink = {
+    DEFAULT: '#14110E',
+    50: '#f6f5f3',
+    100: '#e9e7e2',
+    200: '#d4d0c8',
+    300: '#b3ada1',
+    400: '#8a8478',
+    500: '#6b655a',
+    600: '#524d44',
+    700: '#3d3a33',
+    800: '#2a2722',
+    900: '#1a1714',
+    950: '#0f0d0b',
+};
+
 const config: Config = {
     content: [
         "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -17,58 +33,53 @@ const config: Config = {
             '2xl': '1536px',
         },
         extend: {
-            // Custom Colors - Ochaka Inspired
+            // Luxury Editorial palette — warm ink, muted antique gold, ivory canvas
             colors: {
-                primary: {
-                    DEFAULT: '#000000',
-                    50: '#f6f6f6',
-                    100: '#e7e7e7',
-                    200: '#d1d1d1',
-                    300: '#b0b0b0',
-                    400: '#888888',
-                    500: '#6d6d6d',
-                    600: '#5d5d5d',
-                    700: '#4f4f4f',
-                    800: '#454545',
-                    900: '#3d3d3d',
-                    950: '#000000',
-                },
+                // primary === warm ink (used everywhere as the dark/foreground tone)
+                primary: ink,
+                ink,
+                // Muted antique gold — refined, never garish
                 accent: {
-                    DEFAULT: '#685BC7',
-                    50: '#f4f3fd',
-                    100: '#eae8fb',
-                    200: '#d6d3f8',
-                    300: '#b9b2f2',
-                    400: '#9389e8',
-                    500: '#685bc7',
-                    600: '#5d4daf',
-                    700: '#4d4091',
-                    800: '#423878',
-                    900: '#393164',
-                    950: '#211c3a',
+                    DEFAULT: '#B89B5E',
+                    50: '#fbf9f3',
+                    100: '#f5eedd',
+                    200: '#eadbb6',
+                    300: '#dcc289',
+                    400: '#cdaa6c',
+                    500: '#b89b5e',
+                    600: '#9e8049',
+                    700: '#7e633a',
+                    800: '#5e4b2f',
+                    900: '#443728',
+                    950: '#271f15',
                 },
+                // Warm taupe-stone for secondary text / muted UI
                 secondary: {
-                    DEFAULT: '#5F615E',
-                    50: '#f7f7f7',
-                    100: '#efefef',
-                    200: '#dfdfdf',
-                    300: '#c7c7c7',
-                    400: '#a7a7a7',
-                    500: '#5F615E',
-                    600: '#4a4b49',
-                    700: '#3b3c3b',
-                    800: '#2d2e2d',
-                    900: '#1f1f1f',
+                    DEFAULT: '#6F685C',
+                    50: '#f7f6f3',
+                    100: '#edeae4',
+                    200: '#dcd7cc',
+                    300: '#c3bcab',
+                    400: '#a39a86',
+                    500: '#6f685c',
+                    600: '#574f44',
+                    700: '#433d35',
+                    800: '#2f2b25',
+                    900: '#1f1c18',
                 },
-                // Status Colors
-                hot: '#FF3B30',
-                new: '#34C759',
-                limited: '#FF9500',
+                // Editorial surfaces
+                canvas: '#F6F4EF',   // warm ivory page background
+                ivory: '#FBFAF6',    // lighter card / panel
+                // Refined, muted status colors
+                hot: '#B23A2E',
+                new: '#5C7A57',
+                limited: '#B8862E',
             },
-            // Font Family
+            // Font Family — Playfair Display (serif display) + Inter (clean UI sans)
             fontFamily: {
-                sans: ['Afacad', 'Inter', 'sans-serif'],
-                display: ['Afacad', 'Inter', 'sans-serif'],
+                sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                serif: ['"Playfair Display"', 'Georgia', 'serif'],
+                display: ['"Playfair Display"', 'Georgia', 'serif'],
             },
             // Custom spacing scale (8px base unit)
             spacing: {
@@ -93,16 +104,16 @@ const config: Config = {
                 '102': '1.02',
                 '103': '1.03',
             },
-            // Ochaka-inspired shadows
+            // Soft, warm editorial shadows (warm-tinted blacks)
             boxShadow: {
-                'xs': '0 1px 2px rgba(0, 0, 0, 0.05)',
-                'soft': '0 2px 8px rgba(0, 0, 0, 0.05)',
-                'medium': '0 4px 16px rgba(0, 0, 0, 0.08)',
-                'strong': '0 8px 32px rgba(0, 0, 0, 0.12)',
-                'xl': '0 16px 48px rgba(0, 0, 0, 0.16)',
-                '2xl': '0 24px 64px rgba(0, 0, 0, 0.20)',
-                'premium': '0 30px 60px -10px rgba(0, 0, 0, 0.12), 0 10px 30px -5px rgba(0, 0, 0, 0.04)',
-                'accent': '0 8px 32px rgba(167, 158, 242, 0.25)',
+                'xs': '0 1px 2px rgba(28, 22, 14, 0.04)',
+                'soft': '0 2px 12px rgba(28, 22, 14, 0.05)',
+                'medium': '0 6px 24px rgba(28, 22, 14, 0.07)',
+                'strong': '0 12px 40px rgba(28, 22, 14, 0.10)',
+                'xl': '0 20px 56px rgba(28, 22, 14, 0.12)',
+                '2xl': '0 28px 72px rgba(28, 22, 14, 0.16)',
+                'premium': '0 32px 64px -12px rgba(28, 22, 14, 0.14), 0 12px 28px -8px rgba(28, 22, 14, 0.05)',
+                'accent': '0 12px 36px rgba(184, 155, 94, 0.25)',
             },
             // Border radius
             borderRadius: {

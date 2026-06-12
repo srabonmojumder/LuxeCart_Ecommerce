@@ -8,7 +8,7 @@ export default function AboutPage() {
     return (
         <div className="pt-20 min-h-screen bg-gray-50 dark:bg-gray-900">
             {/* Hero Section */}
-            <section className="relative py-20 overflow-hidden bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-pink-900/20">
+            <section className="relative py-20 overflow-hidden bg-gradient-to-br from-primary-50 via-accent-50 to-pink-50 dark:from-gray-900 dark:via-accent-900/20 dark:to-pink-900/20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -127,7 +127,7 @@ export default function AboutPage() {
             </section>
 
             {/* Stats Section */}
-            <section className="py-20 bg-gradient-to-r from-primary-600 via-purple-600 to-pink-600">
+            <section className="py-20 bg-gradient-to-r from-primary-600 via-accent-600 to-pink-600">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
                         {[

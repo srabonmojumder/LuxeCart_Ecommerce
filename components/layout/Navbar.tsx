@@ -31,7 +31,7 @@ export default function Navbar() {
 
     return (
         <>
-            <header className={`transition-all duration-300 ${isScrolled ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm py-2' : 'bg-white dark:bg-slate-900 py-3 md:py-4'
+            <header className={`transition-all duration-300 border-b ${isScrolled ? 'bg-canvas/90 dark:bg-ink-950/90 backdrop-blur-md border-primary/8 dark:border-white/8 py-2' : 'bg-canvas dark:bg-ink-950 border-transparent py-3 md:py-4'
                 }`}>
                 <div className="max-w-7xl mx-auto px-4 md:px-8">
                     <div className="flex justify-between items-center h-14 md:h-16">
@@ -39,25 +39,23 @@ export default function Navbar() {
                         <div className="flex items-center gap-2 md:gap-4 flex-1">
                             <button
                                 onClick={() => setIsSidebarOpen(true)}
-                                className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                                className="p-2 hover:bg-primary/5 dark:hover:bg-white/10 rounded-full transition-colors"
                             >
                                 <Menu className="w-6 h-6 text-primary dark:text-white" />
                             </button>
                             {/* Desktop Search Button */}
                             <button
                                 onClick={() => setIsSearchOpen(true)}
-                                className="hidden md:flex items-center gap-3 px-4 py-2.5 bg-gray-100/50 dark:bg-slate-800/50 hover:bg-gray-100 dark:hover:bg-slate-800 border-2 border-transparent hover:border-gray-200 dark:hover:border-slate-700 rounded-full transition-all duration-300 group w-[220px]"
+                                className="hidden md:flex items-center gap-2.5 pl-4 pr-2 py-2.5 bg-white dark:bg-ink-900 border border-primary/15 dark:border-white/10 hover:border-primary/35 dark:hover:border-white/25 rounded-full shadow-xs transition-colors duration-300 group w-[260px]"
                             >
-                                <Search className="w-4 h-4 text-gray-400 group-hover:text-primary dark:group-hover:text-white transition-colors" />
-                                <span className="text-sm font-medium text-gray-400 group-hover:text-primary dark:group-hover:text-white transition-colors">Search products...</span>
-                                <div className="ml-auto flex items-center gap-1">
-                                    <span className="text-[10px] font-bold text-gray-300 dark:text-slate-600 border border-gray-200 dark:border-slate-700 rounded px-1.5 py-0.5">⌘K</span>
-                                </div>
+                                <Search className="w-4 h-4 text-primary/40 dark:text-gray-500 group-hover:text-primary dark:group-hover:text-white transition-colors shrink-0" />
+                                <span className="text-sm font-normal text-secondary dark:text-gray-400">Search the collection</span>
+                                <kbd className="ml-auto text-[10px] font-sans font-medium text-secondary/60 dark:text-gray-500 bg-primary/5 dark:bg-white/5 border border-primary/10 dark:border-white/10 rounded-md px-1.5 py-0.5">⌘K</kbd>
                             </button>
                             {/* Mobile Search Button */}
                             <button
                                 onClick={() => setIsSearchOpen(true)}
-                                className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                                className="md:hidden p-2 hover:bg-primary/5 dark:hover:bg-white/10 rounded-full transition-colors"
                             >
                                 <Search className="w-5 h-5 text-primary dark:text-white" />
                             </button>
@@ -67,23 +65,22 @@ export default function Navbar() {
                         <div className="flex justify-center">
                             <Link
                                 href="/"
-                                className="relative group"
+                                className="relative group flex items-center"
                             >
-                                <span className="text-xl md:text-2xl lg:text-3xl font-black tracking-tighter bg-gradient-to-r from-primary via-accent to-primary dark:from-accent dark:via-purple-400 dark:to-accent bg-clip-text text-transparent hover:from-accent hover:via-primary hover:to-accent dark:hover:from-purple-300 dark:hover:via-accent dark:hover:to-purple-300 transition-all duration-500 bg-[length:200%_auto] hover:bg-right">
+                                <span className="font-display text-2xl md:text-[28px] lg:text-3xl font-semibold tracking-tight text-primary dark:text-white transition-colors duration-300 group-hover:text-accent-700 dark:group-hover:text-accent-300">
                                     LuxeCart
                                 </span>
-                                {/* Subtle glow effect on hover */}
-                                <div className="absolute inset-0 bg-gradient-to-r from-accent/0 via-accent/20 to-accent/0 dark:from-purple-400/0 dark:via-purple-400/30 dark:to-purple-400/0 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+                                <span className="ml-1 mt-1 hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-accent" aria-hidden />
                             </Link>
                         </div>
 
                         {/* Right - Actions */}
                         <div className="flex items-center justify-end gap-2 md:gap-4 flex-1">
                             <ThemeToggle />
-                            <Link href="/account" className="hidden md:block p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                            <Link href="/account" className="hidden md:block p-2 hover:bg-primary/5 dark:hover:bg-white/10 rounded-full transition-colors">
                                 <User className="w-6 h-6 text-primary dark:text-white" />
                             </Link>
-                            <Link href="/wishlist" className="relative p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors group">
+                            <Link href="/wishlist" className="relative p-2 hover:bg-primary/5 dark:hover:bg-white/10 rounded-full transition-colors group">
                                 <Heart className="w-6 h-6 text-primary dark:text-white group-hover:text-accent transition-colors" />
                                 {mounted && wishlist.length > 0 && (
                                     <span className="absolute top-1 right-1 bg-accent text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
@@ -91,7 +88,7 @@ export default function Navbar() {
                                     </span>
                                 )}
                             </Link>
-                            <Link href="/cart" className="relative p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors group">
+                            <Link href="/cart" className="relative p-2 hover:bg-primary/5 dark:hover:bg-white/10 rounded-full transition-colors group">
                                 <ShoppingCart className="w-6 h-6 text-primary dark:text-white group-hover:text-accent transition-colors" />
                                 {mounted && totalItems > 0 && (
                                     <span className="absolute top-1 right-1 bg-accent text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">

@@ -1,12 +1,14 @@
-import { products } from '@/data/products';
 import { MetadataRoute } from 'next';
+import { products } from '@/data/products';
 
-export const dynamic = 'force-static';
+// Static build: derive sitemap entries from the local catalog — no backend.
+const categorySlugs = Array.from(new Set(products.map((p) => p.category))).map((name) =>
+  name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+);
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://luxecart.com';
 
-  // Static pages with their priorities
   const staticPages = [
     { route: '', priority: 1.0, changeFrequency: 'daily' as const },
     { route: '/products', priority: 0.9, changeFrequency: 'daily' as const },
@@ -22,13 +24,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority,
   }));
 
-  // Dynamic product pages
-  const productPages = products.map(product => ({
-    url: `${baseUrl}/products/${product.id}`,
+  const productPages = products.map((product) => ({
+    url: `${baseUrl}/products/${product.slug ?? product.id}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.6,
   }));
 
-  return [...staticPages, ...productPages];
+  const categoryPages = categorySlugs.map((slug) => ({
+    url: `${baseUrl}/products?category=${slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
+
+  return [...staticPages, ...categoryPages, ...productPages];
 }

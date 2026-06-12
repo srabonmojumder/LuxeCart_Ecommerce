@@ -116,7 +116,7 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
                             {/* Price Section */}
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-baseline gap-1.5 sm:gap-2">
-                                    <span className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                                    <span className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-accent-600 to-pink-600 bg-clip-text text-transparent">
                                         ${discountedPrice.toFixed(2)}
                                     </span>
                                     {product.discount && (
@@ -168,7 +168,7 @@ export default function StickyMobileBar({ product }: StickyMobileBarProps) {
                                             ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
                                             : added
                                                 ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white'
-                                                : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white active:scale-95'
+                                                : 'bg-gradient-to-r from-accent-600 to-pink-600 text-white active:scale-95'
                                         }
                                     `}
                                 >

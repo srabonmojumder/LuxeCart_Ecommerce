@@ -81,7 +81,7 @@ const renderer = ({ days, hours, minutes, seconds, completed }: {
     );
 
     return (
-        <div className="inline-flex items-center justify-center gap-3 md:gap-5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl px-6 py-5 md:px-8 md:py-6 shadow-xl border border-slate-100 dark:border-slate-700">
+        <div className="inline-flex items-center justify-center gap-3 md:gap-5 bg-white/80 dark:bg-ink-800/80 backdrop-blur-sm rounded-2xl px-6 py-5 md:px-8 md:py-6 shadow-xl border border-slate-100 dark:border-slate-700">
             {days > 0 && (
                 <TimeUnit value={days} label="Days" max={30} color="#f97316" />
             )}
