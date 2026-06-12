@@ -3,51 +3,43 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Headphones } from 'lucide-react';
-import { toast } from 'sonner';
-import { api, ApiError } from '@/lib/api';
+import { api } from '@/lib/api';
+import { matchFaq } from '@/lib/chatFaq';
 
 interface ChatLine {
     id: number;
     text: string;
     from: 'user' | 'bot';
+    /** When true, render the WhatsApp fallback button under this line. */
+    showWhatsApp?: boolean;
 }
 
-const STORAGE_EMAIL_KEY = 'luxecart-chat-email';
+// Local number 01827621312 → international WhatsApp format (+880, drop leading 0).
+const WHATSAPP_NUMBER = '8801827621312';
+const WHATSAPP_DISPLAY = '01827621312';
+
+// Free mode by default: the chat uses the built-in FAQ matcher + WhatsApp handoff,
+// with no paid AI calls. Set NEXT_PUBLIC_AI_CHAT=true (and an ANTHROPIC_API_KEY on
+// the backend) to also route questions through the AI assistant first.
+const AI_ENABLED = process.env.NEXT_PUBLIC_AI_CHAT === 'true';
+function whatsAppLink(prefill: string) {
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(prefill)}`;
+}
 
 const initialBot: ChatLine = {
     id: 1,
     from: 'bot',
-    text: "Hi! What's your email so we can reply to you?",
+    text: 'Hi! 👋 How can I help you today? Ask me about orders, shipping, returns, or anything else.',
 };
 
 const quickReplies = ['Track my order', 'Return / refund', 'Product question', 'Payment issue'];
-
-function isEmail(s: string) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim());
-}
 
 export default function LiveChat() {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<ChatLine[]>([initialBot]);
     const [input, setInput] = useState('');
-    const [email, setEmail] = useState('');
     const [sending, setSending] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
-
-    // Remember the email between opens (so returning users skip the prompt).
-    useEffect(() => {
-        try {
-            const saved = localStorage.getItem(STORAGE_EMAIL_KEY);
-            if (saved) {
-                setEmail(saved);
-                setMessages([
-                    { id: 1, from: 'bot', text: `Welcome back! Type your question and we'll reply to ${saved}.` },
-                ]);
-            }
-        } catch {
-            /* ignore */
-        }
-    }, []);
 
     // Auto-scroll to newest message.
     useEffect(() => {
@@ -56,45 +48,81 @@ export default function LiveChat() {
 
     const appendUser = (text: string) =>
         setMessages((prev) => [...prev, { id: Date.now(), from: 'user', text }]);
-    const appendBot = (text: string) =>
-        setMessages((prev) => [...prev, { id: Date.now() + 1, from: 'bot', text }]);
+    const appendBot = (text: string, showWhatsApp = false) =>
+        setMessages((prev) => [...prev, { id: Date.now() + 1, from: 'bot', text, showWhatsApp }]);
 
     const handleSubmit = async (e?: React.FormEvent) => {
         e?.preventDefault();
         const text = input.trim();
         if (!text || sending) return;
 
-        // Capture email on the first turn (if we don't have one yet).
-        if (!email) {
-            if (!isEmail(text)) {
-                appendUser(text);
-                appendBot("That doesn't look like an email — could you double-check? (e.g. you@example.com)");
-                setInput('');
-                return;
-            }
-            setEmail(text);
-            try { localStorage.setItem(STORAGE_EMAIL_KEY, text); } catch { /* ignore */ }
-            appendUser(text);
-            appendBot('Thanks! Now tell us how we can help.');
-            setInput('');
-            return;
-        }
-
-        // Send the message — append optimistically, then POST.
+        // Append the user's message optimistically.
         appendUser(text);
         setInput('');
         setSending(true);
-        try {
-            // Build a trimmed transcript (last 12 lines) for context in the email.
-            const history = messages.slice(-12).map((m) => ({ from: m.from, text: m.text }));
-            await api.post('/chat-message', { email, message: text, history });
-            appendBot(`Sent ✓ Our team will reply to ${email} within 24 hours. Add more details if you'd like.`);
-        } catch (err) {
-            appendBot('Sorry — couldn\'t send that. Please try again in a moment.');
-            toast.error(err instanceof ApiError ? err.message : 'Chat failed');
-        } finally {
-            setSending(false);
+
+        // Trimmed transcript (last 12 lines) shared with both the AI and the email.
+        const history = messages.slice(-12).map((m) => ({ from: m.from, text: m.text }));
+
+        // 1) (Optional, paid) Ask the AI assistant — only when AI mode is on.
+        if (AI_ENABLED) {
+            try {
+                const res = await api.post<{
+                    data: { canAnswer: boolean; reply: string; aiEnabled: boolean };
+                }>('/chat-ai', { message: text, history });
+                const { canAnswer, reply, aiEnabled } = res.data;
+
+                // AI answered confidently — show its reply, done.
+                if (aiEnabled && canAnswer && reply.trim()) {
+                    appendBot(reply.trim());
+                    setSending(false);
+                    return;
+                }
+                // AI couldn't answer — use its apology (if any) + WhatsApp.
+                if (aiEnabled) {
+                    await handoffToTeam(text, history, reply.trim());
+                    return;
+                }
+                // AI not configured on the backend → fall through to FAQ below.
+            } catch {
+                // AI endpoint failed → fall through to the FAQ below.
+            }
         }
+
+        // 2) Free path: answer instantly from the built-in FAQ knowledge base.
+        const local = matchFaq(text);
+        if (local) {
+            // Tiny delay so the typing indicator reads as a real reply.
+            window.setTimeout(() => {
+                appendBot(local);
+                setSending(false);
+            }, 400);
+            return;
+        }
+
+        // 3) No FAQ match — note it for the team AND offer WhatsApp.
+        await handoffToTeam(text, history);
+    };
+
+    // Log the unanswered question for the team and show the WhatsApp handoff.
+    const handoffToTeam = async (
+        text: string,
+        history: { from: 'user' | 'bot'; text: string }[],
+        aiApology = '',
+    ) => {
+        const intro = aiApology || 'I’m not sure about that one 🤔';
+        // Best-effort: let the team see what was asked. We don't block the
+        // WhatsApp handoff on it — WhatsApp is the real reply channel now.
+        try {
+            await api.post('/chat-message', { message: text, history });
+        } catch {
+            /* ignore — WhatsApp below is the reliable path */
+        }
+        appendBot(
+            `${intro}\n\nFor a quick answer, message us directly on WhatsApp (${WHATSAPP_DISPLAY}):`,
+            true,
+        );
+        setSending(false);
     };
 
     return (
@@ -134,7 +162,7 @@ export default function LiveChat() {
                         className="fixed bottom-24 left-6 right-6 sm:left-auto sm:w-[380px] z-40 bg-white dark:bg-ink-900 border border-primary/10 dark:border-slate-700 rounded-2xl shadow-2xl shadow-black/15 dark:shadow-black/50 overflow-hidden flex flex-col max-h-[70vh]"
                     >
                         {/* Header */}
-                        <div className="bg-gradient-to-br from-accent-900 via-accent-800 to-accent-950 text-white p-5 relative overflow-hidden">
+                        <div className="shrink-0 bg-gradient-to-br from-accent-900 via-accent-800 to-accent-950 text-white p-5 relative overflow-hidden">
                             <div className="absolute -top-12 -right-12 w-32 h-32 bg-accent/40 rounded-full blur-2xl" />
                             <div className="relative flex items-center gap-3">
                                 <div className="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center">
@@ -151,22 +179,35 @@ export default function LiveChat() {
                         </div>
 
                         {/* Messages */}
-                        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/60 dark:bg-ink-900/40">
+                        <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3 bg-gray-50/60 dark:bg-ink-900/40">
                             {messages.map((m) => (
                                 <motion.div
                                     key={m.id}
                                     initial={{ opacity: 0, y: 6 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className={`flex ${m.from === 'bot' ? 'justify-start' : 'justify-end'}`}
+                                    className={`flex flex-col ${m.from === 'bot' ? 'items-start' : 'items-end'}`}
                                 >
                                     <div
-                                        className={`max-w-[82%] px-4 py-2.5 text-sm leading-relaxed ${m.from === 'bot'
+                                        className={`max-w-[82%] px-4 py-2.5 text-sm leading-relaxed whitespace-pre-line ${m.from === 'bot'
                                             ? 'bg-white dark:bg-ink-800 text-primary dark:text-white rounded-2xl rounded-bl-md border border-primary/5 dark:border-slate-700'
                                             : 'bg-primary dark:bg-accent text-white rounded-2xl rounded-br-md'
                                             }`}
                                     >
                                         {m.text}
                                     </div>
+                                    {m.showWhatsApp && (
+                                        <a
+                                            href={whatsAppLink('Hi LuxeCart, I need help.')}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="mt-2 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#25D366] text-white text-sm font-medium shadow-md shadow-[#25D366]/30 hover:brightness-105 active:scale-95 transition"
+                                        >
+                                            <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-hidden="true">
+                                                <path d="M17.47 14.38c-.3-.15-1.74-.86-2-.96-.27-.1-.47-.15-.66.15-.2.3-.76.96-.93 1.16-.17.2-.34.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.34.45-.51.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.66-1.6-.9-2.18-.24-.58-.48-.5-.66-.5h-.56c-.2 0-.5.07-.77.37-.27.3-1.02 1-1.02 2.42 0 1.43 1.04 2.8 1.19 3 .15.2 2.05 3.12 4.96 4.38.69.3 1.23.48 1.65.61.69.22 1.32.19 1.82.12.56-.08 1.74-.71 1.98-1.4.24-.69.24-1.28.17-1.4-.07-.13-.27-.2-.56-.35zM12.01 2.4c-5.31 0-9.62 4.31-9.62 9.62 0 1.7.44 3.36 1.29 4.82L2.4 21.6l4.9-1.28a9.6 9.6 0 0 0 4.7 1.2h.01c5.3 0 9.61-4.31 9.61-9.62 0-2.57-1-4.98-2.82-6.8a9.56 9.56 0 0 0-6.8-2.82z" />
+                                            </svg>
+                                            Chat on WhatsApp
+                                        </a>
+                                    )}
                                 </motion.div>
                             ))}
                             {sending && (
@@ -180,29 +221,27 @@ export default function LiveChat() {
                             )}
                         </div>
 
-                        {/* Quick replies — only when we have email (otherwise it'd send before capture) */}
-                        {email && (
-                            <div className="px-4 py-3 border-t border-primary/5 dark:border-slate-800 flex flex-wrap gap-1.5">
-                                {quickReplies.map((q) => (
-                                    <button
-                                        key={q}
-                                        onClick={() => setInput(q)}
-                                        disabled={sending}
-                                        className="text-[10px] font-medium uppercase tracking-widest px-3 py-1.5 rounded-full border border-primary/10 dark:border-slate-700 text-secondary dark:text-gray-400 hover:border-accent hover:text-accent disabled:opacity-50 transition-colors"
-                                    >
-                                        {q}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
+                        {/* Quick replies — one-tap common questions */}
+                        <div className="shrink-0 px-4 py-3 border-t border-primary/5 dark:border-slate-800 flex flex-wrap gap-1.5">
+                            {quickReplies.map((q) => (
+                                <button
+                                    key={q}
+                                    onClick={() => setInput(q)}
+                                    disabled={sending}
+                                    className="text-[10px] font-medium uppercase tracking-widest px-3 py-1.5 rounded-full border border-primary/10 dark:border-slate-700 text-secondary dark:text-gray-400 hover:border-accent hover:text-accent disabled:opacity-50 transition-colors"
+                                >
+                                    {q}
+                                </button>
+                            ))}
+                        </div>
 
                         {/* Input */}
-                        <form onSubmit={handleSubmit} className="p-3 border-t border-primary/5 dark:border-slate-800 flex gap-2 bg-white dark:bg-ink-900">
+                        <form onSubmit={handleSubmit} className="shrink-0 p-3 border-t border-primary/5 dark:border-slate-800 flex gap-2 bg-white dark:bg-ink-900">
                             <input
-                                type={email ? 'text' : 'email'}
+                                type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                placeholder={email ? 'Type a message…' : 'Your email first…'}
+                                placeholder="Type a message…"
                                 disabled={sending}
                                 className="flex-1 px-4 py-2.5 text-sm bg-gray-50 dark:bg-ink-800 rounded-full focus:outline-none focus:ring-2 focus:ring-accent text-gray-900 dark:text-white placeholder:text-gray-400 disabled:opacity-60"
                             />

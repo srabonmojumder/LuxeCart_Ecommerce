@@ -5,6 +5,7 @@ import { asyncHandler, HttpError } from '../middleware/error.js';
 import { env } from '../lib/env.js';
 import { getSettings } from '../lib/settings.js';
 import { sendEmail, emailConfigured } from '../lib/mailer.js';
+import { answerWithAi, aiChatEnabled } from '../lib/chatAi.js';
 
 /** GET /api/stats — public storefront stats for the homepage counters. */
 export const getPublicStats = asyncHandler(async (_req: Request, res: Response) => {
@@ -77,7 +78,9 @@ export const notifyBackInStock = asyncHandler(async (req: Request, res: Response
 });
 
 const chatSchema = z.object({
-  email: z.string().trim().toLowerCase().email(),
+  // Optional — the widget no longer asks for an email; WhatsApp is the reply
+  // channel. When present we add a reply-to so the team can email back too.
+  email: z.string().trim().toLowerCase().email().optional(),
   name: z.string().trim().max(120).optional(),
   message: z.string().trim().min(1).max(2000),
   history: z
@@ -96,8 +99,11 @@ const escapeHtml = (s: string) =>
  */
 export const chatMessage = asyncHandler(async (req: Request, res: Response) => {
   const parsed = chatSchema.safeParse(req.body);
-  if (!parsed.success) throw new HttpError(400, 'Valid email and message required');
+  if (!parsed.success) throw new HttpError(400, 'A valid message is required');
   const { email, name, message, history } = parsed.data;
+
+  // Customer label for the email — falls back to "Website visitor" with no email.
+  const sender = email ? `${name ? `${name} ` : ''}<${email}>` : name || 'Website visitor';
 
   const settings = await getSettings();
   const supportEmail = settings?.supportEmail || env.SMTP_USER;
@@ -118,23 +124,70 @@ export const chatMessage = asyncHandler(async (req: Request, res: Response) => {
 
   await sendEmail({
     to: supportEmail,
-    subject: `[Live Chat] ${email}${name ? ` (${name})` : ''}`,
+    subject: `[Live Chat] ${email || 'Website visitor'}`,
     html: `
       <div style="font-family: Inter, Arial, sans-serif; color: #1f2937; max-width: 560px; margin: 0 auto;">
         <h2 style="margin: 0 0 8px; color: #685BC7;">New chat message</h2>
         <p style="margin: 0 0 20px; color: #6b7280; font-size: 13px;">Sent from the LuxeCart live-chat widget</p>
         <table style="width:100%; border-collapse:collapse; font-size:14px;">
-          <tr><td style="padding:8px 0; color:#6b7280; width:90px;">From</td><td><b>${name ? `${escapeHtml(name)} ` : ''}&lt;${escapeHtml(email)}&gt;</b></td></tr>
+          <tr><td style="padding:8px 0; color:#6b7280; width:90px;">From</td><td><b>${escapeHtml(sender)}</b></td></tr>
         </table>
         <div style="margin-top:20px; padding:16px 20px; background:#f9fafb; border-left:3px solid #685BC7; border-radius:4px; white-space:pre-wrap; line-height:1.6;">${escapeHtml(message)}</div>
         ${transcriptHtml}
-        <p style="margin-top:24px; color:#9ca3af; font-size:12px;">Reply directly to <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>.</p>
+        ${email
+          ? `<p style="margin-top:24px; color:#9ca3af; font-size:12px;">Reply directly to <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>.</p>`
+          : `<p style="margin-top:24px; color:#9ca3af; font-size:12px;">No email provided — the customer was directed to WhatsApp.</p>`}
       </div>
     `,
-    text: `New chat from ${name ? `${name} <${email}>` : email}\n\n${message}`,
+    text: `New chat from ${sender}\n\n${message}`,
   });
 
   res.status(200).json({ success: true, mock: !emailConfigured });
+});
+
+const chatAiSchema = z.object({
+  message: z.string().trim().min(1).max(2000),
+  history: z
+    .array(z.object({ from: z.enum(['user', 'bot']), text: z.string().max(2000) }))
+    .max(20)
+    .optional(),
+});
+
+/**
+ * POST /api/chat-ai — public; answers a customer question with the AI assistant,
+ * grounded in store policies. Returns { canAnswer, reply, whatsapp }. When the
+ * bot can't answer (or AI isn't configured), canAnswer is false and the widget
+ * shows the WhatsApp handoff. Rate-limited upstream at the route layer.
+ */
+export const chatAi = asyncHandler(async (req: Request, res: Response) => {
+  const parsed = chatAiSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, 'A message is required');
+  const { message, history } = parsed.data;
+
+  const whatsapp = env.SUPPORT_WHATSAPP;
+
+  // No API key → let the frontend fall back to its local FAQ + WhatsApp.
+  if (!aiChatEnabled()) {
+    res.status(200).json({ data: { canAnswer: false, reply: '', whatsapp, aiEnabled: false } });
+    return;
+  }
+
+  let result;
+  try {
+    result = await answerWithAi(message, history ?? []);
+  } catch {
+    // AI call failed (network, rate limit, etc.) — degrade gracefully to handoff.
+    result = { canAnswer: false, reply: '' };
+  }
+
+  res.status(200).json({
+    data: {
+      canAnswer: Boolean(result?.canAnswer),
+      reply: result?.reply ?? '',
+      whatsapp,
+      aiEnabled: true,
+    },
+  });
 });
 
 /** GET /api/testimonials?limit=8 — recent positive reviews across products. */

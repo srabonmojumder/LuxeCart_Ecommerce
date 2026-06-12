@@ -25,6 +25,12 @@ const schema = z.object({
   ENABLE_SCHEDULER: z.coerce.boolean().default(false),
   ABANDONED_CART_HOURS: z.coerce.number().min(1).default(4),
   LOW_STOCK_THRESHOLD: z.coerce.number().int().min(1).default(5),
+  // AI live-chat (Anthropic) — optional. If unset, the chat widget falls back
+  // to its local FAQ matcher + WhatsApp handoff (no AI answers).
+  ANTHROPIC_API_KEY: z.string().optional(),
+  ANTHROPIC_MODEL: z.string().default('claude-opus-4-8'),
+  // WhatsApp number shown when the bot can't answer (international format, no +).
+  SUPPORT_WHATSAPP: z.string().default('8801827621312'),
   // Email (SMTP) — optional; if unset, emails are logged to the console.
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.coerce.number().default(587),
