@@ -842,10 +842,10 @@
                 "orders"
               ]
             },
-            "description": "Checkout. Works for guests (send email + items + shippingAddress) and logged-in users (server cart is used; addressId may be sent instead of shippingAddress). Auth is optional — remove the Bearer token to test guest checkout.",
+            "description": "Checkout. Works for guests (send email + items + shippingAddress) and logged-in users (server cart is used; addressId may be sent instead of shippingAddress). Auth is optional — remove the Bearer token to test guest checkout. `redeemPoints` (logged-in only) spends loyalty points as store credit.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"shippingAddress\": {\n    \"fullName\": \"Jane Doe\",\n    \"line1\": \"123 Main St\",\n    \"city\": \"Dhaka\",\n    \"postalCode\": \"1207\",\n    \"country\": \"Bangladesh\",\n    \"phone\": \"+8801700000000\"\n  },\n  \"email\": \"user@example.com\",\n  \"couponCode\": \"\",\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 1\n    }\n  ]\n}",
+              "raw": "{\n  \"shippingAddress\": {\n    \"fullName\": \"Jane Doe\",\n    \"line1\": \"123 Main St\",\n    \"city\": \"Dhaka\",\n    \"postalCode\": \"1207\",\n    \"country\": \"Bangladesh\",\n    \"phone\": \"+8801700000000\"\n  },\n  \"email\": \"user@example.com\",\n  \"couponCode\": \"\",\n  \"paymentMethod\": \"cod\",\n  \"redeemPoints\": 0,\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 1\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1074,6 +1074,53 @@
       ]
     },
     {
+      "name": "Loyalty",
+      "item": [
+        {
+          "name": "My loyalty balance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/loyalty",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "loyalty"
+              ]
+            },
+            "description": "Requires auth. Returns points balance, lifetime, currency value, and recent transactions. Points are earned on orders and redeemable at checkout via `redeemPoints`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Content",
+      "item": [
+        {
+          "name": "Get site content",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/content",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "content"
+              ]
+            },
+            "description": "Public. Returns the merged site content tree (homepage copy, trust strip, promos, countdowns, footer, about). Edited by admin via Admin → Update site content.",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "Admin",
       "description": "All routes require a Bearer accessToken belonging to a user with role ADMIN. Log in via Auth → Login using the seeded ADMIN_EMAIL / ADMIN_PASSWORD first.",
       "item": [
@@ -1100,6 +1147,38 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"storeName\": \"LuxeCart\",\n  \"supportEmail\": \"support@luxecart.com\",\n  \"supportPhone\": \"+8801700000000\",\n  \"address\": null,\n  \"facebook\": null,\n  \"instagram\": null,\n  \"twitter\": null,\n  \"announcement\": null,\n  \"freeShippingThreshold\": 100,\n  \"shippingFlat\": 5,\n  \"taxRate\": 0.05,\n  \"currencyCode\": \"USD\",\n  \"currencySymbol\": \"$\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update site content",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/content",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "content"
+              ]
+            },
+            "description": "Deep-merges a (partial) content tree over the stored content. Send only the fields you want to change. Surfaced publicly via Content → Get site content.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"homepage\": {\n    \"bestSellers\": {\n      \"title\": \"Our Best Sellers\",\n      \"subtitle\": \"Shop the most loved items this season.\"\n    },\n    \"newsletter\": {\n      \"title\": \"Stay Inspired\",\n      \"subtitle\": \"Get 15% off your first order.\"\n    }\n  },\n  \"features\": [\n    { \"icon\": \"truck\", \"title\": \"Free Shipping\", \"desc\": \"\" },\n    { \"icon\": \"shield\", \"title\": \"Secure Payment\", \"desc\": \"Verified checkout\" },\n    { \"icon\": \"returns\", \"title\": \"Easy Returns\", \"desc\": \"30 day returns\" },\n    { \"icon\": \"zap\", \"title\": \"Fast Delivery\", \"desc\": \"Across the globe\" }\n  ],\n  \"promo\": {\n    \"flashSaleHours\": 36,\n    \"dealHours\": 48\n  },\n  \"footer\": {\n    \"tagline\": \"Curated minimalist home accessories.\"\n  }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1396,7 +1475,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"New Product\",\n  \"description\": \"A great product.\",\n  \"price\": 49.99,\n  \"discount\": 0,\n  \"image\": \"https://example.com/p.jpg\",\n  \"stock\": 100,\n  \"inStock\": true,\n  \"isActive\": true,\n  \"featured\": false,\n  \"categoryId\": 1,\n  \"colors\": [\n    \"Black\",\n    \"White\"\n  ],\n  \"sizes\": [\n    \"M\",\n    \"L\"\n  ],\n  \"tags\": [\n    \"new\"\n  ]\n}",
+              "raw": "{\n  \"name\": \"New Product\",\n  \"description\": \"A great product.\",\n  \"price\": 49.99,\n  \"discount\": 0,\n  \"image\": \"https://example.com/p1.jpg\",\n  \"images\": [\n    \"https://example.com/p1.jpg\",\n    \"https://example.com/p2.jpg\",\n    \"https://example.com/p3.jpg\"\n  ],\n  \"stock\": 100,\n  \"inStock\": true,\n  \"isActive\": true,\n  \"featured\": false,\n  \"categoryId\": 1,\n  \"colors\": [\n    \"Black\",\n    \"White\"\n  ],\n  \"sizes\": [\n    \"M\",\n    \"L\"\n  ],\n  \"tags\": [\n    \"new\"\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1428,7 +1507,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"price\": 39.99,\n  \"featured\": true\n}",
+              "raw": "{\n  \"price\": 39.99,\n  \"featured\": true,\n  \"images\": [\n    \"https://example.com/p1.jpg\",\n    \"https://example.com/p2.jpg\"\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
