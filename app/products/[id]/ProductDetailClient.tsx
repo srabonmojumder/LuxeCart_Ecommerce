@@ -101,8 +101,8 @@ export default function ProductDetailPage() {
         }
     };
 
-    // Mock images (in real app, product would have multiple images)
-    const images = [product.image, product.image, product.image];
+    // Real gallery from the API (falls back to the single primary image).
+    const images = product.images?.length ? product.images : [product.image];
 
     return (
         <div className="pb-36 md:pb-8 min-h-screen bg-canvas dark:bg-ink-950">

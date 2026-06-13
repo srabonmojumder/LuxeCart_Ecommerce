@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import {
     LayoutDashboard, BarChart3, Package, Tag, ClipboardList, RotateCcw, Users, Star,
-    Ticket, Image as ImageIcon, BookOpen, Mail, Settings as SettingsIcon, Store, LogOut,
-    Search, Bell, Droplet, X, Menu, PanelLeftClose, PanelLeftOpen, Sun, Moon, UserCircle,
+    Ticket, Image as ImageIcon, BookOpen, LayoutTemplate, Mail, Settings as SettingsIcon, Store, LogOut,
+    Search, Bell, X, Menu, PanelLeftClose, PanelLeftOpen, Sun, Moon, UserCircle,
 } from 'lucide-react';
 
 const SKY = '#46AEE8';
@@ -23,6 +23,7 @@ const nav = [
     { href: '/admin/coupons', label: 'Coupons', icon: Ticket },
     { href: '/admin/banners', label: 'Banners', icon: ImageIcon },
     { href: '/admin/blog', label: 'Blog', icon: BookOpen },
+    { href: '/admin/content', label: 'Content', icon: LayoutTemplate },
     { href: '/admin/newsletter', label: 'Newsletter', icon: Mail },
     { href: '/admin/settings', label: 'Settings', icon: SettingsIcon },
     { href: '/admin/profile', label: 'Profile', icon: UserCircle },
@@ -98,11 +99,8 @@ export default function AdminShell({ pathname, today, pendingOrders, userName, u
                     </button>
 
                     {/* Brand */}
-                    <Link href="/admin" className="flex items-center gap-2.5 shrink-0">
-                        <span className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ backgroundColor: SKY }}>
-                            <Droplet className="w-5 h-5 text-white fill-white" />
-                        </span>
-                        <span className="text-xl font-black text-slate-800 tracking-tight hidden sm:block">LuxeCart</span>
+                    <Link href="/admin" className="flex items-center shrink-0">
+                        <img src="/logo.png" alt="LuxeCart" className="h-12 w-auto object-contain" />
                     </Link>
 
                     {/* Tabs */}
@@ -155,7 +153,7 @@ export default function AdminShell({ pathname, today, pendingOrders, userName, u
                 </header>
 
                 {/* ============== SIDEBAR RAIL (fixed) + SCROLLABLE CONTENT ============== */}
-                <div className="flex gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 pb-3 md:pb-4 flex-1 min-h-0">
+                <div className="flex gap-1 sm:gap-4 px-2 sm:px-3 md:px-4 pb-3 md:pb-4 flex-1 min-h-0">
                     {/* desktop rail (collapsible). Nav scrolls; Back-to-store + Logout stay pinned. */}
                     <aside className={`hidden md:flex flex-col shrink-0 transition-[width] duration-300 ${collapsed ? 'w-[60px]' : 'w-[210px]'}`}>
                         {/* scrollable nav */}
@@ -184,9 +182,8 @@ export default function AdminShell({ pathname, today, pendingOrders, userName, u
                     onClick={() => setMobileOpen(false)} />
                 <aside className={`absolute left-0 top-0 bottom-0 w-72 max-w-[80vw] bg-white shadow-2xl p-4 flex flex-col transition-transform duration-300 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                     <div className="flex items-center justify-between mb-4 px-1">
-                        <span className="flex items-center gap-2.5">
-                            <span className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: SKY }}><Droplet className="w-4 h-4 text-white fill-white" /></span>
-                            <span className="text-lg font-black text-slate-800">LuxeCart</span>
+                        <span className="flex items-center">
+                            <img src="/logo.png" alt="LuxeCart" className="h-11 w-auto object-contain" />
                         </span>
                         <button onClick={() => setMobileOpen(false)} aria-label="Close menu" className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"><X className="w-5 h-5" /></button>
                     </div>

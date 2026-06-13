@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CreditCard, Lock, ArrowLeft, Check, Mail, Truck, Calendar, ShieldCheck, User, MapPin, Banknote, Smartphone } from 'lucide-react';
+import { CreditCard, Lock, ArrowLeft, Check, Mail, Truck, Calendar, ShieldCheck, User, MapPin, Banknote, Smartphone, Gift } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import StripePayment from '@/components/checkout/StripePayment';
 import { api, ApiError } from '@/lib/api';
-import { useAddresses, useSettings, usePaymentMethods } from '@/lib/hooks';
+import { useAddresses, useSettings, usePaymentMethods, useLoyalty } from '@/lib/hooks';
 
 const STRIPE_ENABLED = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 import Link from 'next/link';
@@ -38,6 +38,9 @@ export default function CheckoutPage() {
     const [coupon, setCoupon] = useState<{ code: string; discount: number } | null>(null);
     const [applyingCoupon, setApplyingCoupon] = useState(false);
 
+    const { loyalty } = useLoyalty(authStatus === 'authenticated');
+    const [useRedeem, setUseRedeem] = useState(false);
+
     const [formData, setFormData] = useState({
         email: '',
         firstName: '',
@@ -64,7 +67,18 @@ export default function CheckoutPage() {
     const shipFlat = settings?.shippingFlat ?? 9.99;
     const taxRate = settings?.taxRate ?? 0.08;
     const discount = coupon?.discount ?? 0;
-    const taxable = Math.max(0, totalPrice - discount);
+
+    // Loyalty redemption — spend points like store credit, capped to the balance
+    // and to what's left after the coupon. Only available to signed-in users.
+    const pointValue = loyalty?.pointValue ?? 0.01;
+    const minRedeem = loyalty?.minRedeem ?? 100;
+    const afterCoupon = Math.max(0, totalPrice - discount);
+    const maxRedeemablePoints = loyalty ? Math.min(loyalty.balance, Math.floor(afterCoupon / pointValue)) : 0;
+    const canRedeem = maxRedeemablePoints >= minRedeem;
+    const redeemingPoints = useRedeem && canRedeem ? maxRedeemablePoints : 0;
+    const loyaltyDiscount = +(redeemingPoints * pointValue).toFixed(2);
+
+    const taxable = Math.max(0, totalPrice - discount - loyaltyDiscount);
     const shipping = totalPrice >= freeShipThreshold ? 0 : shipFlat;
     const tax = taxable * taxRate;
     const finalTotal = taxable + shipping + tax;
@@ -150,7 +164,7 @@ export default function CheckoutPage() {
                       couponCode: coupon?.code,
                       paymentMethod,
                   })
-                : await api.post<{ data: { id: number; status: string } }>('/orders', { shippingAddress, couponCode: coupon?.code, paymentMethod }, true);
+                : await api.post<{ data: { id: number; status: string } }>('/orders', { shippingAddress, couponCode: coupon?.code, paymentMethod, redeemPoints: redeemingPoints || undefined }, true);
 
             // SSLCommerz: hand off to the hosted gateway (cards + bKash/Nagad).
             if (paymentMethod === 'sslcommerz') {
@@ -555,6 +569,35 @@ export default function CheckoutPage() {
                                 )}
                             </div>
 
+                            {/* Loyalty points redemption */}
+                            {loyalty && loyalty.balance > 0 && (
+                                <div className="pt-4 border-t border-primary/10">
+                                    <button
+                                        type="button"
+                                        onClick={() => setUseRedeem((v) => !v)}
+                                        disabled={!canRedeem}
+                                        className={`w-full flex items-center justify-between gap-3 rounded-xl px-4 py-3 text-left transition-colors ${useRedeem ? 'bg-accent/10 border border-accent/40' : 'bg-gray-50 dark:bg-ink-800 border border-transparent'} disabled:opacity-50 disabled:cursor-not-allowed`}
+                                    >
+                                        <span className="flex items-center gap-2.5">
+                                            <Gift className="w-4 h-4 text-accent" />
+                                            <span className="text-sm">
+                                                <span className="font-bold text-primary dark:text-white block">
+                                                    {loyalty.balance.toLocaleString()} points
+                                                </span>
+                                                <span className="text-xs text-gray-500">
+                                                    {canRedeem
+                                                        ? `Use ${redeemingPoints || maxRedeemablePoints} pts (−$${(((redeemingPoints || maxRedeemablePoints)) * pointValue).toFixed(2)})`
+                                                        : `Min ${minRedeem} pts to redeem`}
+                                                </span>
+                                            </span>
+                                        </span>
+                                        <span className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${useRedeem ? 'bg-accent' : 'bg-gray-300 dark:bg-slate-700'}`}>
+                                            <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${useRedeem ? 'left-6' : 'left-1'}`} />
+                                        </span>
+                                    </button>
+                                </div>
+                            )}
+
                             <div className="space-y-3 pt-4 border-t border-primary/10">
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="text-gray-500">Subtotal</span>
@@ -564,6 +607,12 @@ export default function CheckoutPage() {
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="text-gray-500">Discount</span>
                                         <span className="font-semibold text-new">−${discount.toFixed(2)}</span>
+                                    </div>
+                                )}
+                                {loyaltyDiscount > 0 && (
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-gray-500">Points ({redeemingPoints.toLocaleString()})</span>
+                                        <span className="font-semibold text-new">−${loyaltyDiscount.toFixed(2)}</span>
                                     </div>
                                 )}
                                 <div className="flex justify-between items-center text-sm">

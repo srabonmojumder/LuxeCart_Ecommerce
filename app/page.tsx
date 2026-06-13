@@ -12,11 +12,10 @@ if (typeof window !== 'undefined') {
 }
 import {
     ArrowRight,
+    ChevronLeft,
+    ChevronRight,
     Star,
     Truck,
-    Shield,
-    RotateCcw,
-    Zap,
     Quote,
     Package,
     Users,
@@ -29,7 +28,6 @@ import ProductCard from '@/components/product/ProductCard';
 import ProductGridSkeleton from '@/components/product/ProductGridSkeleton';
 import RecentlyViewedSection from '@/components/product/RecentlyViewedSection';
 import AnimatedCounter from '@/components/ui/AnimatedCounter';
-import HeroCarousel from '@/components/ui/HeroCarousel';
 import FlashSaleSection from '@/components/sections/FlashSaleSection';
 import Reveal from '@/components/anim/Reveal';
 import {
@@ -41,8 +39,11 @@ import {
     useCategories,
     usePublicStats,
     useTestimonials,
+    useSettings,
+    useContent,
     type Testimonial,
 } from '@/lib/hooks';
+import { iconByKey } from '@/lib/featureIcons';
 import { api } from '@/lib/api';
 import { generateWebSiteSchema } from '@/lib/seo';
 
@@ -134,12 +135,37 @@ export default function Home() {
     const { products: newArrivals, isLoading: newLoading } = useNewArrivals(8);
     const { categories } = useCategories();
     const { stats } = usePublicStats();
+    const { settings } = useSettings();
+    const { content } = useContent();
+    const c = content.homepage;
     const { testimonials } = useTestimonials(8);
     const tMid = Math.ceil(testimonials.length / 2);
     const tRowA = testimonials.slice(0, tMid);
     const tRowB = testimonials.slice(tMid);
 
-    const heroBanner = banners[0];
+    // Hero slider — cycles through every active banner from admin (Ken-Burns + crossfade).
+    const DEFAULT_HERO = {
+        id: 0,
+        image: '/home_accessories_hero.png',
+        subtitle: c.hero.subtitle,
+        title: c.hero.title,
+        ctaText: c.hero.ctaText,
+        ctaLink: c.hero.ctaLink,
+    };
+    const heroSlides = banners.length ? banners : [DEFAULT_HERO];
+    const heroCount = heroSlides.length;
+    const [heroIdx, setHeroIdx] = useState(0);
+    const activeIdx = heroIdx % heroCount;
+    const heroBanner = heroSlides[activeIdx];
+    const goToHero = (i: number) => setHeroIdx(((i % heroCount) + heroCount) % heroCount);
+
+    useEffect(() => {
+        if (heroCount <= 1) return;
+        if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const t = setInterval(() => setHeroIdx((i) => (i + 1) % heroCount), 6000);
+        return () => clearInterval(t);
+    }, [heroCount]);
+
     const [newsletterEmail, setNewsletterEmail] = useState('');
     const [subscribing, setSubscribing] = useState(false);
 
@@ -160,9 +186,9 @@ export default function Home() {
 
     const tabLoading = activeTab === 'Hot' ? bestLoading : activeTab === 'New' ? newLoading : isLoading;
 
-    // Stable countdown deadlines for this mount.
-    const flashEnd = useMemo(() => new Date(Date.now() + 1000 * 60 * 60 * 36), []);
-    const promoEnd = useMemo(() => new Date(Date.now() + 1000 * 60 * 60 * 24 * 2), []);
+    // Stable countdown deadlines for this mount (durations are admin-managed).
+    const flashEnd = useMemo(() => new Date(Date.now() + 1000 * 60 * 60 * content.promo.flashSaleHours), [content.promo.flashSaleHours]);
+    const promoEnd = useMemo(() => new Date(Date.now() + 1000 * 60 * 60 * content.promo.dealHours), [content.promo.dealHours]);
 
     const dealProduct = saleProducts[0];
     const dealOriginal = dealProduct ? dealProduct.price : 0;
@@ -182,9 +208,8 @@ export default function Home() {
         }
     };
 
-    // GSAP — hero load reveal + image parallax on scroll
+    // GSAP — hero image parallax on scroll
     const heroSectionRef = useRef<HTMLElement>(null);
-    const heroContentRef = useRef<HTMLDivElement>(null);
     const heroImageRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -192,18 +217,6 @@ export default function Home() {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
         const ctx = gsap.context(() => {
-            const items = heroContentRef.current?.children;
-            if (items && items.length) {
-                gsap.set(items, { opacity: 0, y: 34 });
-                gsap.to(items, {
-                    opacity: 1,
-                    y: 0,
-                    duration: 1.1,
-                    ease: 'power3.out',
-                    stagger: 0.12,
-                    delay: 0.15,
-                });
-            }
             if (heroImageRef.current && heroSectionRef.current) {
                 gsap.to(heroImageRef.current, {
                     yPercent: 14,
@@ -221,12 +234,15 @@ export default function Home() {
         return () => ctx.revert();
     }, []);
 
-    const features = [
-        { icon: Truck, title: 'Free Shipping', desc: 'Orders over $75' },
-        { icon: Shield, title: 'Secure Payment', desc: 'Verified security' },
-        { icon: RotateCcw, title: 'Easy Returns', desc: '30 day returns' },
-        { icon: Zap, title: 'Fast Delivery', desc: 'Across the globe' },
-    ];
+    // Trust strip — admin-managed cards; first card's blank desc falls back to
+    // the live free-shipping threshold from store settings.
+    const currencySymbol = settings?.currencySymbol ?? '$';
+    const freeShipThreshold = settings?.freeShippingThreshold ?? 75;
+    const features = content.features.map((f, i) => ({
+        icon: iconByKey[f.icon] ?? Truck,
+        title: f.title,
+        desc: f.desc || (i === 0 ? `Orders over ${currencySymbol}${freeShipThreshold}` : ''),
+    }));
 
     const statItems = [
         { icon: Package, value: stats?.products ?? 0, suffix: '+', label: 'Products' },
@@ -242,91 +258,113 @@ export default function Home() {
         <div className="bg-canvas dark:bg-ink-950 min-h-screen">
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
 
-            {/* Hero Section */}
+            {/* Hero Section — auto-rotating banner slider */}
             <section ref={heroSectionRef} className="relative h-[86vh] min-h-[560px] max-h-[860px] bg-[#efece5] dark:bg-ink-900 overflow-hidden mx-3 md:mx-6 mt-3 md:mt-5 rounded-[1.5rem] md:rounded-[2rem]">
                 <div ref={heroImageRef} className="absolute inset-x-0 top-[-8%] h-[116%] will-change-transform">
-                    <Image
-                        src={heroBanner?.image || '/home_accessories_hero.png'}
-                        alt={heroBanner?.title || 'LuxeCart Collection'}
-                        fill
-                        priority
-                        sizes="100vw"
-                        className="object-cover"
-                    />
+                    <AnimatePresence initial={false}>
+                        <motion.div
+                            key={heroBanner.id ?? activeIdx}
+                            initial={{ opacity: 0, scale: 1.1 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ opacity: { duration: 1.2, ease: 'easeInOut' }, scale: { duration: 8, ease: 'linear' } }}
+                            className="absolute inset-0"
+                        >
+                            <Image
+                                src={heroBanner.image || '/home_accessories_hero.png'}
+                                alt={heroBanner.title || 'LuxeCart Collection'}
+                                fill
+                                priority
+                                sizes="100vw"
+                                className="object-cover"
+                            />
+                        </motion.div>
+                    </AnimatePresence>
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent" />
                 <div className="absolute inset-0 flex items-center justify-start p-8 md:p-24">
-                    <div ref={heroContentRef} className="max-w-2xl">
-                        <span className="inline-flex items-center gap-3 text-white/90 font-sans font-medium tracking-[0.32em] text-[11px] md:text-xs mb-7 uppercase">
-                            <span className="w-8 h-px bg-accent" />
-                            {heroBanner?.subtitle || 'New Collection 2026'}
-                        </span>
-                        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-medium text-white leading-[1.02] mb-7 tracking-[-0.01em]">
-                            {heroBanner?.title || <>Timeless pieces<br /><span className="italic font-normal">for modern living</span></>}
-                        </h1>
-                        <p className="text-base md:text-lg text-white/85 mb-10 max-w-md leading-relaxed font-sans font-light">
-                            A curated collection of premium home accessories — designed with restraint, made to last.
-                        </p>
-                        <Link href={heroBanner?.ctaLink || '/products'} className="group inline-flex items-center gap-3 bg-white text-primary pl-8 pr-6 py-4 rounded-full font-sans font-medium text-sm tracking-[0.08em] hover:bg-accent hover:text-white transition-all duration-300 shadow-xl">
-                            {heroBanner?.ctaText || 'Explore the Collection'}
-                            <span className="grid place-items-center w-7 h-7 rounded-full bg-primary/10 group-hover:bg-white/20 transition-colors">
-                                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={activeIdx}
+                            initial={{ opacity: 0, y: 28 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -16 }}
+                            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], staggerChildren: 0.08 }}
+                            className="max-w-2xl"
+                        >
+                            <span className="inline-flex items-center gap-3 text-white/90 font-sans font-medium tracking-[0.32em] text-[11px] md:text-xs mb-7 uppercase">
+                                <span className="w-8 h-px bg-accent" />
+                                {heroBanner.subtitle || 'New Collection 2026'}
                             </span>
-                        </Link>
-                    </div>
+                            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-medium text-white leading-[1.02] mb-7 tracking-[-0.01em]">
+                                {heroBanner.title}
+                            </h1>
+                            <Link href={heroBanner.ctaLink || '/products'} className="group inline-flex items-center gap-3 bg-white text-primary pl-8 pr-6 py-4 rounded-full font-sans font-medium text-sm tracking-[0.08em] hover:bg-accent hover:text-white transition-all duration-300 shadow-xl">
+                                {heroBanner.ctaText || 'Explore the Collection'}
+                                <span className="grid place-items-center w-7 h-7 rounded-full bg-primary/10 group-hover:bg-white/20 transition-colors">
+                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                                </span>
+                            </Link>
+                        </motion.div>
+                    </AnimatePresence>
                 </div>
-            </section>
 
-            {/* Stats Bar */}
-            <section className="mt-12 mx-4 md:mx-8">
-                <div className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] bg-gradient-to-br from-accent-900 via-accent-800 to-accent-950 px-6 py-14 md:py-20">
-                    {/* Decorative glow orbs */}
-                    <div className="absolute -top-28 -left-20 w-80 h-80 bg-accent/30 rounded-full blur-[100px]" />
-                    <div className="absolute -bottom-28 -right-20 w-80 h-80 bg-accent/20 rounded-full blur-[100px]" />
-                    {/* Dot grid pattern */}
-                    <div
-                        className="absolute inset-0 opacity-[0.06]"
-                        style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '22px 22px' }}
-                    />
-
-                    <div className="relative max-w-7xl mx-auto">
-                        <div className="text-center mb-12 md:mb-14 space-y-3">
-                            <span className="inline-flex items-center gap-2 text-accent-300 font-medium tracking-[0.3em] text-[10px] md:text-xs uppercase">
-                                <Sparkles className="w-3.5 h-3.5" /> Trusted Worldwide
-                            </span>
-                            <h2 className="text-3xl md:text-5xl font-medium text-white tracking-tight">The Numbers Speak</h2>
-                        </div>
-
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
-                            {statItems.map((s, i) => (
-                                <motion.div
-                                    key={s.label}
-                                    initial={{ opacity: 0, y: 24 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: i * 0.1, ease: 'easeOut' }}
-                                    viewport={{ once: true }}
-                                    className="group relative rounded-3xl bg-white/[0.04] backdrop-blur-sm border border-white/10 p-6 md:p-8 text-center hover:bg-white/[0.07] hover:border-accent/40 hover:-translate-y-1 transition-all duration-300"
-                                >
-                                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-accent to-accent-700 flex items-center justify-center mx-auto mb-5 shadow-lg shadow-accent/30 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                                        <s.icon className="w-6 h-6 text-white" />
-                                    </div>
-                                    <AnimatedCounter
-                                        value={s.value}
-                                        decimals={s.decimals ?? 0}
-                                        suffix={s.suffix}
-                                        className="block text-4xl md:text-6xl font-medium tracking-tight bg-gradient-to-b from-white to-accent-200 bg-clip-text text-transparent"
-                                    />
-                                    <p className="text-white/50 text-[10px] md:text-xs font-medium tracking-[0.2em] uppercase mt-3">{s.label}</p>
-                                </motion.div>
+                {/* Slider controls — only when more than one banner */}
+                {heroCount > 1 && (
+                    <>
+                        <div className="absolute bottom-8 left-8 md:left-24 flex items-center gap-2.5 z-10">
+                            {heroSlides.map((s, i) => (
+                                <button
+                                    key={s.id ?? i}
+                                    onClick={() => goToHero(i)}
+                                    aria-label={`Go to slide ${i + 1}`}
+                                    className="h-1.5 rounded-full transition-all duration-500 ease-out"
+                                    style={{ width: i === activeIdx ? 38 : 14, backgroundColor: i === activeIdx ? '#fff' : 'rgba(255,255,255,0.45)' }}
+                                />
                             ))}
                         </div>
-                    </div>
-                </div>
+                        <div className="absolute bottom-7 right-7 md:right-12 flex items-center gap-3 z-10">
+                            <button
+                                onClick={() => goToHero(activeIdx - 1)}
+                                aria-label="Previous slide"
+                                className="grid place-items-center w-11 h-11 rounded-full border border-white/30 bg-white/10 text-white backdrop-blur-md hover:bg-white hover:text-primary transition-colors"
+                            >
+                                <ChevronLeft className="w-5 h-5" />
+                            </button>
+                            <button
+                                onClick={() => goToHero(activeIdx + 1)}
+                                aria-label="Next slide"
+                                className="grid place-items-center w-11 h-11 rounded-full border border-white/30 bg-white/10 text-white backdrop-blur-md hover:bg-white hover:text-primary transition-colors"
+                            >
+                                <ChevronRight className="w-5 h-5" />
+                            </button>
+                        </div>
+                    </>
+                )}
             </section>
 
-            {/* Deals Carousel — rotating curated slides for visual variety */}
-            <section className="mt-12 mx-4 md:mx-8">
-                <HeroCarousel />
+            {/* Trust / Features strip — premium cards, right under hero */}
+            <section className="mt-10 md:mt-14 mx-4 md:mx-8">
+                <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
+                    {features.map((f, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.08, ease: 'easeOut' }}
+                            viewport={{ once: true }}
+                            className="group flex items-center gap-4 rounded-3xl bg-white dark:bg-ink-900 border border-primary/5 dark:border-white/8 p-5 md:p-6 hover:border-accent/40 hover:shadow-xl hover:shadow-accent/5 hover:-translate-y-1 transition-all duration-300"
+                        >
+                            <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-accent to-accent-700 flex items-center justify-center flex-shrink-0 shadow-lg shadow-accent/20 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                                <f.icon className="w-6 h-6 text-white" />
+                            </div>
+                            <div className="min-w-0">
+                                <h4 className="font-bold text-sm md:text-base text-primary dark:text-white truncate">{f.title}</h4>
+                                <p className="text-xs md:text-sm text-secondary dark:text-gray-400 truncate">{f.desc}</p>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
             </section>
 
             {/* Category Navigation (dynamic) */}
@@ -353,30 +391,13 @@ export default function Home() {
                 </section>
             )}
 
-            {/* Features Strip */}
-            <section className="py-8 border-y border-gray-100 dark:border-white/8 mb-12">
-                <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-                    {features.map((f, i) => (
-                        <div key={i} className="flex flex-col md:flex-row items-center gap-3 md:gap-4 group justify-center md:justify-start text-center md:text-left">
-                            <div className="w-12 h-12 rounded-2xl bg-ivory dark:bg-ink-800 flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-colors flex-shrink-0">
-                                <f.icon className="w-6 h-6 dark:text-gray-300" />
-                            </div>
-                            <div>
-                                <h4 className="font-bold text-xs md:text-sm text-primary dark:text-white">{f.title}</h4>
-                                <p className="text-[10px] md:text-xs text-secondary dark:text-gray-400">{f.desc}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </section>
-
             {/* Best Sellers (working tabs) */}
             <section className="py-12 md:py-24 bg-white dark:bg-ink-950">
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
                         <Reveal as="div" className="max-w-xl" stagger={0.12}>
-                            <h2 className="text-4xl md:text-6xl font-medium text-primary dark:text-white tracking-tight mb-4">Our Best Sellers</h2>
-                            <p className="text-secondary dark:text-gray-400 text-lg">Shop the most loved items this season.</p>
+                            <h2 className="text-4xl md:text-6xl font-medium text-primary dark:text-white tracking-tight mb-4">{c.bestSellers.title}</h2>
+                            <p className="text-secondary dark:text-gray-400 text-lg">{c.bestSellers.subtitle}</p>
                         </Reveal>
                         <div className="flex gap-8 border-b border-gray-100 dark:border-white/8">
                             {(['Hot', 'New', 'Sale'] as const).map((tab) => (
@@ -422,8 +443,8 @@ export default function Home() {
                 <section className="py-12 md:py-24">
                     <div className="max-w-7xl mx-auto px-4">
                         <Reveal as="div" className="text-center max-w-xl mx-auto mb-16 space-y-4" stagger={0.12}>
-                            <span className="text-accent font-medium tracking-[0.3em] text-xs uppercase">Curated For You</span>
-                            <h2 className="text-4xl md:text-6xl font-medium text-primary dark:text-white tracking-tight">Shop by Collection</h2>
+                            <span className="text-accent font-medium tracking-[0.3em] text-xs uppercase">{c.collections.eyebrow}</span>
+                            <h2 className="text-4xl md:text-6xl font-medium text-primary dark:text-white tracking-tight">{c.collections.title}</h2>
                         </Reveal>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                             {displayCategories.map((cat, i) => (
@@ -474,9 +495,9 @@ export default function Home() {
                     <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
                         <Reveal as="div" className="max-w-xl space-y-4" stagger={0.12}>
                             <span className="inline-flex items-center gap-2 text-accent font-medium tracking-[0.3em] text-xs uppercase">
-                                <Sparkles className="w-4 h-4" /> Just Landed
+                                <Sparkles className="w-4 h-4" /> {c.newArrivals.eyebrow}
                             </span>
-                            <h2 className="text-4xl md:text-6xl font-medium text-primary dark:text-white tracking-tight">New Arrivals</h2>
+                            <h2 className="text-4xl md:text-6xl font-medium text-primary dark:text-white tracking-tight">{c.newArrivals.title}</h2>
                         </Reveal>
                         <Link href="/products?sort=newest" className="text-sm font-medium tracking-widest uppercase text-accent hover:underline">View All →</Link>
                     </div>
@@ -516,13 +537,13 @@ export default function Home() {
                     </Link>
                     <div className="space-y-8">
                         <div className="space-y-4">
-                            <span className="text-accent font-medium tracking-[0.4em] text-xs uppercase">Limited Offer</span>
+                            <span className="text-accent font-medium tracking-[0.4em] text-xs uppercase">{c.promo.eyebrow}</span>
                             <h2 className="text-4xl md:text-7xl font-medium text-primary dark:text-white tracking-tight leading-tight">
-                                {dealProduct?.name || <>Minimalist <br />Design Deal</>}
+                                {dealProduct?.name || c.promo.fallbackTitle}
                             </h2>
                         </div>
                         <p className="text-secondary dark:text-gray-400 text-xl leading-relaxed font-medium line-clamp-3">
-                            {dealProduct?.description || 'Experience the perfect blend of form and function — exclusive mid-season pricing on our most-loved pieces.'}
+                            {dealProduct?.description || c.promo.fallbackText}
                         </p>
                         <div className="flex flex-wrap gap-8 items-center">
                             {dealProduct ? (
@@ -545,14 +566,61 @@ export default function Home() {
                 </div>
             </section>
 
+            {/* Stats Bar — social proof, deeper in the page */}
+            <section className="mt-12 md:mt-20 mx-4 md:mx-8">
+                <div className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] bg-gradient-to-br from-accent-900 via-accent-800 to-accent-950 px-6 py-14 md:py-20">
+                    {/* Decorative glow orbs */}
+                    <div className="absolute -top-28 -left-20 w-80 h-80 bg-accent/30 rounded-full blur-[100px]" />
+                    <div className="absolute -bottom-28 -right-20 w-80 h-80 bg-accent/20 rounded-full blur-[100px]" />
+                    {/* Dot grid pattern */}
+                    <div
+                        className="absolute inset-0 opacity-[0.06]"
+                        style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '22px 22px' }}
+                    />
+
+                    <div className="relative max-w-7xl mx-auto">
+                        <div className="text-center mb-12 md:mb-14 space-y-3">
+                            <span className="inline-flex items-center gap-2 text-accent-300 font-medium tracking-[0.3em] text-[10px] md:text-xs uppercase">
+                                <Sparkles className="w-3.5 h-3.5" /> {c.numbers.eyebrow}
+                            </span>
+                            <h2 className="text-3xl md:text-5xl font-medium text-white tracking-tight">{c.numbers.title}</h2>
+                        </div>
+
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
+                            {statItems.map((s, i) => (
+                                <motion.div
+                                    key={s.label}
+                                    initial={{ opacity: 0, y: 24 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: i * 0.1, ease: 'easeOut' }}
+                                    viewport={{ once: true }}
+                                    className="group relative rounded-3xl bg-white/[0.04] backdrop-blur-sm border border-white/10 p-6 md:p-8 text-center hover:bg-white/[0.07] hover:border-accent/40 hover:-translate-y-1 transition-all duration-300"
+                                >
+                                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-accent to-accent-700 flex items-center justify-center mx-auto mb-5 shadow-lg shadow-accent/30 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                                        <s.icon className="w-6 h-6 text-white" />
+                                    </div>
+                                    <AnimatedCounter
+                                        value={s.value}
+                                        decimals={s.decimals ?? 0}
+                                        suffix={s.suffix}
+                                        className="block text-4xl md:text-6xl font-medium tracking-tight bg-gradient-to-b from-white to-accent-200 bg-clip-text text-transparent"
+                                    />
+                                    <p className="text-white/50 text-[10px] md:text-xs font-medium tracking-[0.2em] uppercase mt-3">{s.label}</p>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Testimonials (dynamic — only when reviews exist) */}
             {testimonials.length > 0 && (
                 <section className="py-16 md:py-28 bg-ivory dark:bg-ink-900/40">
                     <div className="max-w-7xl mx-auto px-4">
                         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-14">
                             <div className="space-y-4 max-w-xl">
-                                <span className="text-accent font-medium tracking-[0.3em] text-xs uppercase">Loved by Customers</span>
-                                <h2 className="text-4xl md:text-6xl font-medium text-primary dark:text-white tracking-tight">What People Say</h2>
+                                <span className="text-accent font-medium tracking-[0.3em] text-xs uppercase">{c.testimonials.eyebrow}</span>
+                                <h2 className="text-4xl md:text-6xl font-medium text-primary dark:text-white tracking-tight">{c.testimonials.title}</h2>
                             </div>
                             {stats && stats.reviewCount > 0 && (
                                 <div className="flex items-center gap-4 bg-white dark:bg-ink-900 border border-primary/5 dark:border-white/8 rounded-2xl px-6 py-4 shadow-sm self-start lg:self-auto">
@@ -596,8 +664,8 @@ export default function Home() {
             <section className="py-24 md:py-40">
                 <div className="max-w-4xl mx-auto px-4 text-center space-y-12">
                     <Reveal as="div" className="space-y-4" stagger={0.12}>
-                        <h2 className="text-4xl md:text-7xl font-medium text-primary dark:text-white tracking-tight">Stay Inspired</h2>
-                        <p className="text-secondary dark:text-gray-400 text-lg px-8">Join our community and get exclusive early access to our new drops, styling tips, and 15% off your first order.</p>
+                        <h2 className="text-4xl md:text-7xl font-medium text-primary dark:text-white tracking-tight">{c.newsletter.title}</h2>
+                        <p className="text-secondary dark:text-gray-400 text-lg px-8">{c.newsletter.subtitle}</p>
                     </Reveal>
                     <form onSubmit={subscribe} className="max-w-md mx-auto relative group">
                         <input

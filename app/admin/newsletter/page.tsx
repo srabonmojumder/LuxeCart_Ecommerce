@@ -8,6 +8,7 @@ import { api, ApiError } from '@/lib/api';
 import { usePagination } from '@/lib/usePagination';
 import Pagination from '@/components/ui/Pagination';
 import { TableSkeleton } from '@/components/ui/Skeleton';
+import { useConfirm } from '@/components/admin/ConfirmProvider';
 
 const formatDate = (s: string) => new Date(s).toLocaleDateString();
 
@@ -16,8 +17,10 @@ export default function AdminNewsletterPage() {
     const { subscribers, isLoading, mutate } = useSubscribers(isAdmin);
     const { page, setPage, totalPages, total, start, end, pageItems } = usePagination(subscribers);
 
+    const confirm = useConfirm();
+
     const remove = async (id: number) => {
-        if (!confirm('Remove this subscriber?')) return;
+        if (!(await confirm('Remove this subscriber?'))) return;
         try { await api.del(`/admin/newsletter/${id}`, true); toast.success('Removed'); mutate(); }
         catch (err) { toast.error(err instanceof ApiError ? err.message : 'Failed'); }
     };

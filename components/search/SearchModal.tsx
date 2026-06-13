@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { X, Search as SearchIcon, TrendingUp, Clock, Tag, Star } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useProducts } from '@/lib/hooks';
+import { useProducts, useCategories } from '@/lib/hooks';
 import { Product } from '@/store/useStore';
 
 interface SearchModalProps {
@@ -15,19 +15,19 @@ interface SearchModalProps {
 
 export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     const { products } = useProducts();
+    const { categories } = useCategories();
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<Product[]>([]);
     const [recentSearches, setRecentSearches] = useState<string[]>([]);
     const desktopInputRef = useRef<HTMLInputElement>(null);
     const mobileInputRef = useRef<HTMLInputElement>(null);
 
-    const trendingSearches = ['Headphones', 'Smart Watch', 'Sneakers', 'Backpack'];
-    const popularCategories = [
-        { name: 'Electronics', icon: '📱' },
-        { name: 'Fashion', icon: '👗' },
-        { name: 'Sports', icon: '⚽' },
-        { name: 'Home', icon: '🏠' }
-    ];
+    // Trending = the most-reviewed real products; Popular = real categories.
+    const trendingSearches = useMemo(
+        () => [...products].sort((a, b) => (b.reviews ?? 0) - (a.reviews ?? 0)).slice(0, 4).map((p) => p.name),
+        [products]
+    );
+    const popularCategories = useMemo(() => categories.slice(0, 4), [categories]);
 
     useEffect(() => {
         const saved = localStorage.getItem('recentSearches');
@@ -236,6 +236,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                         )}
 
                                         {/* Trending */}
+                                        {trendingSearches.length > 0 && (
                                         <div>
                                             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.18em] font-sans flex items-center gap-2 mb-3 px-1">
                                                 <TrendingUp className="w-4 h-4" />
@@ -253,27 +254,30 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                                 ))}
                                             </div>
                                         </div>
+                                        )}
 
                                         {/* Categories */}
+                                        {popularCategories.length > 0 && (
                                         <div>
                                             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.18em] font-sans flex items-center gap-2 mb-3 px-1">
                                                 <Tag className="w-4 h-4" />
                                                 Popular Categories
                                             </h3>
                                             <div className="grid grid-cols-4 gap-2">
-                                                {popularCategories.map((category, index) => (
+                                                {popularCategories.map((category) => (
                                                     <Link
-                                                        key={index}
-                                                        href={`/products?category=${category.name.toLowerCase()}`}
+                                                        key={category.id}
+                                                        href={`/products?category=${category.slug}`}
                                                         onClick={onClose}
                                                         className="p-3 bg-gradient-to-br from-accent/5 to-accent/10 dark:from-accent/10 dark:to-accent/20 rounded-xl text-center font-medium text-gray-900 dark:text-white hover:shadow-md hover:scale-105 transition-all text-sm flex flex-col items-center gap-1.5"
                                                     >
-                                                        <span className="text-xl">{category.icon}</span>
-                                                        <span>{category.name}</span>
+                                                        <span className="w-8 h-8 rounded-full bg-accent/20 text-accent flex items-center justify-center text-sm font-bold uppercase">{category.name.charAt(0)}</span>
+                                                        <span className="truncate w-full">{category.name}</span>
                                                     </Link>
                                                 ))}
                                             </div>
                                         </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -414,6 +418,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                     )}
 
                                     {/* Trending */}
+                                    {trendingSearches.length > 0 && (
                                     <div>
                                         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.18em] font-sans flex items-center gap-2 mb-2.5">
                                             <TrendingUp className="w-3.5 h-3.5" />
@@ -431,31 +436,34 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                             ))}
                                         </div>
                                     </div>
+                                    )}
 
                                     {/* Categories */}
+                                    {popularCategories.length > 0 && (
                                     <div>
                                         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.18em] font-sans flex items-center gap-2 mb-2.5">
                                             <Tag className="w-3.5 h-3.5" />
                                             Categories
                                         </h3>
                                         <div className="grid grid-cols-2 gap-2.5">
-                                            {popularCategories.map((category, index) => (
+                                            {popularCategories.map((category) => (
                                                 <Link
-                                                    key={index}
-                                                    href={`/products?category=${category.name.toLowerCase()}`}
+                                                    key={category.id}
+                                                    href={`/products?category=${category.slug}`}
                                                     onClick={onClose}
                                                 >
                                                     <motion.div
                                                         whileTap={{ scale: 0.97 }}
                                                         className="p-4 bg-gradient-to-br from-accent/5 to-accent/10 dark:from-accent/10 dark:to-accent/20 rounded-xl text-center font-medium text-gray-900 dark:text-white flex flex-col items-center gap-1.5 border border-accent/10"
                                                     >
-                                                        <span className="text-2xl">{category.icon}</span>
-                                                        <span className="text-sm">{category.name}</span>
+                                                        <span className="w-9 h-9 rounded-full bg-accent/20 text-accent flex items-center justify-center text-base font-bold uppercase">{category.name.charAt(0)}</span>
+                                                        <span className="text-sm truncate w-full">{category.name}</span>
                                                     </motion.div>
                                                 </Link>
                                             ))}
                                         </div>
                                     </div>
+                                    )}
                                 </div>
                             )}
                         </div>

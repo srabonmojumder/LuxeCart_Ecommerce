@@ -35,6 +35,7 @@ const productSchema = z.object({
   price: z.number().positive(),
   discount: z.number().int().min(0).max(100).default(0),
   image: z.string().min(1),
+  images: z.array(z.string().min(1)).optional(), // full gallery; first is the primary
   stock: z.number().int().min(0).default(0),
   inStock: z.boolean().default(true),
   isActive: z.boolean().default(true),
@@ -48,7 +49,7 @@ const productSchema = z.object({
 /** GET /api/admin/products — includes inactive */
 export const adminListProducts = asyncHandler(async (_req: Request, res: Response) => {
   const products = await prisma.product.findMany({
-    include: { category: true, tags: { include: { tag: true } } },
+    include: { category: true, tags: { include: { tag: true } }, images: { orderBy: { position: 'asc' } } },
     orderBy: { createdAt: 'desc' },
   });
   res.json({ data: products });
@@ -58,18 +59,22 @@ export const adminListProducts = asyncHandler(async (_req: Request, res: Respons
 export const adminCreateProduct = asyncHandler(async (req: Request, res: Response) => {
   const parsed = productSchema.safeParse(req.body);
   if (!parsed.success) throw new HttpError(400, 'Invalid input', parsed.error.flatten().fieldErrors);
-  const { tags, colors, sizes, ...data } = parsed.data;
+  const { tags, colors, sizes, images, ...data } = parsed.data;
 
   const category = await prisma.category.findUnique({ where: { id: data.categoryId } });
   if (!category) throw new HttpError(400, 'Category does not exist');
 
+  // Gallery = provided images (de-duped) or fall back to the single primary image.
+  const gallery = (images?.length ? images : [data.image]).filter((u, i, a) => a.indexOf(u) === i);
+
   const product = await prisma.product.create({
     data: {
       ...data,
+      image: gallery[0],
       slug: await uniqueProductSlug(data.name),
       colors: colors ?? undefined,
       sizes: sizes ?? undefined,
-      images: { create: [{ url: data.image, alt: data.name, position: 0 }] },
+      images: { create: gallery.map((url, i) => ({ url, alt: data.name, position: i })) },
     },
   });
   if (tags?.length) await setProductTags(product.id, tags);
@@ -85,7 +90,12 @@ export const adminUpdateProduct = asyncHandler(async (req: Request, res: Respons
 
   const existing = await prisma.product.findUnique({ where: { id } });
   if (!existing) throw new HttpError(404, 'Product not found');
-  const { tags, colors, sizes, name, ...rest } = parsed.data;
+  const { tags, colors, sizes, name, images, ...rest } = parsed.data;
+
+  // When a gallery is supplied, replace all rows and sync the primary image.
+  const gallery = images?.length
+    ? images.filter((u, i, a) => a.indexOf(u) === i)
+    : undefined;
 
   const product = await prisma.product.update({
     where: { id },
@@ -94,6 +104,10 @@ export const adminUpdateProduct = asyncHandler(async (req: Request, res: Respons
       ...(name ? { name, slug: await uniqueProductSlug(name, id) } : {}),
       ...(colors !== undefined ? { colors } : {}),
       ...(sizes !== undefined ? { sizes } : {}),
+      ...(gallery ? {
+        image: gallery[0],
+        images: { deleteMany: {}, create: gallery.map((url, i) => ({ url, alt: name ?? existing.name, position: i })) },
+      } : {}),
     },
   });
   if (tags) await setProductTags(id, tags);

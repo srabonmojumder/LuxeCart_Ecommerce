@@ -10,6 +10,7 @@ import Select from '@/components/ui/Select';
 import { usePagination } from '@/lib/usePagination';
 import Pagination from '@/components/ui/Pagination';
 import { TableSkeleton } from '@/components/ui/Skeleton';
+import { useConfirm } from '@/components/admin/ConfirmProvider';
 
 const field = 'w-full px-4 py-3 bg-gray-50 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-[#46AEE8] text-gray-900';
 
@@ -46,8 +47,10 @@ export default function AdminCouponsPage() {
         catch (err) { toast.error(err instanceof ApiError ? err.message : 'Failed'); }
     };
 
+    const confirm = useConfirm();
+
     const remove = async (id: number) => {
-        if (!confirm('Delete this coupon?')) return;
+        if (!(await confirm('Delete this coupon?'))) return;
         try { await api.del(`/admin/coupons/${id}`, true); toast.success('Deleted'); mutate(); }
         catch (err) { toast.error(err instanceof ApiError ? err.message : 'Failed'); }
     };

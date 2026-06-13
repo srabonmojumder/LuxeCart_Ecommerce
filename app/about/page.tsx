@@ -3,8 +3,11 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Award, Users, TrendingUp, Zap } from 'lucide-react';
+import { useContent } from '@/lib/hooks';
 
 export default function AboutPage() {
+    const { content } = useContent();
+    const about = content.pages.about;
     return (
         <div className="pt-20 min-h-screen bg-gray-50 dark:bg-gray-900">
             {/* Hero Section */}
@@ -16,10 +19,10 @@ export default function AboutPage() {
                         className="text-center max-w-3xl mx-auto"
                     >
                         <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-                            About LuxeCart
+                            {about.title}
                         </h1>
                         <p className="text-xl text-gray-600 dark:text-gray-400">
-                            Your trusted partner for premium online shopping experiences since 2020
+                            {about.body}
                         </p>
                     </motion.div>
                 </div>

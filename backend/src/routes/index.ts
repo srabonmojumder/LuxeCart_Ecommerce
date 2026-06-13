@@ -14,6 +14,8 @@ import newsletterRouter from './newsletter.routes.js';
 import contactRouter from './contact.routes.js';
 import publicRouter from './public.routes.js';
 import blogRouter from './blog.routes.js';
+import loyaltyRouter from './loyalty.routes.js';
+import contentRouter from './content.routes.js';
 import adminRouter from './admin.routes.js';
 
 const router = Router();
@@ -37,6 +39,8 @@ router.use('/newsletter', newsletterRouter);
 router.use('/contact', contactRouter);
 router.use('/', publicRouter); // /stats, /testimonials
 router.use('/blog', blogRouter);
+router.use('/loyalty', loyaltyRouter);
+router.use('/content', contentRouter);
 router.use('/admin', adminRouter);
 
 export default router;

@@ -1,9 +1,11 @@
 import type { Prisma } from '@prisma/client';
 
 // Product with the relations the API includes.
+// `images` is optional so the serializer also works for callers that don't
+// include the gallery relation (cart, wishlist) — they fall back to `image`.
 export type ProductWithRelations = Prisma.ProductGetPayload<{
   include: { category: true; tags: { include: { tag: true } } };
-}>;
+}> & { images?: { url: string; position: number }[] };
 
 /**
  * Maps a DB product to the shape the current frontend Product interface expects,
@@ -16,6 +18,9 @@ export function serializeProduct(p: ProductWithRelations) {
     slug: p.slug,
     price: Number(p.price),
     image: p.image,
+    images: p.images?.length
+      ? [...p.images].sort((a, b) => a.position - b.position).map((i) => i.url)
+      : (p.image ? [p.image] : []),
     category: p.category?.name ?? null,
     description: p.description,
     rating: p.ratingAvg,

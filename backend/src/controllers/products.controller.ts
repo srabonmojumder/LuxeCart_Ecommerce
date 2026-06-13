@@ -8,6 +8,7 @@ import { serializeProduct } from '../serializers/product.js';
 const includeRelations = {
   category: true,
   tags: { include: { tag: true } },
+  images: { orderBy: { position: 'asc' } },
 } satisfies Prisma.ProductInclude;
 
 const listQuerySchema = z.object({

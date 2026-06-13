@@ -8,6 +8,7 @@ import { isSslcommerzConfigured } from '../lib/sslcommerz.js';
 import { notifyOrderPlaced, notifyOrderStatus, notifyReturnStatus } from '../lib/notify.js';
 import { getSettings } from '../lib/settings.js';
 import { evaluateCoupon } from '../lib/coupon.js';
+import { earnPoints, redeemPoints, getOrCreateAccount, pointsToCurrency, EARN_PER_CURRENCY, MIN_REDEEM } from '../lib/loyalty.js';
 
 const addressShape = z.object({
   fullName: z.string().min(1),
@@ -25,6 +26,7 @@ const createSchema = z.object({
   shippingAddress: addressShape.optional(),
   email: z.string().email().optional(), // required for guest checkout
   couponCode: z.string().optional(),
+  redeemPoints: z.number().int().min(0).optional(), // loyalty points to spend (logged-in only)
   items: z
     .array(z.object({ productId: z.number().int().positive(), quantity: z.number().int().min(1) }))
     .optional(), // guest cart (logged-in users use their server cart)
@@ -163,7 +165,23 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
     appliedCoupon = { id: coupon!.id, code: coupon!.code };
   }
 
-  const taxable = Math.max(0, subtotal - discount);
+  // Loyalty redemption (logged-in only) — spent points reduce the order like a
+  // store credit, clamped to the balance and to what's left after the coupon.
+  let pointsToRedeem = 0;
+  let loyaltyDiscount = 0;
+  if (userId && parsed.data.redeemPoints && parsed.data.redeemPoints > 0) {
+    const account = await getOrCreateAccount(userId);
+    const requested = parsed.data.redeemPoints;
+    if (requested < MIN_REDEEM) throw new HttpError(400, `Redeem at least ${MIN_REDEEM} points`);
+    if (requested > account.balance) throw new HttpError(400, 'Not enough loyalty points');
+    const redeemableCeiling = Math.max(0, subtotal - discount); // never below zero
+    const maxByValue = Math.floor(redeemableCeiling / pointsToCurrency(1)) || 0;
+    pointsToRedeem = Math.min(requested, account.balance, maxByValue);
+    loyaltyDiscount = pointsToCurrency(pointsToRedeem);
+  }
+
+  const totalDiscount = +(discount + loyaltyDiscount).toFixed(2);
+  const taxable = Math.max(0, subtotal - totalDiscount);
   const shipping = subtotal >= freeShippingThreshold ? 0 : shippingFlat;
   const tax = +(taxable * taxRate).toFixed(2);
   const total = +(taxable + shipping + tax).toFixed(2);
@@ -192,7 +210,7 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
         email,
         status: paid ? 'PAID' : 'PENDING',
         subtotal,
-        discount,
+        discount: totalDiscount,
         couponCode: appliedCoupon?.code ?? null,
         shipping,
         tax,
@@ -245,6 +263,17 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
 
     // Empty the server cart (logged-in users only).
     if (serverCartId) await tx.cartItem.deleteMany({ where: { cartId: serverCartId } });
+
+    // Loyalty: spend redeemed points, then earn points on the amount paid.
+    if (userId) {
+      if (pointsToRedeem > 0) {
+        await redeemPoints(tx, userId, pointsToRedeem, { orderId: created.id, note: `Redeemed on order #${created.id}` });
+      }
+      const earned = Math.floor(total) * EARN_PER_CURRENCY;
+      if (earned > 0) {
+        await earnPoints(tx, userId, earned, { orderId: created.id, note: `Earned on order #${created.id}` });
+      }
+    }
     return created;
   });
 

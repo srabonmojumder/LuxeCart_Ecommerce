@@ -6,13 +6,16 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { useAdminReviews } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
 import { CardListSkeleton } from '@/components/ui/Skeleton';
+import { useConfirm } from '@/components/admin/ConfirmProvider';
 
 export default function AdminReviewsPage() {
     const isAdmin = useAuthStore((s) => s.status === 'authenticated' && s.user?.role === 'ADMIN');
     const { reviews, isLoading, mutate } = useAdminReviews(isAdmin);
 
+    const confirm = useConfirm();
+
     const remove = async (id: number) => {
-        if (!confirm('Delete this review?')) return;
+        if (!(await confirm('Delete this review?'))) return;
         try {
             await api.del(`/admin/reviews/${id}`, true);
             toast.success('Review deleted');

@@ -8,6 +8,7 @@ import { api, ApiError } from '@/lib/api';
 import { usePagination } from '@/lib/usePagination';
 import Pagination from '@/components/ui/Pagination';
 import { TableSkeleton } from '@/components/ui/Skeleton';
+import { useConfirm } from '@/components/admin/ConfirmProvider';
 
 const formatDate = (s: string) => {
     const d = new Date(s);
@@ -30,8 +31,10 @@ export default function AdminCustomersPage() {
         }
     };
 
+    const confirm = useConfirm();
+
     const remove = async (id: number) => {
-        if (!confirm('Delete this user?')) return;
+        if (!(await confirm('Delete this user?'))) return;
         try {
             await api.del(`/admin/users/${id}`, true);
             toast.success('User deleted');

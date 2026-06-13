@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { Facebook, Instagram, Twitter, Youtube, Mail, MapPin, Phone, Send } from 'lucide-react';
-import { useSettings } from '@/lib/hooks';
+import { useSettings, useContent } from '@/lib/hooks';
 
 export default function Footer() {
     const { settings } = useSettings();
+    const { content } = useContent();
     return (
         <footer className="relative bg-ivory dark:bg-ink-950 border-t border-primary/10 dark:border-white/8">
             {/* Thin gold accent line */}
@@ -21,7 +22,7 @@ export default function Footer() {
                                 LuxeCart<span className="text-accent">.</span>
                             </h4>
                             <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed max-w-sm">
-                                Premium home accessories for the modern minimalist. Elevate your living space with our curated collection of decor, lighting, and essentials.
+                                {content.footer.tagline}
                             </p>
                         </div>
 
@@ -296,7 +297,7 @@ export default function Footer() {
                     <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
                             <p className="text-xs text-slate-500 dark:text-slate-500 font-medium">
-                                © 2026 LuxeCart. All Rights Reserved.
+                                © {new Date().getFullYear()} {settings?.storeName || 'LuxeCart'}. All Rights Reserved.
                             </p>
                             <div className="flex gap-6 text-xs text-slate-500 dark:text-slate-500 font-semibold">
                                 <Link href="/terms" className="hover:text-accent transition-colors">Terms</Link>

@@ -11,6 +11,7 @@ import Select from '@/components/ui/Select';
 import { usePagination } from '@/lib/usePagination';
 import Pagination from '@/components/ui/Pagination';
 import { TableSkeleton } from '@/components/ui/Skeleton';
+import { useConfirm } from '@/components/admin/ConfirmProvider';
 
 const field = 'w-full px-4 py-3 bg-gray-50 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-[#46AEE8] text-gray-900';
 const label = 'text-[10px] font-black uppercase tracking-widest text-gray-400';
@@ -65,8 +66,10 @@ export default function AdminBlogPage() {
         }
     };
 
+    const confirm = useConfirm();
+
     const remove = async (id: number) => {
-        if (!confirm('Delete this post permanently?')) return;
+        if (!(await confirm('Delete this post permanently?'))) return;
         try {
             await api.del(`/admin/blog/${id}`, true);
             toast.success('Post deleted');

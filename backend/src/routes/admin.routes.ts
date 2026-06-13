@@ -25,6 +25,7 @@ import {
 } from '../controllers/admin.controller.js';
 import { uploadMiddleware, handleUpload } from '../controllers/uploads.controller.js';
 import { updateSettings } from '../controllers/settings.controller.js';
+import { updateSiteContent } from '../controllers/content.controller.js';
 import {
   adminCreateCoupon,
   adminDeleteCoupon,
@@ -51,6 +52,9 @@ router.use(requireAuth, requireAdmin);
 
 // Store settings
 router.put('/settings', updateSettings);
+
+// Site content (homepage copy, trust strip, promos, footer, pages)
+router.patch('/content', updateSiteContent);
 
 // Coupons
 router.get('/coupons', adminListCoupons);

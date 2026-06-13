@@ -6,11 +6,12 @@ import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useAdminProducts, useCategories, type AdminProduct, type Category } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
-import ImageUpload from '@/components/admin/ImageUpload';
+import MultiImageUpload from '@/components/admin/MultiImageUpload';
 import Select from '@/components/ui/Select';
 import { usePagination } from '@/lib/usePagination';
 import Pagination from '@/components/ui/Pagination';
 import { TableSkeleton } from '@/components/ui/Skeleton';
+import { useConfirm } from '@/components/admin/ConfirmProvider';
 
 interface ProductFormState {
     id?: number;
@@ -19,6 +20,7 @@ interface ProductFormState {
     price: string;
     discount: string;
     image: string;
+    images: string[];
     stock: string;
     categoryId: string;
     tags: string;
@@ -26,7 +28,7 @@ interface ProductFormState {
 }
 
 const emptyProduct: ProductFormState = {
-    name: '', description: '', price: '', discount: '0', image: '', stock: '0', categoryId: '', tags: '', featured: false,
+    name: '', description: '', price: '', discount: '0', image: '', images: [], stock: '0', categoryId: '', tags: '', featured: false,
 };
 
 export default function AdminProductsPage() {
@@ -54,10 +56,12 @@ export default function AdminProductsPage() {
         return next;
     });
 
+    const confirm = useConfirm();
+
     const bulk = async (action: 'activate' | 'deactivate' | 'feature' | 'unfeature' | 'delete') => {
         const ids = [...selected];
         if (!ids.length) return;
-        if (action === 'delete' && !confirm(`Deactivate ${ids.length} product(s)?`)) return;
+        if (action === 'delete' && !(await confirm(`Deactivate ${ids.length} product(s)?`))) return;
         setBulkBusy(true);
         try {
             const res = await api.post<{ count: number }>('/admin/products/bulk', { ids, action }, true);
@@ -79,6 +83,7 @@ export default function AdminProductsPage() {
         price: String(Number(p.price)),
         discount: String(p.discount),
         image: p.image,
+        images: p.images?.length ? p.images.map((i) => i.url) : (p.image ? [p.image] : []),
         stock: String(p.stock),
         categoryId: String(p.category?.id ?? ''),
         tags: (p.tags ?? []).map((t) => t.tag.name).join(', '),
@@ -86,7 +91,7 @@ export default function AdminProductsPage() {
     });
 
     const remove = async (id: number) => {
-        if (!confirm('Deactivate this product?')) return;
+        if (!(await confirm('Deactivate this product?'))) return;
         try {
             await api.del(`/admin/products/${id}`, true);
             toast.success('Product deactivated');
@@ -207,8 +212,8 @@ function ProductModal({ state, categories, onClose, onSaved }: {
 
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!form.image) {
-            toast.error('Please add a product image');
+        if (!form.images.length) {
+            toast.error('Please add at least one product image');
             return;
         }
         setSaving(true);
@@ -217,7 +222,8 @@ function ProductModal({ state, categories, onClose, onSaved }: {
             description: form.description || form.name,
             price: Number(form.price),
             discount: Number(form.discount) || 0,
-            image: form.image,
+            image: form.images[0],
+            images: form.images,
             stock: Number(form.stock) || 0,
             categoryId: Number(form.categoryId),
             tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),
@@ -260,7 +266,7 @@ function ProductModal({ state, categories, onClose, onSaved }: {
                             options={categories.map((c) => ({ value: String(c.id), label: c.name }))}
                         />
                     </div>
-                    <ImageUpload value={form.image} onChange={(url) => set('image', url)} />
+                    <MultiImageUpload images={form.images} onChange={(imgs) => setForm({ ...form, images: imgs, image: imgs[0] ?? '' })} />
                     <input className={field} placeholder="Tags (comma separated)" value={form.tags} onChange={(e) => set('tags', e.target.value)} />
                     <label className="flex items-center gap-2.5 cursor-pointer py-1">
                         <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} className="w-4 h-4 accent-[#46AEE8]" />

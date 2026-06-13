@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { useCategories } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
 import { CardListSkeleton } from '@/components/ui/Skeleton';
+import { useConfirm } from '@/components/admin/ConfirmProvider';
 
 const SKY = '#46AEE8';
 const input = 'w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#46AEE8] text-slate-800';
@@ -43,8 +44,10 @@ export default function AdminCategoriesPage() {
         }
     };
 
+    const confirm = useConfirm();
+
     const remove = async (id: number) => {
-        if (!confirm('Delete this category? (must have no products)')) return;
+        if (!(await confirm('Delete this category? (must have no products)'))) return;
         try {
             await api.del(`/admin/categories/${id}`, true);
             toast.success('Category deleted');

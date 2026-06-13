@@ -3,6 +3,7 @@
 import useSWR from 'swr';
 import { api } from './api';
 import type { Product } from '@/store/useStore';
+import { defaultContent, type SiteContent } from './siteContent';
 
 export interface Category {
     id: number;
@@ -241,6 +242,32 @@ export function useOrders(enabled: boolean) {
     return { orders: data?.data ?? [], isLoading, mutate };
 }
 
+export interface LoyaltyTxn {
+    id: number;
+    kind: 'EARN' | 'REDEEM' | 'ADJUST' | 'EXPIRE';
+    points: number;
+    note: string | null;
+    orderId: number | null;
+    createdAt: string;
+}
+export interface Loyalty {
+    balance: number;
+    lifetime: number;
+    value: number;        // currency value of the balance
+    pointValue: number;   // currency per point
+    minRedeem: number;
+    transactions: LoyaltyTxn[];
+}
+
+/** The signed-in user's loyalty points balance + history (requires auth). */
+export function useLoyalty(enabled: boolean) {
+    const { data, isLoading, mutate } = useSWR<{ data: Loyalty }>(
+        enabled ? '/loyalty' : null,
+        authFetcher
+    );
+    return { loyalty: data?.data, isLoading, mutate };
+}
+
 /** A single order by id (requires auth). */
 export function useOrder(id: string | number | null | undefined) {
     const { data, isLoading, error, mutate } = useSWR<{ data: Order }>(
@@ -286,6 +313,7 @@ export interface AdminProduct {
     featured: boolean;
     category?: { id: number; name: string } | null;
     tags?: { tag: { name: string } }[];
+    images?: { url: string }[];
 }
 
 export function useAdminProducts(enabled: boolean) {
@@ -391,6 +419,12 @@ export interface Settings {
 export function useSettings() {
     const { data, isLoading, mutate } = useSWR<{ data: Settings }>('/settings', fetcher);
     return { settings: data?.data, isLoading, mutate };
+}
+
+/** Editable site content (homepage copy, trust strip, promos, footer, pages). */
+export function useContent() {
+    const { data, isLoading, mutate } = useSWR<{ data: SiteContent }>('/content', fetcher);
+    return { content: data?.data ?? defaultContent, isLoading, mutate };
 }
 
 export interface Banner {

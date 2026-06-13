@@ -13,7 +13,7 @@ import SecurityForm from '@/components/account/SecurityForm';
 import EmailVerifyBanner from '@/components/account/EmailVerifyBanner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useStore, type Product } from '@/store/useStore';
-import { useOrders, type Order } from '@/lib/hooks';
+import { useOrders, useLoyalty, type Order } from '@/lib/hooks';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { toast } from 'sonner';
 
@@ -38,6 +38,7 @@ export default function AccountPage() {
     const { user, status, logout } = useAuthStore();
     const isAuthed = status === 'authenticated';
     const { orders, isLoading: ordersLoading } = useOrders(isAuthed);
+    const { loyalty } = useLoyalty(isAuthed);
     const addToCart = useStore((s) => s.addToCart);
 
     /** Re-add every item from a past order to the cart (skips items missing image/slug). */
@@ -119,7 +120,7 @@ export default function AccountPage() {
 
                     {/* Access Panel */}
                     <aside className="lg:col-span-4 space-y-12">
-                        <LoyaltyBadge points={3500} />
+                        <LoyaltyBadge points={loyalty?.balance ?? 0} />
 
                         <nav className="bg-primary/2 dark:bg-ink-900 rounded-[3.5rem] border border-primary/5 dark:border-slate-800 p-10 space-y-4">
                             <h3 className="text-[10px] font-medium text-gray-400 uppercase tracking-[0.4em] mb-10">Navigation Matrix</h3>

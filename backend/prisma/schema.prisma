@@ -354,6 +354,15 @@ model Setting {
   updatedAt             DateTime @updatedAt
 }
 
+/// Editable site content (homepage copy, trust strip, promos, footer, pages).
+/// Single row (id=1); the whole content tree lives in `data` as JSON so adding
+/// new fields never needs a migration. Admin edits it under /admin/content.
+model SiteContent {
+  id        Int      @id @default(1)
+  data      Json
+  updatedAt DateTime @updatedAt
+}
+
 enum CouponType {
   PERCENT
   FIXED

@@ -31,6 +31,14 @@ export default function ProductsPage() {
     const [onSaleOnly, setOnSaleOnly] = useState(false);
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
+    // Progressive "Load more" pagination — keeps large catalogs fast.
+    const PAGE_SIZE = 12;
+    const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+    // Reset to the first page whenever any filter/sort changes.
+    useEffect(() => {
+        setVisibleCount(PAGE_SIZE);
+    }, [selectedCategory, priceRange, sortBy, activeQuickFilter, inStockOnly, onSaleOnly]);
+
     const categories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
 
     const handleQuickFilter = (filterId: string) => {
@@ -68,6 +76,9 @@ export default function ProductsPage() {
             default: return 0;
         }
     });
+
+    const visibleProducts = filteredProducts.slice(0, visibleCount);
+    const hasMore = visibleCount < filteredProducts.length;
 
     const activeFiltersCount = [
         selectedCategory !== 'All',
@@ -284,22 +295,42 @@ export default function ProductsPage() {
                         {(isLoading || productsLoading) ? (
                             <ProductGridSkeleton count={12} />
                         ) : filteredProducts.length > 0 ? (
+                            <>
                             <div className="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-x-3 gap-y-5 md:gap-x-6 md:gap-y-12">
                                 <AnimatePresence mode="popLayout">
-                                    {filteredProducts.map((product, index) => (
+                                    {visibleProducts.map((product, index) => (
                                         <motion.div
                                             key={product.id}
                                             layout
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, scale: 0.95 }}
-                                            transition={{ duration: 0.4, delay: Math.min(index * 0.03, 0.3) }}
+                                            transition={{ duration: 0.4, delay: Math.min((index % PAGE_SIZE) * 0.03, 0.3) }}
                                         >
                                             <ProductCard product={product} />
                                         </motion.div>
                                     ))}
                                 </AnimatePresence>
                             </div>
+
+                            {/* Load more */}
+                            <div className="mt-12 md:mt-20 flex flex-col items-center gap-5">
+                                <p className="text-[11px] md:text-xs font-medium tracking-[0.25em] uppercase text-gray-400">
+                                    Showing {visibleProducts.length} of {filteredProducts.length}
+                                </p>
+                                {hasMore && (
+                                    <button
+                                        onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+                                        className="group inline-flex items-center gap-3 bg-primary dark:bg-accent text-white px-9 py-4 rounded-full font-medium text-xs tracking-[0.2em] uppercase hover:bg-black dark:hover:bg-accent-600 hover:scale-[1.02] active:scale-95 transition-all shadow-xl"
+                                    >
+                                        Load More
+                                        <span className="grid place-items-center w-6 h-6 rounded-full bg-white/15 group-hover:bg-white/25 transition-colors">
+                                            <ArrowRight className="w-3.5 h-3.5 rotate-90" />
+                                        </span>
+                                    </button>
+                                )}
+                            </div>
+                            </>
                         ) : (
                             <div className="text-center py-12 md:py-32 space-y-6 md:space-y-10 bg-primary/5 dark:bg-ink-900 rounded-2xl md:rounded-[3rem]">
                                 <div className="w-16 h-16 md:w-20 md:h-20 bg-white dark:bg-ink-800 rounded-full flex items-center justify-center mx-auto shadow-xl">

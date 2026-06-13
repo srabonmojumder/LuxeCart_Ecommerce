@@ -3,13 +3,14 @@
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { Search, X, TrendingUp, Clock, Tag } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { useProducts } from '@/lib/hooks';
+import { useProducts, useCategories } from '@/lib/hooks';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product } from '@/store/useStore';
 
 export default function MobileSearchModal() {
     const { products } = useProducts();
+    const { categories } = useCategories();
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<Product[]>([]);
@@ -63,7 +64,11 @@ export default function MobileSearchModal() {
         }
     };
 
-    const trendingSearches = ['Headphones', 'Smart Watch', 'Sneakers', 'Backpack'];
+    const trendingSearches = [...products]
+        .sort((a, b) => (b.reviews ?? 0) - (a.reviews ?? 0))
+        .slice(0, 4)
+        .map((p) => p.name);
+    const popularCategories = categories.slice(0, 4);
 
     return (
         <>
@@ -263,10 +268,10 @@ export default function MobileSearchModal() {
                                                 Popular Categories
                                             </h3>
                                             <div className="grid grid-cols-2 gap-2">
-                                                {['Electronics', 'Fashion', 'Sports', 'Home'].map((category, index) => (
+                                                {popularCategories.map((category, index) => (
                                                     <Link
-                                                        key={index}
-                                                        href={`/products?category=${category.toLowerCase()}`}
+                                                        key={category.id}
+                                                        href={`/products?category=${category.slug}`}
                                                         onClick={() => setIsOpen(false)}
                                                     >
                                                         <motion.div
@@ -276,7 +281,7 @@ export default function MobileSearchModal() {
                                                             whileTap={{ scale: 0.95 }}
                                                             className="p-4 bg-gradient-to-br from-accent-100 to-pink-100 dark:from-accent-900/30 dark:to-pink-900/30 rounded-xl text-center font-medium text-gray-900 dark:text-white"
                                                         >
-                                                            {category}
+                                                            {category.name}
                                                         </motion.div>
                                                     </Link>
                                                 ))}

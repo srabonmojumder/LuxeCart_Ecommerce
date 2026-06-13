@@ -8,6 +8,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { useAdminBanners } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
 import { CardGridSkeleton } from '@/components/ui/Skeleton';
+import { useConfirm } from '@/components/admin/ConfirmProvider';
 
 const field = 'w-full px-4 py-3 bg-gray-50 rounded-[5px] focus:outline-none focus:ring-2 focus:ring-[#46AEE8] text-gray-900';
 
@@ -43,8 +44,10 @@ export default function AdminBannersPage() {
         try { await api.patch(`/admin/banners/${id}`, { active: !active }, true); mutate(); }
         catch (err) { toast.error(err instanceof ApiError ? err.message : 'Failed'); }
     };
+    const confirm = useConfirm();
+
     const remove = async (id: number) => {
-        if (!confirm('Delete this banner?')) return;
+        if (!(await confirm('Delete this banner?'))) return;
         try { await api.del(`/admin/banners/${id}`, true); toast.success('Deleted'); mutate(); }
         catch (err) { toast.error(err instanceof ApiError ? err.message : 'Failed'); }
     };

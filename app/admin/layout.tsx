@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useAdminStats } from '@/lib/hooks';
 import AdminShell from '@/components/admin/AdminShell';
+import ConfirmProvider from '@/components/admin/ConfirmProvider';
 
 const SKY = '#46AEE8';
 
@@ -40,15 +41,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
 
     return (
-        <AdminShell
-            pathname={pathname}
-            today={today}
-            pendingOrders={stats?.pendingOrders}
-            userName={user?.displayName || user?.email || 'Admin'}
-            userPhoto={user?.photoURL}
-            onLogout={async () => { await logout(); toast.success('Signed out'); }}
-        >
-            {children}
-        </AdminShell>
+        <ConfirmProvider>
+            <AdminShell
+                pathname={pathname}
+                today={today}
+                pendingOrders={stats?.pendingOrders}
+                userName={user?.displayName || user?.email || 'Admin'}
+                userPhoto={user?.photoURL}
+                onLogout={async () => { await logout(); toast.success('Signed out'); }}
+            >
+                {children}
+            </AdminShell>
+        </ConfirmProvider>
     );
 }

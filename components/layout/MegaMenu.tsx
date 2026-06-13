@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronDown, ChevronRight, Tag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCategories } from '@/lib/hooks';
+import { useCategories, useContent } from '@/lib/hooks';
 
 // Fallback shown before live categories load (and if the API is unreachable).
 const fallbackCategoryLinks = [
@@ -33,6 +33,8 @@ interface MenuItem {
 export default function MegaMenu() {
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const { categories } = useCategories();
+    const { content } = useContent();
+    const promo = content.promo.megaMenu;
 
     // Inject live categories into Shop's "Top Categories" section.
     const items: MenuItem[] = useMemo(() => {
@@ -61,9 +63,9 @@ export default function MegaMenu() {
                         links: topCategoryLinks,
                     },
                 ],
-                promoImage: '/photo-1505740420928-5e560c06d30e.webp',
-                promoTitle: 'Tech Deals',
-                promoDiscount: 'Up to 40% OFF',
+                promoImage: promo.tech.image,
+                promoTitle: promo.tech.title,
+                promoDiscount: promo.tech.discount,
             },
             { label: 'Categories', href: '/categories' },
             { label: 'Blog', href: '/blog' },
@@ -89,12 +91,12 @@ export default function MegaMenu() {
                         ],
                     },
                 ],
-                promoImage: '/photo-1441986300917-64674bd600d8.webp',
-                promoTitle: 'Customer Support',
-                promoDiscount: 'Here 24/7',
+                promoImage: promo.support.image,
+                promoTitle: promo.support.title,
+                promoDiscount: promo.support.discount,
             },
         ];
-    }, [categories]);
+    }, [categories, promo]);
 
     return (
         <nav className="hidden lg:block border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-ink-900">

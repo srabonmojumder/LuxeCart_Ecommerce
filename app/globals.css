@@ -814,6 +814,15 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
+/* Form fields define their own focus ring/border (e.g. focus:ring-2),
+   so suppress the generic UA-style outline to avoid a doubled box. */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  outline-offset: 0;
+}
+
 /* Screen Reader Only */
 .sr-only {
   position: absolute;
