@@ -534,14 +534,25 @@ export const adminDeleteUser = asyncHandler(async (req: Request, res: Response) 
 // ---------------- Reviews moderation ----------------
 
 /** GET /api/admin/reviews */
-export const adminListReviews = asyncHandler(async (_req: Request, res: Response) => {
-  const reviews = await prisma.review.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: {
-      product: { select: { name: true, slug: true } },
-      user: { select: { email: true, displayName: true } },
-    },
-  });
+export const adminListReviews = asyncHandler(async (req: Request, res: Response) => {
+  // Server-side pagination — the catalog can hold hundreds of thousands of
+  // reviews, so we never load them all at once.
+  const limit = Math.min(Math.max(Number(req.query.limit) || 20, 1), 100);
+  const page = Math.max(Number(req.query.page) || 1, 1);
+
+  const [total, reviews] = await Promise.all([
+    prisma.review.count(),
+    prisma.review.findMany({
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+      include: {
+        product: { select: { name: true, slug: true } },
+        user: { select: { email: true, displayName: true } },
+      },
+    }),
+  ]);
+
   res.json({
     data: reviews.map((r) => ({
       id: r.id,
@@ -552,6 +563,7 @@ export const adminListReviews = asyncHandler(async (_req: Request, res: Response
       productSlug: r.product?.slug ?? null,
       author: r.user?.displayName ?? r.user?.email ?? 'Anonymous',
     })),
+    pagination: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) },
   });
 });
 

@@ -390,12 +390,19 @@ export interface AdminReview {
     author: string;
 }
 
-export function useAdminReviews(enabled: boolean) {
-    const { data, isLoading, mutate } = useSWR<{ data: AdminReview[] }>(
-        enabled ? '/admin/reviews' : null,
+export interface PageInfo {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+}
+
+export function useAdminReviews(enabled: boolean, page = 1, limit = 20) {
+    const { data, isLoading, mutate } = useSWR<{ data: AdminReview[]; pagination: PageInfo }>(
+        enabled ? `/admin/reviews?page=${page}&limit=${limit}` : null,
         authFetcher
     );
-    return { reviews: data?.data ?? [], isLoading, mutate };
+    return { reviews: data?.data ?? [], pagination: data?.pagination, isLoading, mutate };
 }
 
 // ---------------- Store config / marketing ----------------

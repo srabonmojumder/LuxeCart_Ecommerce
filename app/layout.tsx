@@ -1,6 +1,24 @@
 import type { Metadata } from "next";
+import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from 'sonner';
+
+// Body / UI font — clean, warm, modern.
+const sans = Plus_Jakarta_Sans({
+    subsets: ["latin"],
+    weight: ["300", "400", "500", "600", "700"],
+    variable: "--font-sans",
+    display: "swap",
+});
+
+// Display / headings font — soft, elegant editorial serif.
+const display = Fraunces({
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
+    style: ["normal", "italic"],
+    variable: "--font-display",
+    display: "swap",
+});
 import ConditionalChrome from "@/components/layout/ConditionalChrome";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { AuthProvider } from "@/components/providers/AuthProvider";
@@ -65,11 +83,8 @@ export default function RootLayout({
     const organizationSchema = generateOrganizationSchema();
 
     return (
-        <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+        <html lang="en" className={`${sans.variable} ${display.variable} scroll-smooth`} suppressHydrationWarning>
             <head>
-                <link rel="preconnect" href="https://fonts.googleapis.com" />
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
                 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" />
                 <meta name="theme-color" content="#0A0A0A" />
                 <meta name="apple-mobile-web-app-status-bar-style" content="default" />

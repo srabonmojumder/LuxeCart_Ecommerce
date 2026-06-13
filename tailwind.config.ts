@@ -75,11 +75,12 @@ const config: Config = {
                 new: '#5C7A57',
                 limited: '#B8862E',
             },
-            // Font Family — Playfair Display (serif display) + Inter (clean UI sans)
+            // Font Family — Fraunces (serif display) + Plus Jakarta Sans (clean UI sans),
+            // injected via next/font CSS variables in app/layout.tsx.
             fontFamily: {
-                sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-                serif: ['"Playfair Display"', 'Georgia', 'serif'],
-                display: ['"Playfair Display"', 'Georgia', 'serif'],
+                sans: ['var(--font-sans)', 'system-ui', '-apple-system', 'sans-serif'],
+                serif: ['var(--font-display)', 'Georgia', 'serif'],
+                display: ['var(--font-display)', 'Georgia', 'serif'],
             },
             // Custom spacing scale (8px base unit)
             spacing: {

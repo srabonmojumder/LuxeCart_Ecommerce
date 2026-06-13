@@ -1,16 +1,21 @@
 'use client';
 
+import { useState } from 'react';
 import { Star, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useAdminReviews } from '@/lib/hooks';
 import { api, ApiError } from '@/lib/api';
 import { CardListSkeleton } from '@/components/ui/Skeleton';
+import Pagination from '@/components/ui/Pagination';
 import { useConfirm } from '@/components/admin/ConfirmProvider';
+
+const PER_PAGE = 20;
 
 export default function AdminReviewsPage() {
     const isAdmin = useAuthStore((s) => s.status === 'authenticated' && s.user?.role === 'ADMIN');
-    const { reviews, isLoading, mutate } = useAdminReviews(isAdmin);
+    const [page, setPage] = useState(1);
+    const { reviews, pagination, isLoading, mutate } = useAdminReviews(isAdmin, page, PER_PAGE);
 
     const confirm = useConfirm();
 
@@ -52,6 +57,17 @@ export default function AdminReviewsPage() {
                             ))}
                         </div>
                     )}
+
+            {pagination && pagination.total > 0 && (
+                <Pagination
+                    page={pagination.page}
+                    totalPages={pagination.totalPages}
+                    onPageChange={setPage}
+                    total={pagination.total}
+                    start={(pagination.page - 1) * pagination.limit}
+                    end={Math.min(pagination.page * pagination.limit, pagination.total)}
+                />
+            )}
         </div>
     );
 }
