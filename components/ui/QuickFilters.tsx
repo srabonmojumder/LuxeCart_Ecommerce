@@ -28,9 +28,9 @@ export default function QuickFilters({ onFilterChange, activeFilter }: QuickFilt
             label: 'All Products',
             shortLabel: 'All',
             icon: <Grid3X3 className="w-3.5 h-3.5 md:w-4 md:h-4" />,
-            gradient: 'from-accent-600 via-accent-600 to-accent-600',
-            bgLight: 'bg-accent-50',
-            bgDark: 'dark:bg-accent-950/40',
+            gradient: 'from-primary via-primary to-primary',
+            bgLight: 'bg-primary/5',
+            bgDark: 'dark:bg-white/10',
         },
         {
             id: 'sale',

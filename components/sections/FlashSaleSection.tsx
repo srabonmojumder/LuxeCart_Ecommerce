@@ -181,7 +181,7 @@ export default function FlashSaleSection({ products, endDate, onQuickView }: Fla
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.3 }}
-                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
+                    className="flex gap-4 md:gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 pb-4 scroll-smooth"
                 >
                     {products.map((product, index) => (
                         <motion.div
@@ -190,6 +190,7 @@ export default function FlashSaleSection({ products, endDate, onQuickView }: Fla
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: 0.4 + index * 0.1 }}
+                            className="w-[60%] sm:w-[280px] md:w-[300px] shrink-0 snap-start"
                         >
                             <ProductCard
                                 product={product}

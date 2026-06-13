@@ -420,9 +420,11 @@ export default function Home() {
                     ) : tabProducts.length === 0 ? (
                         <p className="text-center text-secondary dark:text-gray-400 py-12">No products to show here yet.</p>
                     ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12">
+                        <div className="flex gap-4 md:gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 pb-4 scroll-smooth">
                             {tabProducts.map((product) => (
-                                <ProductCard key={product.id} product={product} />
+                                <div key={product.id} className="w-[60%] sm:w-[280px] md:w-[300px] shrink-0 snap-start">
+                                    <ProductCard product={product} />
+                                </div>
                             ))}
                         </div>
                     )}
@@ -507,9 +509,11 @@ export default function Home() {
                     ) : newArrivals.length === 0 ? (
                         <p className="text-center text-secondary dark:text-gray-400 py-12">New arrivals are on the way.</p>
                     ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12">
+                        <div className="flex gap-4 md:gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 pb-4 scroll-smooth">
                             {newArrivals.map((product) => (
-                                <ProductCard key={product.id} product={product} />
+                                <div key={product.id} className="w-[60%] sm:w-[280px] md:w-[300px] shrink-0 snap-start">
+                                    <ProductCard product={product} />
+                                </div>
                             ))}
                         </div>
                     )}

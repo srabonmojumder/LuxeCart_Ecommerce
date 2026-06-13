@@ -273,7 +273,7 @@ export default function ProductsPage() {
                     {/* Products Section */}
                     <div className="flex-1">
                         {/* Sort Bar - Desktop Only */}
-                        <div className="hidden lg:flex justify-between items-center mb-16 gap-10 bg-white dark:bg-ink-950">
+                        <div className="hidden lg:flex justify-between items-center mb-16 gap-10">
                             <div className="w-full flex justify-start gap-10 border-b border-primary/5 dark:border-slate-800 pb-6">
                                 {['featured', 'price-low', 'price-high', 'rating'].map((s) => (
                                     <button

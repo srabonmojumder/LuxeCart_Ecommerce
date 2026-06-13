@@ -52,9 +52,11 @@ export default function RecentlyViewedSection({ excludeId, title = 'Recently Vie
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
+                <div className="flex gap-4 md:gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 pb-4 scroll-smooth">
                     {items.map((product) => (
-                        <ProductCard key={product.id} product={product} />
+                        <div key={product.id} className="w-[60%] sm:w-[280px] md:w-[300px] shrink-0 snap-start">
+                            <ProductCard product={product} />
+                        </div>
                     ))}
                 </div>
             </div>
